@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InvestmentReportOutput",
+  "type": "object",
+  "required": [
+    "target_overview",
+    "company_classification",
+    "pyramid_summary",
+    "mind_map_summary",
+    "data_freshness_check",
+    "data_provenance",
+    "valuation_model_selection",
+    "execution_gate_checklist",
+    "final_view"
+  ],
+  "properties": {
+    "target_overview": {
+      "type": "object"
+    },
+    "data_freshness_check": {
+      "type": "object"
+    },
+    "data_provenance": {
+      "type": "object"
+    },
+    "valuation_model_selection": {
+      "type": "object",
+      "properties": {
+        "base_type": {
+          "type": "string"
+        },
+        "primary_model": {
+          "type": "string"
+        },
+        "cross_check_model": {
+          "type": "string"
+        },
+        "downside_model": {
+          "type": "string"
+        },
+        "implied_expectation_model": {
+          "type": "string"
+        },
+        "overlay_models": {
+          "type": "object",
+          "properties": {
+            "dividend_models": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "technology_models": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cyclicality_models": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cloud_models": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "specialist_models": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "blocked_models": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "support_level": {
+          "type": "string"
+        },
+        "active_route_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deferred_routes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_mode": {
+          "type": "string"
+        },
+        "token_control": {
+          "type": "object"
+        },
+        "company_type_route": {
+          "type": "string"
+        },
+        "primary_workflow": {
+          "type": "string"
+        },
+        "auxiliary_workflows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "core_quality_gate": {
+          "type": "object"
+        }
+      }
+    },
+    "valuation_results": {
+      "type": "object",
+      "properties": {
+        "primary_model": {
+          "type": "string"
+        },
+        "bear_value": {},
+        "base_value": {},
+        "bull_value": {},
+        "current_price": {},
+        "margin_of_safety": {},
+        "key_assumptions": {
+          "type": "array"
+        },
+        "sensitivity_summary": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "usable",
+            "blocked",
+            "low_confidence",
+            "historical_only"
+          ]
+        },
+        "calculation_detail": {
+          "type": "object",
+          "description": "Optional. Include only for explicit audit/debug/appendix/formula/workbook requests; never required for default user-facing output. Default reports must not include step-by-step valuation calculation traces, internal routing scorecards, formula derivations, discounting schedules, or derived metric tables."
+        },
+        "company_type": {
+          "type": "string"
+        },
+        "dividend_shareholder_return_summary": {
+          "type": "object",
+          "properties": {
+            "dividend_safety": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "watch",
+                "unsafe",
+                "blocked",
+                "not_applicable"
+              ]
+            },
+            "shareholder_yield_judgment": {
+              "type": "string"
+            },
+            "dividend_yield_band_judgment": {
+              "type": "string"
+            },
+            "ddm_relevance": {
+              "type": "string",
+              "enum": [
+                "primary_support",
+                "cross_check_only",
+                "blocked",
+                "not_applicable"
+              ]
+            }
+          }
+        },
+        "technology_optionality_summary": {
+          "type": "object",
+          "properties": {
+            "evidence_level": {
+              "type": "string",
+              "enum": [
+                "monetized",
+                "emerging",
+                "efficiency_only",
+                "narrative_only",
+                "not_applicable",
+                "blocked"
+              ]
+            },
+            "valuation_treatment": {
+              "type": "string",
+              "enum": [
+                "sotp",
+                "scenario_optionality",
+                "core_model_assumption",
+                "no_separate_premium",
+                "not_applicable",
+                "blocked"
+              ]
+            },
+            "evidence_quality": {
+              "type": "string",
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                "blocked"
+              ]
+            },
+            "investment_implication": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "risk_analysis": {
+      "type": "object"
+    },
+    "investor_action_framework": {
+      "type": "object"
+    },
+    "execution_gate_checklist": {
+      "type": "array"
+    },
+    "final_view": {
+      "type": "object"
+    },
+    "mind_map_summary": {
+      "type": "object"
+    },
+    "pyramid_summary": {
+      "type": "object",
+      "properties": {
+        "executive_conclusion": {
+          "type": "object"
+        },
+        "decision_snapshot": {
+          "type": "array"
+        },
+        "core_thesis": {
+          "type": "array"
+        },
+        "valuation_summary": {
+          "type": "object",
+          "description": "User-facing valuation range, company type, selected model stack, dividend/shareholder-return judgment, technology optionality treatment, margin of safety, key assumptions, and sensitivity summary only. No step-by-step calculation trace."
+        },
+        "action_framework": {
+          "type": "object"
+        },
+        "company_classification": {
+          "type": "object",
+          "description": "User-facing company classification, overlays, evidence quality, and implications only. No internal routing scorecard."
+        }
+      }
+    },
+    "company_classification": {
+      "type": "object",
+      "required": [
+        "base_type",
+        "overlays",
+        "classification_confidence"
+      ],
+      "properties": {
+        "base_type": {
+          "type": "string"
+        },
+        "overlays": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "classification_confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "classification_interpretation": {
+          "type": "string"
+        },
+        "blocked_or_low_confidence_overlays": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "Company classification result based on economic profile and overlays. Do not include internal score-by-score routing unless explicitly requested."
+    },
+    "token_efficiency": {
+      "type": "object",
+      "properties": {
+        "selected_route": {
+          "type": "string"
+        },
+        "activated_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deferred_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "calculation_trace_visible": {
+          "type": "boolean"
+        },
+        "internal_scorecard_visible": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

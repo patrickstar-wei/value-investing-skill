@@ -1,0 +1,192 @@
+# Valuation Router Skill v17.1
+
+## Purpose
+
+Select primary, cross-check, downside, implied-expectation, and overlay-specific valuation models by classifying the company through economic characteristics, not by company name alone.
+
+## Inputs
+
+- Target company / ticker
+- Market
+- Industry
+- Business segments
+- Revenue / earnings / cash-flow profile
+- ROE / ROIC and capital intensity
+- Dividend, buyback, share cancellation, and debt reduction history
+- Segment disclosure for technology-related businesses
+- Cyclicality exposures
+- Available data and freshness status
+- User requested depth
+- Prior assumptions, if any
+
+## Outputs
+
+- Base Business Type
+- Overlay Tags
+- Structured valuation model stack
+- Missing data / blocked models
+- Confidence level
+- Next required action
+
+## Company Classification Flow
+
+### Step 1: Base Type
+
+Classify as **Mature Quality Compounder** if the company has mature operations, stable earnings, durable FCF conversion, above-industry ROE / ROIC, and a defensible competitive position.
+
+Default models:
+
+- Primary: Owner Earnings DCF / FCFE DCF
+- Cross-check: EPV / Quality-adjusted P/E / Normalized P/E
+- Downside: No-growth EPV
+- Implied: Reverse DCF
+
+### Step 2: Dividend / Shareholder Return Overlay
+
+Add this overlay when the company has meaningful dividends, buybacks, share cancellation, or debt reduction that are supported by owner earnings / FCFE and balance-sheet strength.
+
+Additional models / checks:
+
+- Two-stage DDM
+- Gordon Growth terminal check
+- Dividend Yield Band
+- Dividend Yield + Net Buyback Yield + Debt Reduction Yield
+- Dividend Safety / payout stress test
+- Implied Dividend Growth
+
+If dividend coverage is weak, do not use DDM as valuation support; treat it as a risk flag.
+
+### Step 3: Technology Optionality Overlay
+
+Add this overlay when technology-related businesses are financially visible, commercially monetized, and potentially material.
+
+Technology treatment:
+
+- Efficiency-only technology: reflect in margin, ROIC, FCF conversion, and moat quality.
+- Separable monetized segment: use SOTP or scenario-weighted optionality.
+- Narrative-only technology: no separate valuation premium.
+
+### Step 4: Light Cyclical Manufacturing Overlay
+
+Add this overlay when the company is exposed to real estate, consumer cycle, raw material prices, exports, FX, channel inventory, or manufacturing capex cycles.
+
+Additional models / checks:
+
+- Mid-cycle earnings
+- Normalized margin
+- Stress-case FCF
+- No-growth EPV
+
+## Scoring Rubric
+
+The router may use internal 0 / 1 / 2 scoring.
+
+### Mature Quality Compounder Score
+
+- Stable revenue and earnings
+- Strong ROE / ROIC
+- Durable FCF conversion
+- Competitive advantage
+- Mature but positive growth
+
+If score >= 7, classify as Mature Quality Compounder.
+
+### Dividend / Shareholder Return Score
+
+- Stable dividend history
+- Reasonable payout ratio
+- Dividend covered by FCF / FCFE
+- Buyback, share cancellation, or debt reduction
+- Balance sheet supports payout
+
+If score >= 6, add Dividend / Shareholder Return Overlay.
+
+### Technology Optionality Score
+
+- Technology-related segment exists
+- Segment revenue is disclosed
+- Segment growth is above core business
+- Segment has profit or credible margin path
+- Technology can improve ROIC, margin, or TAM
+
+If score >= 6, add Technology Optionality Overlay.
+
+If score <= 3, treat technology as narrative-only and do not assign separate valuation premium.
+
+### Cyclicality Score
+
+- Real estate / consumption cycle exposure
+- Raw material exposure
+- FX / export exposure
+- Inventory or manufacturing cycle exposure
+
+If score >= 4, add Light Cyclical Manufacturing Overlay.
+
+## Reverse DCF Execution Gate
+
+When Reverse DCF is selected as the implied-expectation model, the downstream workflow must call `skills/reverse-dcf/SKILL.md`.
+
+The final report must include either:
+
+1. A Reverse DCF result, or
+2. A Reverse DCF blocked section.
+
+It is not valid to only mention Reverse DCF as a suggested next step.
+
+## User-facing Output Rules
+
+Default output should show:
+
+- Company classification result
+- Overlay tags
+- Selected valuation model stack
+- Missing data / blocked models
+- Confidence level
+- Investment implication
+
+Default output must not show:
+
+- Internal score-by-score details
+- Full formulas
+- Spreadsheet-style valuation calculations
+- Discounting schedules
+- Derived metric tables
+
+Calculation detail is allowed only when the user explicitly requests audit, debug, appendix, formulas, or workbook-style detail.
+
+## General Rules
+
+- State assumptions explicitly.
+- Flag missing or low-confidence data.
+- Prefer conservative assumptions.
+- Keep output auditable.
+- Never use a single valuation multiple as the full valuation conclusion.
+
+
+## v17 Token-Efficient Specialist Route Expansion
+
+The valuation router supports specialist company routes but must lazy-load them.
+
+Default procedure:
+
+1. Run compact classification.
+2. Select exactly one base route.
+3. Add at most two overlays for L0/L1.
+4. Load only the selected route section from `references/valuation_rules/specialized_company_routes_v17.md` when needed.
+5. Defer non-material routes and list them briefly.
+6. Do not expose internal scorecards or step-by-step valuation calculations by default.
+
+Specialist routes include AI / semiconductor, digital platform, cloud platform, managed care, insurance-float holding company, financial institutions, SaaS, pharma, commodity cyclicals, REIT/infrastructure, and auto/EV platforms.
+
+
+## v17.1 Modular Workflow Quality Gate
+
+The router now selects workflows as well as valuation models. Default behavior:
+
+1. Select one primary workflow.
+2. Add at most two auxiliary workflows for L0/L1.
+3. Load `references/core/investment_philosophy_layer.md` and `references/core/investment_quality_gate.md` before final output.
+4. Keep domain-specific workflow details out of the main prompt unless selected.
+5. Do not expose internal scorecards, workflow internals, quality-gate internals, or valuation calculation traces unless explicitly requested.
+
+Final output must include business quality, valuation attractiveness, margin of safety, data confidence, and action.

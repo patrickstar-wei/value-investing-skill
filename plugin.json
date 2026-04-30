@@ -1,0 +1,25 @@
+{
+  "name": "value-investing-research-skill",
+  "version": "0.1.7.1",
+  "description": "A token-efficient modular value investing core skill with lazy-loaded workflows, company routing, and a master-investor philosophy quality gate.",
+  "entry": "SKILL.md",
+  "commands": [
+    "research",
+    "quick-check",
+    "valuation",
+    "reverse-dcf",
+    "moat",
+    "risk",
+    "earnings-preview",
+    "earnings-digest",
+    "screen",
+    "thesis-update",
+    "classification",
+    "company-type-coverage",
+    "shareholder-return",
+    "technology-optionality",
+    "token-efficient-analysis",
+    "philosophy-gate",
+    "workflow-router"
+  ]
+}

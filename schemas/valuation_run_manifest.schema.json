@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ValuationRunManifest",
+  "type": "object",
+  "required": [
+    "skill_version",
+    "run_mode",
+    "target",
+    "analysis_as_of_date",
+    "selected_context_files",
+    "selected_models",
+    "required_gates"
+  ],
+  "properties": {
+    "skill_version": {
+      "type": "string"
+    },
+    "run_mode": {
+      "type": "string"
+    },
+    "ai_system": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "ticker": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "analysis_as_of_date": {
+      "type": "string"
+    },
+    "selected_context_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deferred_context_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "selected_models": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "cross_check": {
+          "type": "string"
+        },
+        "downside": {
+          "type": "string"
+        },
+        "implied_expectation": {
+          "type": "string"
+        }
+      }
+    },
+    "required_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "estimated_input_tokens": {
+      "type": "integer"
+    },
+    "output_budget_tokens": {
+      "type": "integer"
+    }
+  }
+}

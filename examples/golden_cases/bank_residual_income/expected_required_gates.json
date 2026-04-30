@@ -1,0 +1,20 @@
+{
+  "target_type": "bank",
+  "required_gates": [
+    "Data Freshness",
+    "Data Provenance",
+    "Source Quality",
+    "Primary Valuation",
+    "Cross-check Valuation",
+    "Downside Valuation",
+    "Margin of Safety",
+    "Financial Company Model Suitability",
+    "Capital Adequacy Data"
+  ],
+  "expected_model_routing": {
+    "primary": "Residual Income / P/B-ROE",
+    "cross_check": "P/E / DDM",
+    "downside": "Tangible Book Value",
+    "implied_expectation": "Implied ROE"
+  }
+}

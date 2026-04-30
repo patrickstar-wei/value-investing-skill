@@ -1,0 +1,22 @@
+{
+  "target": "TSLA",
+  "required_gates": [
+    "Data Freshness",
+    "Data Provenance",
+    "Source Quality",
+    "Primary Valuation",
+    "Cross-check Valuation",
+    "Downside Valuation",
+    "Reverse DCF",
+    "Margin of Safety",
+    "Dilution Check",
+    "Capital Structure Bridge",
+    "Investor Action Framework"
+  ],
+  "expected_model_routing": {
+    "primary": "Scenario DCF / Revenue-to-FCF DCF",
+    "cross_check": "EV/Revenue / EV/EBITDA sanity check",
+    "downside": "FCF Stress / No-growth case",
+    "implied_expectation": "Reverse DCF"
+  }
+}

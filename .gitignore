@@ -1,0 +1,109 @@
+# ============================================
+# Agent Skill Project - Git Ignore
+# ============================================
+
+# --------------------------------------------
+# Python
+# --------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --------------------------------------------
+# Virtual Environments
+# --------------------------------------------
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# --------------------------------------------
+# IDE / Editor
+# --------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --------------------------------------------
+# OS Files
+# --------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --------------------------------------------
+# Logs & Temp
+# --------------------------------------------
+*.log
+*.tmp
+*.temp
+*.bak
+
+# --------------------------------------------
+# Secrets (NEVER commit)
+# --------------------------------------------
+*.pem
+*.key
+secrets/
+credentials/
+.env.local
+.env.*.local
+
+# --------------------------------------------
+# Data & Outputs (generated)
+# --------------------------------------------
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.db
+*.sqlite
+reports/
+output/
+results/
+
+# --------------------------------------------
+# Node (if any frontend tooling)
+# --------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --------------------------------------------
+# Test / Coverage
+# --------------------------------------------
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# --------------------------------------------
+# Trae specific (if any local cache)
+# --------------------------------------------
+# Keep .trae/skills/ for skill definitions
+# Ignore only local runtime caches if they exist
+.trae/cache/
+.trae/temp/

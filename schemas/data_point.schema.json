@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InvestmentDataPoint",
+  "type": "object",
+  "required": [
+    "data_id",
+    "metric",
+    "value",
+    "unit",
+    "period",
+    "source_name",
+    "source_type",
+    "source_date",
+    "source_tier",
+    "confidence",
+    "raw_or_derived"
+  ],
+  "properties": {
+    "data_id": {"type": "string"},
+    "metric": {"type": "string"},
+    "value": {},
+    "unit": {"type": "string"},
+    "period": {"type": "string"},
+    "company": {"type": "string"},
+    "ticker": {"type": "string"},
+    "source_name": {"type": "string"},
+    "source_type": {"type": "string"},
+    "source_url": {"type": "string"},
+    "source_path": {"type": "string"},
+    "source_date": {"type": "string"},
+    "extraction_timestamp": {"type": "string"},
+    "page_or_table": {"type": "string"},
+    "source_tier": {"type": "integer"},
+    "freshness_status": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "raw_or_derived": {"type": "string", "enum": ["raw", "derived", "assumption", "user_input"]},
+    "formula": {"type": "string"},
+    "input_data_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "notes": {"type": "string"}
+  }
+}

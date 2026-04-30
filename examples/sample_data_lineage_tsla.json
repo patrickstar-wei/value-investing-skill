@@ -1,0 +1,47 @@
+[
+  {
+    "data_id": "TSLA_Q1_2026_REVENUE",
+    "metric": "Revenue",
+    "value": 22387000000,
+    "unit": "USD",
+    "period": "Q1 2026",
+    "company": "Tesla Inc.",
+    "ticker": "TSLA",
+    "source_name": "Tesla Q1 2026 Update",
+    "source_type": "Company IR earnings release",
+    "source_url": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q1-2026-Update.pdf",
+    "source_path": null,
+    "source_date": "2026-04-22",
+    "extraction_timestamp": "2026-04-30T09:00:00-07:00",
+    "page_or_table": "Financial Statements",
+    "source_tier": 2,
+    "freshness_status": "Current",
+    "confidence": 0.95,
+    "raw_or_derived": "raw"
+  },
+  {
+    "data_id": "TSLA_Q1_2026_FCF",
+    "metric": "Free Cash Flow",
+    "value": 1444000000,
+    "unit": "USD",
+    "period": "Q1 2026",
+    "company": "Tesla Inc.",
+    "ticker": "TSLA",
+    "source_name": "Derived from sourced inputs",
+    "source_type": "Derived metric",
+    "source_url": null,
+    "source_path": null,
+    "source_date": "Derived",
+    "extraction_timestamp": "2026-04-30T09:00:00-07:00",
+    "page_or_table": null,
+    "source_tier": 0,
+    "freshness_status": "Derived",
+    "confidence": 0.93,
+    "raw_or_derived": "derived",
+    "formula": "Operating Cash Flow - Capital Expenditures",
+    "input_data_ids": [
+      "TSLA_Q1_2026_OPERATING_CASH_FLOW",
+      "TSLA_Q1_2026_CAPEX"
+    ]
+  }
+]
