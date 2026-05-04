@@ -83,7 +83,7 @@ Each run should record:
 
 ```json
 {
-  "skill_version": "v18",
+  "skill_version": "v19",
   "mode": "L1",
   "selected_context_files": [],
   "estimated_input_tokens": 0,

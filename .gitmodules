@@ -1,0 +1,9 @@
+[submodule "references/masters/source_materials/buffett"]
+	path = references/masters/source_materials/buffett
+	url = git@github.com:agi-now/buffett-skills.git
+[submodule "references/masters/source_materials/munger"]
+	path = references/masters/source_materials/munger
+	url = git@github.com:alchaincyf/munger-skill.git
+[submodule "references/masters/source_materials/ai_hedge_fund"]
+	path = references/masters/source_materials/ai_hedge_fund
+	url = git@github.com:virattt/ai-hedge-fund.git

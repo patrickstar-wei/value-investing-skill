@@ -1,4 +1,4 @@
-# Output Validation Rules v18
+# Output Validation Rules v19
 
 ## Purpose
 
@@ -11,13 +11,14 @@ For standard L1/L2 investment analysis, the final report must contain these head
 1. `## 📌 Executive Conclusion`
 2. `## 🧭 Decision Snapshot`
 3. `## 🧭 Company Classification`
-4. `## 🔹 Core Thesis`
-5. `## 📊 Key Evidence`
-6. `## 🧮 Valuation Summary`
-7. `## ⚠️ Key Risks`
-8. `## ✅ / ❌ Execution Gate Checklist`
-9. `## 🧭 Investor Action Framework`
-10. `## 🔍 Data Provenance`
+4. `## Master Lens Used`
+5. `## 🔹 Core Thesis`
+6. `## 📊 Key Evidence`
+7. `## 🧮 Valuation Summary`
+8. `## ⚠️ Key Risks`
+9. `## ✅ / ❌ Execution Gate Checklist`
+10. `## 🧭 Investor Action Framework`
+11. `## 🔍 Data Provenance`
 
 ## Required Field Check
 
@@ -26,6 +27,7 @@ The report must include:
 - Rating
 - One-line judgment
 - Company classification
+- Master lens used, rationale, and impact
 - Selected valuation models
 - Bear / Base / Bull valuation range or explicit blocked status
 - Current price or explicit blocked status

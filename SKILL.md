@@ -1,4 +1,4 @@
-# Value Investing Core Skill v18
+# Value Investing Core Skill v19
 
 ## Purpose
 
@@ -39,7 +39,9 @@ Always load or obey these core policies before final output:
 - `references/core/investment_quality_gate.md`
 - `references/core/modular_workflow_architecture.md`
 
-## v18 Mandatory Output Contract and Renderer
+Use `references/masters/multi_master_framework.md` as the visual index for investor lenses. Load individual files under `references/masters/` only when that lens materially applies to the selected workflow or the user explicitly asks for a master framework.
+
+## v19 Mandatory Output Contract and Renderer
 
 All workflows must use a fixed output contract. The workflow may perform specialized analysis, but it must not directly render the final report. It must return a structured payload to the core report renderer.
 
@@ -114,25 +116,26 @@ Use this skill when the user asks to:
 1. Classify user task and required depth: L0/L1/L2/L3/L4.
 2. Use `scripts/context/context_router.py` to select the smallest useful context packet.
 3. Identify target, market, industry, and lifecycle.
-4. Route to the relevant value-investing style.
-5. Classify the company through the company classification router:
+4. Before current company analysis, ask whether the user has local institutional research, consensus exports, licensed data, or notes to include. If yes, ask for the folder or file path and load only the relevant structured files through `scripts/connectors/institutional_view_parser.py`; if no path is provided, continue without institutional-view cross-checks.
+5. Route to the relevant value-investing style.
+6. Classify the company through the company classification router:
    - Base Business Type
    - Shareholder Return Overlay
    - Technology Optionality Overlay
    - Cyclicality / Risk Overlay
-6. Route to valuation models:
+7. Route to valuation models:
    - Primary
    - Cross-check
    - Downside
    - Implied expectation
    - Overlay-specific models, if triggered
-7. Convert material model inputs into structured assumptions and constrain them with history, industry economics, management guidance, peer data, reverse DCF, and sensitivity checks.
-8. Fetch only required data fields.
-9. Use `schemas/valuation_input_packet.schema.json` to bind model inputs to data IDs, source metadata, freshness dates, and structured assumptions when executing valuation.
-10. Run scripts for calculations instead of expanding formulas in prompt. Prefer `scripts/valuation/valuation_executor.py` for routed model execution.
-11. Audit assumptions, formulas, data lineage, and sensitivity internally.
-12. Generate output at the requested depth only.
-13. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
+8. Convert material model inputs into structured assumptions and constrain them with history, industry economics, management guidance, peer data, reverse DCF, institutional-view cross-checks, and sensitivity checks.
+9. Fetch only required data fields.
+10. Use `schemas/valuation_input_packet.schema.json` to bind model inputs to data IDs, source metadata, freshness dates, and structured assumptions when executing valuation.
+11. Run scripts for calculations instead of expanding formulas in prompt. Prefer `scripts/valuation/valuation_executor.py` for routed model execution.
+12. Audit assumptions, formulas, data lineage, and sensitivity internally.
+13. Generate output at the requested depth only.
+14. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
 
 
 
@@ -414,6 +417,33 @@ Load:
 
 If a critical number has no source URL, local path, formula, or input data IDs, block the valuation or label it as an assumption that cannot drive the final conclusion.
 
+## Institutional View Rule
+
+Institutional research, consensus exports, and paid research summaries may be used only as external cross-checks when the user provides or authorizes the data.
+
+Before a standard current company analysis, prompt once:
+
+```text
+Do you have any local institutional research, consensus exports, licensed data, or notes to include? If yes, provide the file or folder path. If no, I will continue without institutional-view cross-checks.
+```
+
+If the user provides a folder path, recursively discover supported structured files (`.json`, `.csv`), filter records by the target ticker/company, summarize usable versus blocked records, and list non-structured files as reference-only. Do not parse full paid report PDFs or spreadsheets directly into report text.
+
+Load when institutional views, broker reports, consensus exports, Morningstar/FactsSet/Bloomberg/Wind/Choice exports, or paid research summaries are used:
+
+- `skills/institutional-view-ingestion/SKILL.md`
+- `references/data_source_policy/institutional_view_policy.md`
+- `schemas/institutional_view.schema.json`
+- `scripts/connectors/institutional_view_parser.py`
+
+Rules:
+
+1. Do not bypass paywalls or access controls.
+2. Do not store credentials, API keys, or paid raw exports in git.
+3. Do not output long excerpts from paid reports.
+4. Summarize and structure institutional views instead of reproducing source text.
+5. Treat institutional views as cross-checks, not primary valuation truth.
+
 ## Cross-Model Consistency and Token Efficiency Rule
 
 This Skill cannot guarantee identical prose across different AI systems, but it must enforce comparable process and outputs.
@@ -474,13 +504,15 @@ Default output order:
 
 1. 📌 Executive Conclusion
 2. 🧭 Decision Snapshot
-3. 🔹 Core Thesis
-4. 📊 Key Evidence
-5. 🧮 Valuation Summary
-6. ⚠️ Risks
-7. ✅ / ❌ Execution Gate Checklist
-8. 🧭 Investor Action Framework
-9. 🔍 Data Provenance
+3. 🧭 Company Classification
+4. Master Lens Used
+5. 🔹 Core Thesis
+6. 📊 Key Evidence
+7. 🧮 Valuation Summary
+8. ⚠️ Risks
+9. ✅ / ❌ Execution Gate Checklist
+10. 🧭 Investor Action Framework
+11. 🔍 Data Provenance
 
 Use symbols consistently:
 

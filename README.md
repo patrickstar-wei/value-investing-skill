@@ -1,4 +1,4 @@
-# Value Investing Skill Project v18
+# Value Investing Skill Project v19
 
 This project is a modular value-investing research skill. It combines company-type routing, structured assumptions, executable valuation models, data freshness / provenance gates, and a fixed report contract.
 
@@ -172,6 +172,14 @@ Run valuation model tests:
 python -m unittest tests.test_valuation_models
 ```
 
+Analyze with local institutional-view files:
+
+```bash
+python -m scripts.connectors.institutional_view_parser data/institutional_views NVDA
+```
+
+The parser accepts a single `.json` / `.csv` file or a folder. It recursively selects structured exports, filters by ticker or company, and reports PDF / Office / note files as reference-only so paid research is not reproduced.
+
 Run router tests without pytest:
 
 ```bash
@@ -194,6 +202,12 @@ python -c "import tests.test_valuation_router as t; [getattr(t, name)() for name
 - `scripts/audit/structured_assumption_audit.py`: structured assumption gate.
 - `scripts/data/check_data_freshness.py`: data freshness checks.
 - `scripts/audit/data_provenance_audit.py`: source / lineage checks.
+- `scripts/connectors/institutional_view_parser.py`: safe parser for user-provided institutional view exports.
+- `skills/institutional-view-ingestion/SKILL.md`: institutional view ingestion workflow.
+- `references/data_source_policy/institutional_view_policy.md`: safety and copyright policy for institutional research.
+- `references/core/investment_philosophy_layer.md`: mandatory investment philosophy and quality-control layer.
+- `references/masters/`: visual master-lens library with one file per investor framework.
+- `references/masters/source_materials/`: Git submodule source library for expanded master-lens materials.
 - `references/valuation_rules/structured_assumption_policy.md`: assumption policy.
 - `references/output_policy/`: fixed output contract and renderer policy.
 - `schemas/valuation_input_packet.schema.json`: valuation input packet schema.

@@ -1,4 +1,6 @@
 import unittest
+from tempfile import TemporaryDirectory
+from pathlib import Path
 
 from scripts.valuation.valuation_common import ValuationResult, StructuredAssumption
 from scripts.valuation.valuation_comps import ComparableCompany, peer_multiple, equity_value_from_multiple
@@ -7,6 +9,11 @@ from scripts.valuation.valuation_ddm import gordon_growth_value, two_stage_ddm
 from scripts.valuation.valuation_executor import run_valuation, run_valuation_payload
 from scripts.valuation.valuation_fintech import normalized_earnings_value
 from scripts.valuation.valuation_input_packet import ValuationInputPacket
+from scripts.connectors.institutional_view_parser import (
+    load_institutional_views_from_path,
+    normalize_view,
+    summarize_institutional_views,
+)
 from scripts.valuation.valuation_insurance import combined_ratio, float_cost
 from scripts.valuation.valuation_liquidation import AssetRecovery, LiabilityClaim, liquidation_equity_value
 from scripts.valuation.valuation_reit import noi_capitalized_value, distribution_coverage
@@ -103,6 +110,7 @@ class ValuationModelTests(unittest.TestCase):
         files = route_context("full_research", "biotech")
         self.assertIn("scripts/valuation/valuation_rnpv.py", files)
         self.assertNotIn("scripts/valuation/valuation_biotech_rnpv.py", files)
+        self.assertIn("references/masters/multi_master_framework.md", files)
 
     def test_valuation_router_exposes_algorithm_files(self):
         models = select_valuation_models(
@@ -249,6 +257,74 @@ class ValuationModelTests(unittest.TestCase):
         payload = run_valuation_payload(CompanyProfile(industry="platform", is_digital_platform=True), packet)
         self.assertEqual(payload["valuation_summary"]["valuation_status"], "blocked")
         self.assertTrue(payload["blocked_models"])
+
+    def test_institutional_view_blocks_unclear_license(self):
+        view = normalize_view(
+            {
+                "provider": "Example Provider",
+                "ticker": "NVDA",
+                "as_of_date": "2026-05-01",
+                "source_type": "user_provided_export",
+                "license_scope": "unknown",
+                "source_confidence": "medium",
+                "target_price": "150",
+            }
+        )
+        self.assertEqual(view.source_confidence, "blocked")
+        self.assertEqual(view.copyright_handling, "blocked")
+
+    def test_institutional_view_summary_uses_structured_fields(self):
+        records = [
+            normalize_view(
+                {
+                    "provider": "Public Summary",
+                    "ticker": "GOOGL",
+                    "as_of_date": "2026-05-01",
+                    "source_type": "public_summary",
+                    "license_scope": "public",
+                    "source_confidence": "high",
+                    "rating": "Buy",
+                    "target_price": 200,
+                }
+            ).__dict__,
+            normalize_view(
+                {
+                    "provider": "Restricted",
+                    "ticker": "GOOGL",
+                    "as_of_date": "2026-05-01",
+                    "source_type": "user_provided_export",
+                    "license_scope": "restricted",
+                    "source_confidence": "medium",
+                    "target_price": 250,
+                }
+            ).__dict__,
+        ]
+        summary = summarize_institutional_views(records)
+        self.assertEqual(summary["usable_count"], 1)
+        self.assertEqual(summary["blocked_count"], 1)
+        self.assertEqual(summary["target_price_median"], 200)
+
+    def test_institutional_view_folder_filters_target_and_marks_reference_only(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "nvda_views.csv").write_text(
+                "\n".join(
+                    [
+                        "provider,ticker,company,as_of_date,source_type,license_scope,source_confidence,target_price,rating",
+                        "Public Summary,NVDA,NVIDIA,2026-05-01,public_summary,public,high,150,Buy",
+                        "Other,GOOGL,Alphabet,2026-05-01,public_summary,public,high,200,Hold",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            (root / "paid_report.pdf").write_text("reference only", encoding="utf-8")
+
+            result = load_institutional_views_from_path(root, "NVDA")
+
+        self.assertEqual(result["summary"]["count"], 1)
+        self.assertEqual(result["summary"]["usable_count"], 1)
+        self.assertEqual(result["records"][0]["ticker"], "NVDA")
+        self.assertEqual(len(result["discovery"]["reference_only_files"]), 1)
 
 
 if __name__ == "__main__":

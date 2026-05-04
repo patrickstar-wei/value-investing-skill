@@ -1,4 +1,4 @@
-# Mandatory Output Contract v18
+# Mandatory Output Contract v19
 
 ## Purpose
 
@@ -48,15 +48,27 @@ Every standard stock or company analysis must use this order:
 1. `## 📌 Executive Conclusion`
 2. `## 🧭 Decision Snapshot`
 3. `## 🧭 Company Classification`
-4. `## 🔹 Core Thesis`
-5. `## 📊 Key Evidence`
-6. `## 🧮 Valuation Summary`
-7. `## ⚠️ Key Risks`
-8. `## ✅ / ❌ Execution Gate Checklist`
-9. `## 🧭 Investor Action Framework`
-10. `## 🔍 Data Provenance`
+4. `## Master Lens Used`
+5. `## 🔹 Core Thesis`
+6. `## 📊 Key Evidence`
+7. `## 🧮 Valuation Summary`
+8. `## ⚠️ Key Risks`
+9. `## ✅ / ❌ Execution Gate Checklist`
+10. `## 🧭 Investor Action Framework`
+11. `## 🔍 Data Provenance`
 
 Do not invent new top-level sections in the main report. Put optional details under `## Appendix` only.
+
+## Required Master Lens Fields
+
+The `## Master Lens Used` section must include:
+
+- selected master / framework names
+- why each lens was used for this company
+- how the lens affected the analysis
+- downgraded or deferred master lenses when material
+
+Do not dump every master framework into the report. Include only lenses that materially shape the analysis or explain why a normally relevant lens was downgraded.
 
 ## Required Valuation Fields
 

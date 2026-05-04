@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InstitutionalView",
+  "type": "object",
+  "required": [
+    "provider",
+    "ticker",
+    "as_of_date",
+    "source_type",
+    "license_scope",
+    "source_confidence"
+  ],
+  "properties": {
+    "provider": {"type": "string"},
+    "institution": {"type": "string"},
+    "ticker": {"type": "string"},
+    "company": {"type": "string"},
+    "as_of_date": {"type": "string"},
+    "source_type": {
+      "type": "string",
+      "enum": ["public_summary", "user_provided_export", "licensed_api", "user_notes", "unknown"]
+    },
+    "source_path_or_url": {"type": "string"},
+    "license_scope": {
+      "type": "string",
+      "enum": ["public", "user_subscription", "internal", "restricted", "unknown"]
+    },
+    "copyright_handling": {
+      "type": "string",
+      "enum": ["summarize_only", "structured_fields_only", "blocked"]
+    },
+    "rating": {"type": "string"},
+    "target_price": {"type": "number"},
+    "currency": {"type": "string"},
+    "model_used": {"type": "string"},
+    "forecast_fields": {"type": "object"},
+    "key_assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "bull_case": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "bear_case": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "difference_vs_our_view": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "source_confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low", "blocked"]
+    },
+    "missing_data": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "notes": {"type": "string"}
+  }
+}

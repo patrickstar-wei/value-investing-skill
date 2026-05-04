@@ -5,6 +5,7 @@
   "required": [
     "target_overview",
     "company_classification",
+    "master_lens_used",
     "pyramid_summary",
     "mind_map_summary",
     "data_freshness_check",
@@ -498,6 +499,36 @@
         }
       },
       "description": "Company classification result based on economic profile and overlays. Do not include internal score-by-score routing unless explicitly requested."
+    },
+    "master_lens_used": {
+      "type": "array",
+      "description": "Master/framework lenses used in the user-facing analysis, with rationale and impact.",
+      "items": {
+        "type": "object",
+        "required": [
+          "master",
+          "rationale",
+          "influence"
+        ],
+        "properties": {
+          "master": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "influence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "downgraded_master_lenses": {
+      "type": "array",
+      "description": "Master/framework lenses considered but downgraded or deferred.",
+      "items": {
+        "type": "object"
+      }
     },
     "token_efficiency": {
       "type": "object",

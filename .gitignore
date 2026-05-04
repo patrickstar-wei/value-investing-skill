@@ -74,6 +74,9 @@ credentials/
 # --------------------------------------------
 # Data & Outputs (generated)
 # --------------------------------------------
+data/
+institutional_reports/
+licensed_data/
 *.csv
 *.xlsx
 *.xls

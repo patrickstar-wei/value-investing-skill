@@ -42,6 +42,11 @@ LABELS: Dict[str, Dict[str, str]] = {
         "aux_workflows": "Auxiliary Workflows",
         "classification_confidence": "Classification Confidence",
         "interpretation": "Interpretation",
+        "master_lens": "## Master Lens Used",
+        "master": "Master / Framework",
+        "lens_rationale": "Why Used",
+        "lens_influence": "Impact on Analysis",
+        "downgraded_lenses": "Downgraded / deferred lenses",
         "thesis": "## Core Thesis",
         "bull": "### Bull Case",
         "bear": "### Bear Case",
@@ -120,6 +125,11 @@ LABELS: Dict[str, Dict[str, str]] = {
         "aux_workflows": "辅助工作流",
         "classification_confidence": "分类置信度",
         "interpretation": "解读",
+        "master_lens": "## 大师框架",
+        "master": "大师 / 框架",
+        "lens_rationale": "使用原因",
+        "lens_influence": "对分析的影响",
+        "downgraded_lenses": "降权 / 暂缓框架",
         "thesis": "## 核心投资论点",
         "bull": "### 乐观情景",
         "bear": "### 悲观情景",
@@ -187,6 +197,7 @@ REQUIRED_SECTIONS_BY_LANGUAGE = {
         labels["executive"],
         labels["snapshot"],
         labels["classification"],
+        labels["master_lens"],
         labels["thesis"],
         labels["evidence"],
         labels["valuation"],
@@ -234,6 +245,8 @@ def render_report(payload: Dict[str, Any]) -> str:
     labels = _labels(payload)
     ec = payload.get("executive_conclusion", {})
     classification = payload.get("company_classification", {})
+    master_lenses = payload.get("master_lens_used", payload.get("master_lenses_used", []))
+    downgraded_lenses = payload.get("downgraded_master_lenses", [])
     thesis = payload.get("core_thesis", {})
     valuation = payload.get("valuation_summary", payload.get("valuation_results", {}))
     action = payload.get("investor_action_framework", {})
@@ -282,6 +295,33 @@ def render_report(payload: Dict[str, Any]) -> str:
     lines.append(f"**{labels['classification_confidence']}:** {classification.get('classification_confidence', 'N/A')}")
     lines.append("")
     lines.append(f"**{labels['interpretation']}:** {classification.get('classification_interpretation', 'N/A')}")
+    lines.append("")
+
+    lines.append(labels["master_lens"])
+    lines.append("")
+    lines.append(f"| {labels['master']} | {labels['lens_rationale']} | {labels['lens_influence']} |")
+    lines.append("|---|---|---|")
+    if master_lenses:
+        for item in master_lenses:
+            if isinstance(item, str):
+                lines.append(f"| {item} | N/A | N/A |")
+            else:
+                master = item.get("master", item.get("name", "N/A"))
+                rationale = item.get("rationale", item.get("why_used", "N/A"))
+                influence = item.get("influence", item.get("impact", "N/A"))
+                lines.append(f"| {master} | {rationale} | {influence} |")
+    else:
+        lines.append("| N/A | No master lens was explicitly selected. | Treat as low-confidence output discipline issue. |")
+    if downgraded_lenses:
+        lines.append("")
+        lines.append(f"**{labels['downgraded_lenses']}:**")
+        for item in downgraded_lenses:
+            if isinstance(item, str):
+                lines.append(f"- {item}")
+            else:
+                name = item.get("master", item.get("name", "N/A"))
+                reason = item.get("reason", item.get("rationale", "N/A"))
+                lines.append(f"- {name}: {reason}")
     lines.append("")
 
     lines.append(labels["thesis"])
@@ -462,8 +502,9 @@ def validate_report(markdown: str) -> List[str]:
         "Price Zones",
         "Position-Aware Suggestions",
         "Tranche Plan",
+        "Master Lens Used",
     ]
-    chinese_terms = ["悲观价值", "基准价值", "乐观价值", "安全边际", "价格区间", "按持仓状态的建议", "分批计划"]
+    chinese_terms = ["悲观价值", "基准价值", "乐观价值", "安全边际", "价格区间", "按持仓状态的建议", "分批计划", "大师框架"]
     if any(term in markdown for term in chinese_terms):
         required_terms = chinese_terms
     for term in required_terms:
@@ -499,6 +540,13 @@ if __name__ == "__main__":
             "key_assumptions": ["Stable FCF conversion", "Moderate growth"],
             "sensitivity_summary": "Most sensitive to margin and terminal growth.",
         },
+        "master_lens_used": [
+            {
+                "master": "Buffett / Munger",
+                "rationale": "Mature cash-flow compounder with moat and capital allocation questions.",
+                "influence": "Prioritize owner earnings, moat durability, management integrity, and margin of safety.",
+            }
+        ],
         "investor_action_framework": {
             "price_zones": [
                 {"zone": "Deep Value", "price_range": "<=56", "interpretation": "High MOS"},

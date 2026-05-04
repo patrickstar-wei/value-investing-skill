@@ -1,4 +1,4 @@
-# Fixed Report Renderer v18
+# Fixed Report Renderer v19
 
 ## Purpose
 
@@ -52,6 +52,15 @@ The renderer must follow `output_language` from the payload. If `output_language
 
 **Interpretation:**  
 {{classification_interpretation}}
+
+## Master Lens Used
+
+| Master / Framework | Why Used | Impact on Analysis |
+|---|---|---|
+{{master_lens_rows}}
+
+**Downgraded / deferred lenses:**  
+{{downgraded_master_lenses}}
 
 ## 🔹 Core Thesis
 

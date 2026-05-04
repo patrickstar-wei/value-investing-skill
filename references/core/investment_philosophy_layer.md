@@ -1,4 +1,4 @@
-# Core Investment Philosophy Layer v18
+# Core Investment Philosophy Layer v19
 
 This layer is the permanent quality-control layer for every workflow. It is not an optional reference and must be applied after routing and before final output.
 
@@ -49,40 +49,44 @@ All workflows must obey these principles:
 
 ## Master lenses and when to activate them
 
-| Master / Framework | Core Lens | Use It When |
-|---|---|---|
-| Graham | Margin of safety, asset backing, downside protection | Deep value, distressed, asset-heavy, low-confidence situations |
-| Buffett / Munger | Moat, owner earnings, compounding, capital allocation | Quality compounders, mature cash-flow companies, platform businesses |
-| Fisher | Growth quality, management quality, reinvestment runway | High-quality growth, durable technology or platform businesses |
-| Klarman | Risk-first thinking, asymmetric payoff, permanent capital loss | Special situations, distressed assets, high-uncertainty valuation |
-| Greenblatt | High return on capital plus cheapness | Screening, quality-at-reasonable-price, special situations |
-| Howard Marks | Cycle awareness, risk pricing, second-level thinking | Cyclicals, semiconductors, commodities, credit-sensitive businesses |
-| Greenwald | EPV, competitive advantage, reproduction value | Mature stable businesses and moat verification |
-| Mauboussin / Rappaport | Expectations investing, reverse DCF | High-expectation stocks and market-implied growth analysis |
-| Damodaran | Narrative and numbers, lifecycle-based valuation | Model selection across company lifecycle and story-to-number consistency |
+The detailed master files live in `references/masters/`. Use `references/masters/multi_master_framework.md` as the visual index, then load only the specific lens needed by the selected workflow.
+
+| Master / Framework | File | Core Lens | Use It When |
+|---|---|---|---|
+| Graham | `references/masters/graham.md` | Margin of safety, asset backing, downside protection | Deep value, distressed, asset-heavy, low-confidence situations |
+| Buffett / Munger | `references/masters/buffett_munger.md` | Moat, owner earnings, compounding, capital allocation | Quality compounders, mature cash-flow companies, platform businesses |
+| Fisher | `references/masters/fisher.md` | Growth quality, management quality, reinvestment runway | High-quality growth, durable technology or platform businesses |
+| Klarman | `references/masters/klarman.md` | Risk-first thinking, asymmetric payoff, permanent capital loss | Special situations, distressed assets, high-uncertainty valuation |
+| Greenblatt | `references/masters/greenblatt.md` | High return on capital plus cheapness | Screening, quality-at-reasonable-price, special situations |
+| Howard Marks | `references/masters/howard_marks.md` | Cycle awareness, risk pricing, second-level thinking | Cyclicals, semiconductors, commodities, credit-sensitive businesses |
+| Greenwald | `references/masters/greenwald.md` | EPV, competitive advantage, reproduction value | Mature stable businesses and moat verification |
+| Mauboussin / Rappaport | `references/masters/mauboussin_rappaport.md` | Expectations investing, reverse DCF | High-expectation stocks and market-implied growth analysis |
+| Damodaran | `references/masters/damodaran.md` | Narrative and numbers, lifecycle-based valuation | Model selection across company lifecycle and story-to-number consistency |
 
 ## Workflow-specific philosophy mapping
 
 | Workflow | Required Philosophy Lenses |
 |---|---|
-| Quality Company | Buffett/Munger, Greenwald, Graham |
-| Dividend Compounder | Buffett/Munger, Graham, Greenwald |
-| Tech Platform | Buffett/Munger, Fisher, Mauboussin/Rappaport, Damodaran |
-| AI Semiconductor | Fisher, Mauboussin/Rappaport, Howard Marks, Damodaran |
-| Healthcare Managed Care | Graham, Buffett/Munger, Damodaran, regulatory risk discipline |
-| Holding Company / Insurance Float | Buffett/Munger, Graham, Greenwald, capital allocation discipline |
-| REIT / Infrastructure | Graham, Greenwald, Damodaran, rate-cycle discipline |
-| Cyclical / Commodity | Howard Marks, Graham, Greenwald |
-| Watchlist / Compare | Greenblatt, Buffett/Munger, Graham |
+| Quality Company | `buffett_munger.md`, `greenwald.md`, `graham.md` |
+| Dividend Compounder | `buffett_munger.md`, `graham.md`, `greenwald.md` |
+| Tech Platform | `buffett_munger.md`, `fisher.md`, `mauboussin_rappaport.md`, `damodaran.md` |
+| AI Semiconductor | `fisher.md`, `mauboussin_rappaport.md`, `howard_marks.md`, `damodaran.md` |
+| Healthcare Managed Care | `graham.md`, `buffett_munger.md`, `damodaran.md`, regulatory risk discipline |
+| Holding Company / Insurance Float | `buffett_munger.md`, `graham.md`, `greenwald.md`, capital allocation discipline |
+| REIT / Infrastructure | `graham.md`, `greenwald.md`, `damodaran.md`, rate-cycle discipline |
+| Cyclical / Commodity | `howard_marks.md`, `graham.md`, `greenwald.md` |
+| Watchlist / Compare | `greenblatt.md`, `buffett_munger.md`, `graham.md` |
 
 ## User-facing philosophy output
 
 Do not dump the full master framework into every report.
 
-Default output may include only one compact line when useful:
+Default stock/company analysis must include a compact `Master Lens Used` section. It should identify only the lenses that materially shape the analysis:
 
 ```text
-Quality Gate: passed through moat, cash-flow, valuation-model-fit, margin-of-safety, and bear-case checks.
+Master Lens Used:
+- Buffett / Munger: used for moat, owner earnings, capital allocation, and margin-of-safety discipline.
+- Greenwald: used for EPV and franchise-value cross-check.
 ```
 
 If a specific master lens materially affects the conclusion, mention it briefly:

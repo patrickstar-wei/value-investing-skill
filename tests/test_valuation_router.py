@@ -147,7 +147,7 @@ def test_token_efficiency_caps_l1_overlays():
 def test_v172_exposes_primary_workflow_quality_gate_and_output_contract():
     company = CompanyProfile(industry="ai semiconductor", is_ai_semiconductor_platform=True)
     models = select_valuation_models(company)
-    assert models["skill_version"] == "v18"
+    assert models["skill_version"] == "v19"
     assert models["primary_workflow"] == "workflows/04_ai_semiconductor.md"
     assert "core_quality_gate" in models
     assert "Margin of Safety" in models["core_quality_gate"]["required_final_labels"]
@@ -192,6 +192,13 @@ def test_fixed_renderer_preserves_valuation_range_and_action_framework():
             "classification_confidence": "high",
             "classification_interpretation": "Stable cash flow business."
         },
+        "master_lens_used": [
+            {
+                "master": "Buffett / Munger",
+                "rationale": "Quality compounder with owner earnings and capital allocation questions.",
+                "influence": "Prioritize moat durability, management integrity, and margin of safety."
+            }
+        ],
         "core_thesis": {"bull_case": ["Moat"], "bear_case": ["Valuation"]},
         "key_evidence": [{"fact": "FCF positive", "interpretation": "Cash flow supports value", "investment_implication": "Valuation range usable"}],
         "valuation_summary": {
@@ -244,6 +251,8 @@ def test_fixed_renderer_preserves_valuation_range_and_action_framework():
     assert "Bear value" in report
     assert "Base value" in report
     assert "Bull value" in report
+    assert "## Master Lens Used" in report
+    assert "Buffett / Munger" in report
     assert "Position-Aware Suggestions" in report
     assert "Empty Position" in report
     assert "Overweight Position" in report
@@ -272,6 +281,13 @@ def test_fixed_renderer_uses_chinese_when_requested():
             "classification_confidence": "high",
             "classification_interpretation": "AI 半导体平台。"
         },
+        "master_lens_used": [
+            {
+                "master": "Fisher",
+                "rationale": "AI growth quality and reinvestment runway matter.",
+                "influence": "Focus on durability of growth rather than one-period earnings."
+            }
+        ],
         "core_thesis": {"bull_case": ["AI 需求持续"], "bear_case": ["估值过高"]},
         "key_evidence": [{"fact": "数据中心收入增长", "interpretation": "需求强", "investment_implication": "支撑增长假设"}],
         "valuation_summary": {
@@ -314,6 +330,7 @@ def test_fixed_renderer_uses_chinese_when_requested():
 
     report = render_report(payload)
     assert "## 执行结论" in report
+    assert "## 大师框架" in report
     assert "## 估值摘要" in report
     assert "## 投资者行动框架" in report
     assert "Bear value" not in report

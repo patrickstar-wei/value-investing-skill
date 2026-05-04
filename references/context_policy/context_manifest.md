@@ -30,6 +30,8 @@ This file is a navigation index. The master skill should read this first, then l
 | Task | Load These Files |
 |---|---|
 | Any standard investment analysis | `references/core/investment_philosophy_layer.md`, `references/core/investment_quality_gate.md`, selected workflow only |
+| Master lens lookup | `references/masters/multi_master_framework.md`, selected `references/masters/*.md` lens only |
+| Full master source lookup | selected file under `references/masters/source_materials/` only |
 | Workflow routing | `commands/workflow-router.md`, `workflows/00_router.md`, `scripts/routing/select_valuation_models.py` |
 | Philosophy / quality gate audit | `commands/philosophy-gate.md`, `references/core/investment_philosophy_layer.md`, `references/core/investment_quality_gate.md` |
 | Quality company workflow | `workflows/01_quality_company.md`, `references/core/investment_quality_gate.md` |
@@ -89,6 +91,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Source verification | `skills/data-provenance-audit/SKILL.md`, `references/data_source_policy/data_provenance_policy.md`, `scripts/audit/data_provenance_audit.py` |
 | Data lineage creation | `scripts/data/data_provenance.py`, `schemas/data_point.schema.json` |
 | Human verification mode | `references/data_source_policy/data_provenance_policy.md`, `commands/source-check.md` |
+| Institutional view ingestion | `skills/institutional-view-ingestion/SKILL.md`, `references/data_source_policy/institutional_view_policy.md`, `schemas/institutional_view.schema.json`, `scripts/connectors/institutional_view_parser.py` |
 
 ## Cross-Model Consistency Tasks
 
@@ -126,7 +129,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Commodity / REIT / SaaS / Auto / Fintech specialist route | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_cyclical.py`, `scripts/valuation/valuation_reit.py`, `scripts/valuation/valuation_fintech.py`, `scripts/valuation/valuation_scenario.py` |
 
 
-## v18 Output Contract Tasks
+## v19 Output Contract Tasks
 
 For every standard investment analysis final output, obey:
 

@@ -1,6 +1,6 @@
 # Value Investing Report
 
-## v18 Rendering Rule
+## v19 Rendering Rule
 
 This template is rendered by the Fixed Report Renderer. Workflows must populate the structured payload and must not directly write a custom final report.
 
@@ -133,19 +133,15 @@ If unavailable, mark as `Blocked` and list missing data. Do not omit the section
 
 <!-- Do not expose internal scorecard details unless the user explicitly asks for routing audit/debug detail. -->
 
-## 3. Value Investing Masters Applied
+## Master Lens Used
 
-| Master / Framework | Relevance | Why |
-|---|---:|---|
-| Graham |  |  |
-| Buffett / Munger |  |  |
-| Fisher |  |  |
-| Klarman |  |  |
-| Greenblatt |  |  |
-| Howard Marks |  |  |
-| Greenwald |  |  |
-| Mauboussin / Rappaport |  |  |
-| Damodaran |  |  |
+| Master / Framework | Why Used | Impact on Analysis |
+|---|---|---|
+|  |  |  |
+
+**Downgraded / deferred lenses:**  
+
+>  
 
 ## 4. Valuation Model Selection
 

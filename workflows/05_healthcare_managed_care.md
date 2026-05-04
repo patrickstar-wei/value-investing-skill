@@ -30,7 +30,7 @@ Do not treat managed care as a generic consumer or industrial company. Regulator
 
 ---
 
-## v18 Workflow Output Rule
+## v19 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

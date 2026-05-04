@@ -1,4 +1,4 @@
-# Workflow Payload Contract v18
+# Workflow Payload Contract v19
 
 ## Purpose
 
@@ -27,6 +27,19 @@ Ensure all workflows return consistent structured fields to the fixed report ren
     "classification_confidence": "high / medium / low / blocked",
     "classification_interpretation": "string"
   },
+  "master_lens_used": [
+    {
+      "master": "string",
+      "rationale": "string",
+      "influence": "string"
+    }
+  ],
+  "downgraded_master_lenses": [
+    {
+      "master": "string",
+      "reason": "string"
+    }
+  ],
   "core_thesis": {
     "bull_case": ["string"],
     "bear_case": ["string"]

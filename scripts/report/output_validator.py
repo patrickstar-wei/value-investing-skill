@@ -1,4 +1,4 @@
-"""Output validator v18.
+"""Output validator v19.
 
 Checks that user-facing reports preserve the fixed investment framework,
 including valuation range and position-aware action guidance.
@@ -13,6 +13,7 @@ REQUIRED_SECTIONS = [
     "## 📌 Executive Conclusion",
     "## 🧭 Decision Snapshot",
     "## 🧭 Company Classification",
+    "## Master Lens Used",
     "## 🔹 Core Thesis",
     "## 📊 Key Evidence",
     "## 🧮 Valuation Summary",
@@ -28,6 +29,7 @@ REQUIRED_TERMS = [
     "Bull value",
     "Current price",
     "Margin of safety",
+    "Master Lens Used",
     "Price Zones",
     "Position-Aware Suggestions",
     "Tranche Plan",

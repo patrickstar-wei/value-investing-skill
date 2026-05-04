@@ -6,6 +6,7 @@
     "executive_conclusion",
     "decision_snapshot",
     "company_classification",
+    "master_lens_used",
     "core_thesis",
     "key_evidence",
     "valuation_summary",
@@ -31,6 +32,48 @@
     },
     "company_classification": {
       "type": "object"
+    },
+    "master_lens_used": {
+      "type": "array",
+      "description": "Required master/framework lenses that materially shaped the analysis.",
+      "items": {
+        "type": "object",
+        "required": [
+          "master",
+          "rationale",
+          "influence"
+        ],
+        "properties": {
+          "master": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "influence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "downgraded_master_lenses": {
+      "type": "array",
+      "description": "Optional master/framework lenses that were considered but downgraded or deferred.",
+      "items": {
+        "type": "object",
+        "required": [
+          "master",
+          "reason"
+        ],
+        "properties": {
+          "master": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
     },
     "core_thesis": {
       "type": "object"
