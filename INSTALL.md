@@ -121,4 +121,12 @@ Windows installers:
 -Force
 -IncludeTests
 ```
+## Codex and Claude compatibility
+
+This project is maintained as a dual-use skill:
+
+- Codex uses the repo root `SKILL.md` plus `.codex-plugin/plugin.json` / `plugin.json` metadata.
+- Claude uses the same repo root `SKILL.md`; the file includes standard YAML frontmatter for Claude skill discovery.
+- Claude package / install scripts exclude Codex-only metadata such as `.codex-plugin/`, `plugin.json`, and `.gitmodules`.
+- Codex install scripts keep the full repo shape so the local plugin and command metadata remain available.
 

@@ -68,6 +68,7 @@ mkdir -p "$PACKAGE_ROOT"
 
 EXCLUDES=(
   --exclude='.git'
+  --exclude='.codex-plugin'
   --exclude='.trae'
   --exclude='__pycache__'
   --exclude='.pytest_cache'
@@ -82,6 +83,8 @@ EXCLUDES=(
   --exclude='*.pyc'
   --exclude='*.log'
   --exclude='*.tmp'
+  --exclude='plugin.json'
+  --exclude='.gitmodules'
 )
 if [[ "$INCLUDE_TESTS" -ne 1 ]]; then
   EXCLUDES+=(--exclude='tests')
