@@ -1,4 +1,4 @@
-# Core Investment Philosophy Layer v19
+# Core Investment Philosophy Layer v19.1
 
 This layer is the permanent quality-control layer for every workflow. It is not an optional reference and must be applied after routing and before final output.
 

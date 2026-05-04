@@ -1,4 +1,4 @@
-# Fixed Report Renderer v19
+# Fixed Report Renderer v19.1
 
 ## Purpose
 
@@ -100,6 +100,9 @@ For each evidence item:
 **Sensitivity summary:**  
 {{sensitivity_summary}}
 
+**Conclusion change triggers:**  
+{{conclusion_change_triggers}}
+
 **Blocked / low-confidence valuation items:**  
 {{blocked_valuation_items}}
 
@@ -125,6 +128,9 @@ For each evidence item:
 | Fair Value | {{fair_value_range}} | {{fair_value_interpretation}} |
 | Trim | {{trim_range}} | {{trim_interpretation}} |
 | Sell / Avoid | {{sell_avoid_range}} | {{sell_avoid_interpretation}} |
+
+**Price Zone Assumption Basis:**  
+{{price_zone_assumption_basis}}
 
 ### Position-Aware Suggestions
 
@@ -158,6 +164,12 @@ For each evidence item:
 **Market data as-of:** {{market_data_as_of}}  
 **Latest financial period used:** {{latest_financial_period}}  
 **Important missing data:** {{missing_data}}
+
+**Public data sources used / checked:**  
+{{public_data_sources_used}}
+
+**Optional user-provided data that would improve the analysis:**  
+{{suggested_user_provided_inputs}}
 ```
 
 ## Blocked Valuation Rendering

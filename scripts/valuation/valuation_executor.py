@@ -69,6 +69,13 @@ class ValuationExecution:
                 "key_assumptions": [],
                 "structured_assumptions": [],
                 "assumption_confidence": "blocked",
+                "conclusion_change_triggers": [
+                    {
+                        "assumption": "Missing valuation inputs",
+                        "change": "Required data becomes available",
+                        "impact": "Would unblock valuation range and price/action zones",
+                    }
+                ],
                 "sensitivity_summary": "Blocked: " + "; ".join(reasons),
                 "blocked_or_low_confidence_items": reasons,
             }

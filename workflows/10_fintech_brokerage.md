@@ -29,7 +29,7 @@ Show classification, model stack, customer/AUC economics, rate and volume sensit
 
 ---
 
-## v19 Workflow Output Rule
+## v19.1 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

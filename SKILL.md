@@ -1,4 +1,4 @@
-# Value Investing Core Skill v19
+# Value Investing Core Skill v19.1
 
 ## Purpose
 
@@ -41,7 +41,7 @@ Always load or obey these core policies before final output:
 
 Use `references/masters/multi_master_framework.md` as the visual index for investor lenses. Load individual files under `references/masters/` only when that lens materially applies to the selected workflow or the user explicitly asks for a master framework.
 
-## v19 Mandatory Output Contract and Renderer
+## v19.1 Mandatory Output Contract and Renderer
 
 All workflows must use a fixed output contract. The workflow may perform specialized analysis, but it must not directly render the final report. It must return a structured payload to the core report renderer.
 
@@ -59,6 +59,8 @@ The final report must preserve the following fields unless explicitly irrelevant
 - margin of safety
 - valuation status
 - price zones: Deep Value, Accumulation, Watchlist, Fair Value, Trim, Sell / Avoid
+- price zone assumption basis: explicitly explain which valuation anchors, safety-margin thresholds, and high-sensitivity assumptions produced the price zones
+- conclusion change triggers: explicitly state which assumption changes would change the rating, margin-of-safety judgment, or action zones
 - position-aware suggestions for Empty Position, Half Position, Full Position, and Overweight Position investors
 - tranche plan: starter, add, strong-add, hold, trim, exit-review ranges
 - thesis conditions: add only if, hold only if, trim if, exit or avoid if
@@ -130,12 +132,21 @@ Use this skill when the user asks to:
    - Implied expectation
    - Overlay-specific models, if triggered
 8. Convert material model inputs into structured assumptions and constrain them with history, industry economics, management guidance, peer data, reverse DCF, institutional-view cross-checks, and sensitivity checks.
-9. Fetch only required data fields.
-10. Use `schemas/valuation_input_packet.schema.json` to bind model inputs to data IDs, source metadata, freshness dates, and structured assumptions when executing valuation.
-11. Run scripts for calculations instead of expanding formulas in prompt. Prefer `scripts/valuation/valuation_executor.py` for routed model execution.
-12. Audit assumptions, formulas, data lineage, and sensitivity internally.
-13. Generate output at the requested depth only.
-14. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
+9. Proactively fetch or verify public data that does not require user-provided credentials or files:
+   - official filings, annual reports, quarterly reports, earnings releases, investor presentations, and management guidance
+   - current price, market capitalization, share count, rates / FX when material
+   - public peer and supply-chain disclosures, including capex signals when material
+   - public news, regulatory events, and company announcements when material
+   - public market data helpers such as yfinance / OpenBB only when available in the runtime; otherwise use verifiable web or official sources
+10. Fetch only required data fields.
+11. Use `schemas/valuation_input_packet.schema.json` to bind model inputs to data IDs, source metadata, freshness dates, and structured assumptions when executing valuation.
+12. Run scripts for calculations instead of expanding formulas in prompt. Prefer `scripts/valuation/valuation_executor.py` for routed model execution.
+13. Audit assumptions, formulas, data lineage, and sensitivity internally.
+14. Generate output at the requested depth only.
+15. Before rendering price zones, state their assumption basis: Bear/Base/Bull anchors, margin-of-safety thresholds, and the most important assumptions behind those zones.
+16. State conclusion change triggers in plain language: which assumption changes would move the final rating, margin-of-safety judgment, or action zones.
+17. End the report with optional user-provided data suggestions. Include only items that would materially improve assumption quality, such as Bloomberg / FactSet / Refinitiv consensus, broker reports, portfolio cost basis / position size, private notes, Wind / Choice / Morningstar exports, or licensed data files. Distinguish these from public data that the skill should already attempt to fetch.
+18. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
 
 
 

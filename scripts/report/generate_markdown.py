@@ -72,6 +72,7 @@ LABELS: Dict[str, Dict[str, str]] = {
         "confidence": "Confidence",
         "sensitivity": "Sensitivity",
         "sensitivity_summary": "Sensitivity summary",
+        "conclusion_change_triggers": "Conclusion change triggers",
         "blocked": "Blocked / low-confidence valuation items",
         "risks": "## Key Risks",
         "gates": "## Execution Gate Checklist",
@@ -80,6 +81,7 @@ LABELS: Dict[str, Dict[str, str]] = {
         "comment": "Comment",
         "action": "## Investor Action Framework",
         "price_zones": "### Price Zones",
+        "price_zone_basis": "Price Zone Assumption Basis",
         "zone": "Zone",
         "price_range": "Price Range",
         "position": "### Position-Aware Suggestions",
@@ -104,6 +106,11 @@ LABELS: Dict[str, Dict[str, str]] = {
         "market_as_of": "Market data as-of",
         "latest_period": "Latest financial period used",
         "missing": "Important missing data",
+        "public_data_sources": "Public data sources used / checked",
+        "optional_user_inputs": "Optional user-provided data that would improve the analysis",
+        "optional_item": "Item",
+        "why_it_helps": "Why it helps",
+        "how_to_provide": "How to provide",
         "none": "None noted",
     },
     "zh-CN": {
@@ -155,6 +162,7 @@ LABELS: Dict[str, Dict[str, str]] = {
         "confidence": "置信度",
         "sensitivity": "敏感性",
         "sensitivity_summary": "敏感性摘要",
+        "conclusion_change_triggers": "结论变化触发条件",
         "blocked": "受阻 / 低置信度估值项",
         "risks": "## 关键风险",
         "gates": "## 执行门禁检查",
@@ -163,6 +171,7 @@ LABELS: Dict[str, Dict[str, str]] = {
         "comment": "说明",
         "action": "## 投资者行动框架",
         "price_zones": "### 价格区间",
+        "price_zone_basis": "价格区间假设依据",
         "zone": "区间",
         "price_range": "价格范围",
         "position": "### 按持仓状态的建议",
@@ -237,6 +246,24 @@ def _table_rows(rows: Iterable[Dict[str, Any]], columns: List[str]) -> str:
     for row in rows or []:
         out.append("| " + " | ".join(str(row.get(col, "N/A")) for col in columns) + " |")
     return "\n".join(out) if out else "| N/A | N/A | N/A |"
+
+
+def _default_optional_user_inputs(language: str) -> List[Dict[str, str]]:
+    if language == "zh-CN":
+        return [
+            {"item": "Bloomberg / FactSet / Refinitiv 一致预期导出", "why_it_helps": "校准收入、利润、FCF 和目标价分歧", "how_to_provide": "导出为 CSV / JSON / Excel，放在本地资料文件夹"},
+            {"item": "券商付费研报摘要或结构化导出", "why_it_helps": "交叉验证关键假设和市场分歧", "how_to_provide": "提供你有权使用的摘要、表格或结构化字段；不要粘贴大段付费原文"},
+            {"item": "你的持仓成本、仓位、风险预算和投资期限", "why_it_helps": "让行动建议更贴近你的实际约束", "how_to_provide": "用简短文字说明即可"},
+            {"item": "私有笔记 / 内部资料", "why_it_helps": "补充公开资料无法覆盖的业务理解", "how_to_provide": "提供本地文件夹路径"},
+            {"item": "Wind / Choice / Morningstar 等付费导出", "why_it_helps": "补充一致预期、历史估值和行业数据", "how_to_provide": "导出为 CSV / JSON / Excel，避免提交原始付费报告全文"},
+        ]
+    return [
+        {"item": "Bloomberg / FactSet / Refinitiv consensus exports", "why_it_helps": "Calibrates revenue, earnings, FCF, and target-price dispersion", "how_to_provide": "Export as CSV / JSON / Excel and provide the local folder path"},
+        {"item": "Broker paid-research summary or structured export", "why_it_helps": "Cross-checks key assumptions and variant perceptions", "how_to_provide": "Provide a summary, table, or structured fields you are allowed to use; avoid long paid-report excerpts"},
+        {"item": "Your cost basis, position size, risk budget, and time horizon", "why_it_helps": "Makes action guidance better aligned with your constraints", "how_to_provide": "Provide a short plain-text note"},
+        {"item": "Private notes / internal materials", "why_it_helps": "Adds business context not available in public sources", "how_to_provide": "Provide a local file or folder path"},
+        {"item": "Wind / Choice / Morningstar or other licensed exports", "why_it_helps": "Adds consensus, historical valuation, and industry data", "how_to_provide": "Export as CSV / JSON / Excel; do not commit full paid reports"},
+    ]
 
 
 def render_report(payload: Dict[str, Any]) -> str:
@@ -401,6 +428,20 @@ def render_report(payload: Dict[str, Any]) -> str:
 
     lines.append("")
     lines.append(f"**{labels['sensitivity_summary']}:** {valuation.get('sensitivity_summary', 'N/A')}")
+    conclusion_triggers = valuation.get("conclusion_change_triggers", [])
+    lines.append("")
+    lines.append(f"**{labels['conclusion_change_triggers']}:**")
+    if conclusion_triggers:
+        for item in conclusion_triggers:
+            if isinstance(item, str):
+                lines.append(f"- {item}")
+            else:
+                assumption = item.get("assumption", "N/A")
+                change = item.get("change", "N/A")
+                impact = item.get("impact", "N/A")
+                lines.append(f"- {assumption}: {change} -> {impact}")
+    else:
+        lines.append("- Blocked: no conclusion-change triggers were provided.")
     blocked = valuation.get("blocked_or_low_confidence_items", [])
     if blocked:
         lines.append("")
@@ -428,6 +469,9 @@ def render_report(payload: Dict[str, Any]) -> str:
     lines.append(f"| {labels['zone']} | {labels['price_range']} | {labels['interpretation']} |")
     lines.append("|---|---:|---|")
     lines.append(_table_rows(action.get("price_zones", []), ["zone", "price_range", "interpretation"]))
+    lines.append("")
+    lines.append(f"**{labels['price_zone_basis']}:**")
+    lines.append(_list(action.get("price_zone_assumption_basis", [])))
     lines.append("")
     lines.append(labels["position"])
     lines.append("")
@@ -464,6 +508,30 @@ def render_report(payload: Dict[str, Any]) -> str:
     lines.append(f"**{labels['latest_period']}:** {provenance.get('latest_financial_period', 'N/A')}  ")
     missing = provenance.get("missing_data", [])
     lines.append(f"**{labels['missing']}:** {', '.join(missing) if missing else labels['none']}")
+    language = _language(payload)
+    if language == "zh-CN":
+        public_label = "已使用 / 检查的公开数据源"
+        optional_label = "可选补充资料建议"
+        item_label = "资料"
+        why_label = "为什么有帮助"
+        how_label = "如何提供"
+    else:
+        public_label = labels.get("public_data_sources", "Public data sources used / checked")
+        optional_label = labels.get("optional_user_inputs", "Optional user-provided data that would improve the analysis")
+        item_label = labels.get("optional_item", "Item")
+        why_label = labels.get("why_it_helps", "Why it helps")
+        how_label = labels.get("how_to_provide", "How to provide")
+
+    lines.append("")
+    lines.append(f"**{public_label}:**")
+    lines.append(_list(provenance.get("public_data_sources_used", [])))
+
+    suggestions = provenance.get("suggested_user_provided_inputs") or _default_optional_user_inputs(language)
+    lines.append("")
+    lines.append(f"**{optional_label}:**")
+    lines.append(f"| {item_label} | {why_label} | {how_label} |")
+    lines.append("|---|---|---|")
+    lines.append(_table_rows(suggestions, ["item", "why_it_helps", "how_to_provide"]))
 
     return "\n".join(lines)
 
@@ -499,14 +567,21 @@ def validate_report(markdown: str) -> List[str]:
         "Base value",
         "Bull value",
         "Margin of safety",
+        "Conclusion change triggers",
         "Price Zones",
+        "Price Zone Assumption Basis",
         "Position-Aware Suggestions",
         "Tranche Plan",
         "Master Lens Used",
+        "Public data sources used / checked",
+        "Optional user-provided data",
     ]
     chinese_terms = ["悲观价值", "基准价值", "乐观价值", "安全边际", "价格区间", "按持仓状态的建议", "分批计划", "大师框架"]
     if any(term in markdown for term in chinese_terms):
         required_terms = chinese_terms
+    normalized_chinese_terms = ["悲观价值", "基准价值", "乐观价值", "安全边际", "结论变化触发条件", "价格区间", "价格区间假设依据", "按持仓状态的建议", "分批计划", "大师框架", "已使用 / 检查的公开数据源", "可选补充资料建议"]
+    if any(term in markdown for term in normalized_chinese_terms):
+        required_terms = normalized_chinese_terms
     for term in required_terms:
         if term not in markdown:
             errors.append(f"Missing required field/group: {term}")
@@ -538,6 +613,9 @@ if __name__ == "__main__":
             "margin_of_safety": "5%",
             "valuation_status": "fair",
             "key_assumptions": ["Stable FCF conversion", "Moderate growth"],
+            "conclusion_change_triggers": [
+                {"assumption": "FCF growth", "change": "Falls materially below base case", "impact": "Would lower rating and action zones."}
+            ],
             "sensitivity_summary": "Most sensitive to margin and terminal growth.",
         },
         "master_lens_used": [
@@ -555,6 +633,9 @@ if __name__ == "__main__":
                 {"zone": "Fair Value", "price_range": "100-132", "interpretation": "Limited upside"},
                 {"zone": "Trim", "price_range": "132-156", "interpretation": "Valuation risk"},
                 {"zone": "Sell / Avoid", "price_range": ">156", "interpretation": "Expectations high"},
+            ],
+            "price_zone_assumption_basis": [
+                "Zones are anchored to bear/base/bull values and margin-of-safety thresholds."
             ],
             "position_aware_suggestions": [
                 {"investor_type": "Empty Position", "suggested_action": "Wait or starter only if thesis is strong.", "rationale": "Limited MOS"},

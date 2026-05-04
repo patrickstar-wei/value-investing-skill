@@ -129,7 +129,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Commodity / REIT / SaaS / Auto / Fintech specialist route | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_cyclical.py`, `scripts/valuation/valuation_reit.py`, `scripts/valuation/valuation_fintech.py`, `scripts/valuation/valuation_scenario.py` |
 
 
-## v19 Output Contract Tasks
+## v19.1 Output Contract Tasks
 
 For every standard investment analysis final output, obey:
 

@@ -1,4 +1,4 @@
-# Workflow Payload Contract v19
+# Workflow Payload Contract v19.1
 
 ## Purpose
 
@@ -56,6 +56,13 @@ Ensure all workflows return consistent structured fields to the fixed report ren
     "margin_of_safety": "number/string/blocked",
     "valuation_status": "undervalued / fair / expensive / blocked / low-confidence",
     "key_assumptions": ["string"],
+    "conclusion_change_triggers": [
+      {
+        "assumption": "string",
+        "change": "string",
+        "impact": "string"
+      }
+    ],
     "structured_assumptions": [
       {
         "assumption": "string",
@@ -80,6 +87,7 @@ Ensure all workflows return consistent structured fields to the fixed report ren
     "price_zones": [
       {"zone": "Deep Value", "range": "string", "interpretation": "string"}
     ],
+    "price_zone_assumption_basis": ["string"],
     "position_aware_suggestions": [
       {"investor_type": "Empty Position", "suggested_action": "string", "rationale": "string"}
     ],
@@ -103,7 +111,15 @@ Ensure all workflows return consistent structured fields to the fixed report ren
     "analysis_as_of": "string",
     "market_data_as_of": "string",
     "latest_financial_period": "string",
-    "missing_data": ["string"]
+    "missing_data": ["string"],
+    "public_data_sources_used": ["string"],
+    "suggested_user_provided_inputs": [
+      {
+        "item": "string",
+        "why_it_helps": "string",
+        "how_to_provide": "string"
+      }
+    ]
   }
 }
 ```

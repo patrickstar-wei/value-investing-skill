@@ -29,3 +29,14 @@ Each data point should store:
 ## Rule
 
 Do not treat web summaries as primary financial statement data when official filings are available.
+
+## Default Public Data Retrieval Rule
+
+For normal L1/L2 company analysis, use public sources proactively before asking the user for more data:
+
+- Company official filings, annual reports, quarterly reports, earnings releases, investor presentations, and management guidance.
+- Public market data for current price, market capitalization, shares outstanding, rates, and FX where material.
+- Public peer, customer, supplier, capex, industry, regulatory, and news sources where they materially constrain assumptions.
+- yfinance / OpenBB when available in the runtime; if unavailable, use official pages or other verifiable public web sources.
+
+Only ask for or list user-provided inputs when they are optional quality enhancers or the analysis is blocked without them.

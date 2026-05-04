@@ -1,4 +1,4 @@
-# Mandatory Output Contract v19
+# Mandatory Output Contract v19.1
 
 ## Purpose
 
@@ -81,6 +81,8 @@ The `## 🧮 Valuation Summary` section must include the following fields when d
 - Valuation status: undervalued / fair / expensive / blocked / low-confidence
 - Key assumptions
 - Sensitivity summary
+- Price zone assumption basis: explain which valuation anchors and safety-margin rules produced the price/action zones.
+- Conclusion change triggers: explicitly state which assumptions, if changed, would change the investment conclusion or action zone.
 - Blocked or low-confidence models
 
 The valuation range is mandatory for normal L1/L2 stock analysis. If not enough data is available, the report must say:
@@ -103,6 +105,11 @@ The `## 🧭 Investor Action Framework` section must include:
    - Trim
    - Sell / Avoid
 
+   The price zone table must be followed by a concise `Price Zone Assumption Basis` note explaining:
+   - which Bear / Base / Bull intrinsic value anchors were used
+   - what margin-of-safety thresholds were applied
+   - which assumptions the zones depend on most
+
 2. Position-aware suggestions:
    - Empty Position
    - Half Position
@@ -122,6 +129,11 @@ The `## 🧭 Investor Action Framework` section must include:
    - Hold only if
    - Trim if
    - Exit or avoid if
+
+5. Conclusion change triggers:
+   - list the high-sensitivity assumptions that can change the final rating, margin-of-safety judgment, or price zones
+   - describe the direction of impact in plain language
+   - do not expose full valuation calculation traces unless explicitly requested
 
 If price zones cannot be computed, keep the section and mark it as blocked. Do not replace it with a generic paragraph.
 
@@ -171,6 +183,27 @@ Allowed by default:
 - position-aware action framework
 - sensitivity summary
 - blocked/missing-data notes
+
+## Public Data and Optional User Inputs
+
+For standard company analysis, the skill must proactively use public data that does not require user-provided credentials or files when material and available:
+
+- official filings, company IR, earnings releases, investor presentations, and management guidance
+- current price, market capitalization, share count, rates, and FX where material
+- public peer, customer, supplier, capex, and industry disclosures
+- public news, regulatory events, and company announcements
+- yfinance / OpenBB only if available in the runtime; otherwise use verifiable web or official sources
+
+At the end of the report, list optional user-provided data that would improve assumption quality, such as:
+
+- Bloomberg / FactSet / Refinitiv consensus exports
+- broker paid research summaries or structured exports
+- the user's cost basis, position size, risk budget, or time horizon
+- private notes or internal materials
+- Wind / Choice / Morningstar exports
+- licensed datasets or local files
+
+Do not ask the user for these optional inputs before completing a normal L1/L2 analysis unless the requested analysis is blocked without them.
 
 ## L0 Compact Output
 

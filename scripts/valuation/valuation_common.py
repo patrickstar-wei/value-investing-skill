@@ -55,6 +55,16 @@ class ValuationResult:
                 for assumption in self.structured_assumptions
             ],
             "assumption_confidence": "blocked" if self.blocked else self.assumption_confidence,
+            "conclusion_change_triggers": self.metadata.get(
+                "conclusion_change_triggers",
+                [
+                    {
+                        "assumption": "High-sensitivity valuation assumptions",
+                        "change": "Growth, margins, discount rate, terminal value, or balance-sheet adjustments differ materially from the base case",
+                        "impact": "Would change the intrinsic value range, margin-of-safety judgment, and price/action zones",
+                    }
+                ],
+            ),
             "sensitivity_summary": self.metadata.get("sensitivity_summary", "N/A"),
             "blocked_or_low_confidence_items": [self.blocked_reason] if self.blocked_reason else [],
         }

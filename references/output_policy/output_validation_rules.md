@@ -1,4 +1,4 @@
-# Output Validation Rules v19
+# Output Validation Rules v19.1
 
 ## Purpose
 
@@ -33,6 +33,8 @@ The report must include:
 - Current price or explicit blocked status
 - Margin of safety or explicit blocked status
 - Price zones or explicit blocked status
+- Price zone assumption basis
+- Conclusion change triggers
 - Position-aware suggestions for empty, half, full, and overweight investors
 - Build / add / hold / trim / exit-review ranges or explicit blocked status
 - Key risks

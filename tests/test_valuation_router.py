@@ -14,6 +14,14 @@ def test_compounder_routes_to_owner_earnings():
     assert models["base_type"] == "Mature Quality Compounder"
 
 
+def test_price_zone_basis_explains_assumption_anchors():
+    from scripts.scoring.investor_action_framework import IntrinsicValueRange, price_zone_assumption_basis
+
+    basis = price_zone_assumption_basis(IntrinsicValueRange(low=80, mid=100, high=120))
+    assert any("IV_low=80" in item for item in basis)
+    assert any("high-sensitivity assumptions" in item for item in basis)
+
+
 def test_dividend_compounder_adds_shareholder_return_overlay():
     company = CompanyProfile(
         industry="consumer staples",
@@ -147,13 +155,15 @@ def test_token_efficiency_caps_l1_overlays():
 def test_v172_exposes_primary_workflow_quality_gate_and_output_contract():
     company = CompanyProfile(industry="ai semiconductor", is_ai_semiconductor_platform=True)
     models = select_valuation_models(company)
-    assert models["skill_version"] == "v19"
+    assert models["skill_version"] == "v19.1"
     assert models["primary_workflow"] == "workflows/04_ai_semiconductor.md"
     assert "core_quality_gate" in models
     assert "Margin of Safety" in models["core_quality_gate"]["required_final_labels"]
     assert models["token_control"]["one_primary_workflow"] is True
     assert models["output_contract"]["valuation_range_required"] is True
     assert models["output_contract"]["position_aware_actions_required"] is True
+    assert models["output_contract"]["price_zone_assumption_basis_required"] is True
+    assert models["output_contract"]["conclusion_change_triggers_required"] is True
     assert "references/valuation_rules/structured_assumption_policy.md" in models["active_route_files"]
     assert "scripts/valuation/valuation_scenario.py" in models["valuation_algorithm_files"]
     assert "scripts/valuation/valuation_reverse_dcf.py" in models["valuation_algorithm_files"]
@@ -210,6 +220,9 @@ def test_fixed_renderer_preserves_valuation_range_and_action_framework():
             "margin_of_safety": "10%",
             "valuation_status": "fair",
             "key_assumptions": ["FCF stable"],
+            "conclusion_change_triggers": [
+                {"assumption": "FCF growth", "change": "Falls below base-case range", "impact": "Moves action from hold/add to watchlist"}
+            ],
             "sensitivity_summary": "Margin sensitivity"
         },
         "risks": ["Multiple compression"],
@@ -222,6 +235,9 @@ def test_fixed_renderer_preserves_valuation_range_and_action_framework():
                 {"zone": "Fair Value", "price_range": "100-132", "interpretation": "Fair"},
                 {"zone": "Trim", "price_range": "132-156", "interpretation": "Trim"},
                 {"zone": "Sell / Avoid", "price_range": ">156", "interpretation": "Avoid"}
+            ],
+            "price_zone_assumption_basis": [
+                "Zones are anchored to bear/base/bull intrinsic values and margin-of-safety thresholds."
             ],
             "position_aware_suggestions": [
                 {"investor_type": "Empty Position", "suggested_action": "Wait", "rationale": "MOS limited"},
@@ -299,6 +315,9 @@ def test_fixed_renderer_uses_chinese_when_requested():
             "margin_of_safety": "10%",
             "valuation_status": "fair",
             "key_assumptions": ["FCF margin stable"],
+            "conclusion_change_triggers": [
+                {"assumption": "AI growth", "change": "Growth decelerates materially", "impact": "Lowers valuation and action zones"}
+            ],
             "sensitivity_summary": "对增长和折现率敏感"
         },
         "risks": ["AI capex cycle"],
@@ -306,6 +325,9 @@ def test_fixed_renderer_uses_chinese_when_requested():
         "investor_action_framework": {
             "price_zones": [
                 {"zone": "Deep Value", "price_range": "<=56", "interpretation": "Strong MOS"}
+            ],
+            "price_zone_assumption_basis": [
+                "Price zones are anchored to bear/base/bull valuation and margin-of-safety thresholds."
             ],
             "position_aware_suggestions": [
                 {"investor_type": "Empty Position", "suggested_action": "Wait", "rationale": "MOS limited"}

@@ -92,6 +92,7 @@
         "margin_of_safety",
         "valuation_status",
         "key_assumptions",
+        "conclusion_change_triggers",
         "sensitivity_summary"
       ],
       "properties": {
@@ -113,6 +114,29 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "conclusion_change_triggers": {
+          "type": "array",
+          "description": "High-sensitivity assumption changes that would change the rating, margin-of-safety judgment, or action zones.",
+          "items": {
+            "type": "object",
+            "required": [
+              "assumption",
+              "change",
+              "impact"
+            ],
+            "properties": {
+              "assumption": {
+                "type": "string"
+              },
+              "change": {
+                "type": "string"
+              },
+              "impact": {
+                "type": "string"
+              }
+            }
           }
         },
         "structured_assumptions": {
@@ -197,6 +221,7 @@
       "type": "object",
       "required": [
         "price_zones",
+        "price_zone_assumption_basis",
         "position_aware_suggestions",
         "tranche_plan",
         "key_conditions"
@@ -231,6 +256,13 @@
                 "type": "string"
               }
             }
+          }
+        },
+        "price_zone_assumption_basis": {
+          "type": "array",
+          "description": "Plain-language explanation of the valuation anchors, margin-of-safety thresholds, and assumptions used to derive price zones.",
+          "items": {
+            "type": "string"
           }
         },
         "position_aware_suggestions": {

@@ -37,6 +37,16 @@ def build_price_zones(iv: IntrinsicValueRange) -> Dict[str, Tuple[float, float |
     }
 
 
+def price_zone_assumption_basis(iv: IntrinsicValueRange) -> list[str]:
+    """Explain the default assumptions behind generated price zones."""
+    return [
+        f"Price zones are anchored to IV_low={iv.low}, IV_mid={iv.mid}, and IV_high={iv.high}.",
+        "Default thresholds use 70% of IV_low, 85%-100% of IV_mid, and 110%-130% of IV_high.",
+        "Zones depend most on the assumptions that set the bear/base/bull intrinsic value range.",
+        "If high-sensitivity assumptions change materially, update intrinsic values before using the action zones.",
+    ]
+
+
 def classify_price(current_price: float, iv: IntrinsicValueRange) -> str:
     zones = build_price_zones(iv)
     for zone, (low, high) in zones.items():

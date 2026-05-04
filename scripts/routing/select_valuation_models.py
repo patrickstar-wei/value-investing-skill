@@ -1,4 +1,4 @@
-"""Valuation model router v19.
+"""Valuation model router v19.1.
 
 This router classifies a company by economic profile, not by name.
 It expands coverage through lazy-loaded workflows while preserving token discipline:
@@ -617,7 +617,7 @@ def _valuation_algorithm_files(base_type: str, overlays: List[str]) -> List[str]
 
 
 def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
-    """Return a v19 token-efficient modular workflow routing decision.
+    """Return a v19.1 token-efficient modular workflow routing decision.
 
     The returned dictionary preserves legacy keys: primary, cross_check,
     downside, and implied.
@@ -629,7 +629,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
     route_scores = _route_scores(company)
 
     result: Dict[str, object] = {
-        "skill_version": "v19",
+        "skill_version": "v19.1",
         "base_type": base_type,
         "overlays": overlays,
         "primary_workflow": _workflow_for_base_type(base_type),
@@ -667,7 +667,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
             "Show classification, selected workflow, activated model stack, deferred modules, "
             "business quality, valuation attractiveness, Bear/Base/Bull valuation range, current price, "
             "margin of safety, price zones, position-aware actions, data confidence, key assumptions, "
-            "sensitivity, and thesis-breaking risks only. "
+            "price-zone assumption basis, conclusion-change triggers, sensitivity, and thesis-breaking risks only. "
             "Do not expose internal scorecards, quality-gate internals, or step-by-step calculation traces unless requested."
         ),
         "output_contract": {
@@ -675,6 +675,8 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
             "validator": "references/output_policy/output_validation_rules.md",
             "valuation_range_required": True,
             "price_zones_required": True,
+            "price_zone_assumption_basis_required": True,
+            "conclusion_change_triggers_required": True,
             "position_aware_actions_required": True,
             "calculation_trace_visible_by_default": False,
         },

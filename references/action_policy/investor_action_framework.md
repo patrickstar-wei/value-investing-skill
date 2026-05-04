@@ -74,6 +74,13 @@ Suggested price zones:
 
 These thresholds are defaults and should be adjusted based on business quality and risk.
 
+Every report must state the price zone assumption basis immediately after the zone table:
+
+- Which IV_low / IV_mid / IV_high anchors were used.
+- Which margin-of-safety thresholds were applied or adjusted.
+- Which assumptions the zones depend on most.
+- Which assumption changes would move the zones enough to change the final action.
+
 ---
 
 ## Quality Adjustment
@@ -297,7 +304,7 @@ Avoid absolute personalized instructions:
 
 ---
 
-## v19 Mandatory Preservation Rule
+## v19.1 Mandatory Preservation Rule
 
 The Investor Action Framework is mandatory in default stock/company analysis.
 

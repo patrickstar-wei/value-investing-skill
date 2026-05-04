@@ -1,4 +1,4 @@
-# Investment Quality Gate v19
+# Investment Quality Gate v19.1
 
 This gate runs after a workflow produces its analysis and before the user-facing report is finalized.
 

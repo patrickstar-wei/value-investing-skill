@@ -1,4 +1,4 @@
-"""Output validator v19.
+"""Output validator v19.1.
 
 Checks that user-facing reports preserve the fixed investment framework,
 including valuation range and position-aware action guidance.
@@ -29,8 +29,10 @@ REQUIRED_TERMS = [
     "Bull value",
     "Current price",
     "Margin of safety",
+    "Conclusion change triggers",
     "Master Lens Used",
     "Price Zones",
+    "Price Zone Assumption Basis",
     "Position-Aware Suggestions",
     "Tranche Plan",
     "Empty Position",
@@ -40,6 +42,8 @@ REQUIRED_TERMS = [
     "Starter",
     "Trim",
     "Exit",
+    "Public data sources used / checked",
+    "Optional user-provided data",
 ]
 
 FORBIDDEN_DEFAULT_TERMS = [
