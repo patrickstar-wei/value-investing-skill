@@ -1,39 +1,40 @@
-# Value Investing Skill Project v17.1
+# Value Investing Skill Project v18
 
-这是一个用于构建价值投资研究系统的 Skill 工程骨架。
+This project is a modular value-investing research skill. It combines company-type routing, structured assumptions, executable valuation models, data freshness / provenance gates, and a fixed report contract.
 
-v17 的重点升级（仍保留）：
+## What It Does
 
-1. 新增 **公司分类路由层**：先识别 Base Business Type，再叠加 Shareholder Return、Technology Optionality、Cyclicality 等 Overlay。
-2. 新增 **Dividend Compounder / High Shareholder Return Compounder** 估值分支，支持 DDM、Dividend Yield Band、Shareholder Yield 和 Dividend Safety Check。
-3. 新增 **Tech-enabled Mature Quality Compounder** 识别规则：成熟现金流主业 + 高股东回报 + 可验证科技业务可选项。
-4. 新增 **Technology Optionality Overlay**：科技业务不自动改判为科技股；只有具备分部披露、收入、利润路径和商业化证据时才进入 SOTP 或情景估值。
-5. 保留 v15 原则：估值模型的逐步计算过程默认不进入用户报告，只输出估值区间、关键假设、敏感性和安全边际判断。
+The skill analyzes a company through this default flow:
 
-## 快速开始
-
-```bash
-cd value_investing_skill_project_v171
-python -m scripts.routing.select_valuation_models
-python -m scripts.report.generate_markdown
+```text
+CompanyProfile
+-> valuation router
+-> structured assumption gate
+-> data freshness / provenance gates
+-> selected Python valuation models
+-> ValuationResult
+-> fixed report renderer
 ```
 
-## 推荐开发顺序
+The system is designed to avoid two common mistakes:
 
-1. 先完善 `SKILL.md`
-2. 再补充 `skills/*/SKILL.md`
-3. 接入 `scripts/connectors/` 数据源
-4. 实现 `scripts/valuation/` 估值模型
-5. 加入 `scripts/audit/` 模型审计
-6. 最后完善 `scripts/report/` 报告生成
+- Using a generic DCF for every business.
+- Producing precise-looking valuation numbers from unsupported assumptions.
 
+## Core Principles
 
-## v17 Update: Token-Efficient Multi-Company Routing
+- Business quality before valuation.
+- Cash-flow reality over accounting appearance.
+- Valuation model must match company type.
+- Margin of safety is required.
+- Every material assumption should be structured and evidence-constrained.
+- Missing or stale inputs should block or downgrade valuation confidence.
+- Calculation traces stay internal by default.
 
-This version expands company-type coverage while preserving a lazy-loading token discipline.
+## Supported Company Routes
 
-New specialized routes:
-
+- Mature Quality Compounder
+- Tech-enabled Mature Quality Compounder
 - AI / Semiconductor Hypergrowth Platform
 - Digital Platform Compounder
 - Hyperscale Cloud / Digital Infrastructure Platform
@@ -41,27 +42,170 @@ New specialized routes:
 - Insurance Float-backed Holding Company
 - Financial Institution: Bank / Insurance / Asset Manager
 - SaaS / Subscription Software Compounder
+- Mature Pharma / Pipeline Pharma
 - Commodity / Deep Cyclical Producer
 - REIT / Infrastructure Yield Asset
 - Auto / EV / Mobility Platform
+- Fintech / Brokerage Platform
 
-Default behavior remains compact: classify first, activate one base route, add at most two material overlays, and do not expose calculation traces unless explicitly requested.
+Example mapping:
 
+| Company | Route |
+|---|---|
+| NVIDIA | AI / Semiconductor Hypergrowth Platform |
+| Alphabet / Google | Digital Platform Compounder + Cloud / AI overlay |
+| Amazon | Digital Platform Compounder + Cloud + retail margin recovery |
+| UnitedHealth | Managed Care / Healthcare Services Compounder |
+| Robinhood | Fintech / Brokerage Platform |
 
-## v17.1 Update: Core Philosophy + Modular Workflow Refactor
+## Executable Valuation Models
 
-v17.1 does not keep expanding the monolithic SKILL.md. It preserves v17 capabilities by moving domain-specific logic into lazy-loaded workflows and adding a Core Investment Philosophy Layer as the investment-quality gatekeeper.
+Python implementations live in `scripts/valuation/`.
 
-Key changes:
+| Method | File |
+|---|---|
+| Shared result envelope / structured assumptions | `valuation_common.py` |
+| Owner Earnings DCF | `valuation_owner_earnings_dcf.py` |
+| Reverse DCF | `valuation_reverse_dcf.py` |
+| EPV / No-growth EPV | `valuation_epv.py` |
+| Residual Income | `valuation_residual_income.py` |
+| NAV | `valuation_nav.py` |
+| DDM / Gordon Growth | `valuation_ddm.py` |
+| SOTP | `valuation_sotp.py` |
+| Comparable multiples | `valuation_comps.py` |
+| Liquidation value | `valuation_liquidation.py` |
+| rNPV | `valuation_rnpv.py` |
+| REIT / NOI capitalization / AFFO checks | `valuation_reit.py` |
+| Cyclical / mid-cycle valuation | `valuation_cyclical.py` |
+| Insurance / embedded-value support | `valuation_insurance.py` |
+| Scenario-weighted valuation | `valuation_scenario.py` |
+| Fintech / brokerage economics | `valuation_fintech.py` |
+| Unified execution pipeline | `valuation_executor.py` |
 
-1. Added `references/core/investment_philosophy_layer.md` as the non-overridable master-investor principle layer.
-2. Added `references/core/investment_quality_gate.md` to enforce business quality, financial quality, model-fit, expectations, margin-of-safety, bear-case, and data-confidence checks.
-3. Added `references/core/modular_workflow_architecture.md` to keep the core skill lightweight.
-4. Added `workflows/00_router.md` through `workflows/09_watchlist_compare.md` so specialist analysis is loaded on demand.
-5. Updated the routing script to surface active workflow files and the quality gate without showing internal scorecards or calculation traces.
+## Structured Assumptions
 
-Default runtime pattern:
+Material assumptions should use this shape:
+
+```json
+{
+  "assumption": "discount_rate",
+  "value": 0.08,
+  "unit": "percent",
+  "scenario": "base",
+  "evidence": ["risk-free-rate anchor", "industry risk premium"],
+  "confidence": "medium",
+  "sensitivity": "high",
+  "source_or_reason": "Cost of equity estimate"
+}
+```
+
+If a model needs assumptions that are missing, unsupported, stale, or internally inconsistent, the valuation should be marked `Blocked` or `Low-confidence`.
+
+## Quick Commands
+
+Install into Codex as a local skill on Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install\install_codex_skill.ps1
+```
+
+Install into Codex as a local skill on Ubuntu / Linux / macOS:
+
+```bash
+bash scripts/install/install_codex_skill.sh
+```
+
+Install into Claude as a local skill on Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install\install_claude_skill.ps1
+```
+
+Install into Claude as a local skill on Ubuntu / Linux / macOS:
+
+```bash
+bash scripts/install/install_claude_skill.sh
+```
+
+On macOS, if your Claude client uses the Application Support directory, use:
+
+```bash
+bash scripts/install/install_claude_skill.sh --dir "$HOME/Library/Application Support/Claude/skills"
+```
+
+Build a Claude skill package on Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install\package_claude_skill.ps1 -Force
+```
+
+Build a Claude skill package on Ubuntu / Linux / macOS:
+
+```bash
+bash scripts/install/package_claude_skill.sh --force
+```
+
+Optional on Ubuntu / Linux / macOS:
+
+```bash
+chmod +x scripts/install/*.sh
+./scripts/install/install_codex_skill.sh
+```
+
+Run router:
+
+```bash
+python -m scripts.routing.select_valuation_models
+# Ubuntu systems may prefer:
+python3 -m scripts.routing.select_valuation_models
+```
+
+Run report renderer smoke test:
+
+```bash
+python -m scripts.report.generate_markdown
+```
+
+Run valuation model tests:
+
+```bash
+python -m unittest tests.test_valuation_models
+```
+
+Run router tests without pytest:
+
+```bash
+python -c "import tests.test_valuation_router as t; [getattr(t, name)() for name in dir(t) if name.startswith('test_')]; print('router tests ok')"
+```
+
+## Main Files
+
+- `SKILL.md`: top-level skill instructions.
+- `.codex-plugin/plugin.json`: Codex plugin metadata.
+- `scripts/routing/select_valuation_models.py`: company classification and model routing.
+- `scripts/valuation/valuation_executor.py`: unified valuation execution.
+- `scripts/install/install_codex_skill.ps1`: local Codex skill installer.
+- `scripts/install/install_claude_skill.ps1`: local Claude skill installer.
+- `scripts/install/package_claude_skill.ps1`: Claude package / zip builder.
+- `scripts/install/install_codex_skill.sh`: Ubuntu / Linux Codex skill installer.
+- `scripts/install/install_claude_skill.sh`: Ubuntu / Linux Claude skill installer.
+- `scripts/install/package_claude_skill.sh`: Ubuntu / Linux Claude package / zip builder.
+- The `.sh` installers also support macOS. Claude's macOS path can be set with `--dir`.
+- `scripts/audit/structured_assumption_audit.py`: structured assumption gate.
+- `scripts/data/check_data_freshness.py`: data freshness checks.
+- `scripts/audit/data_provenance_audit.py`: source / lineage checks.
+- `references/valuation_rules/structured_assumption_policy.md`: assumption policy.
+- `references/output_policy/`: fixed output contract and renderer policy.
+- `schemas/valuation_input_packet.schema.json`: valuation input packet schema.
+
+## Development Notes
+
+The project intentionally separates:
 
 ```text
-Core Skill → Lightweight Router → 1 primary workflow → up to 2 auxiliary workflows → Investment Quality Gate → Pyramid output
+Investment judgment -> structured assumptions
+Python -> calculation, validation, sensitivity, and blocked/usable status
+Renderer -> stable user-facing report
 ```
+
+Do not add a valuation method that silently fills in critical assumptions. Add the required assumptions to the structured assumption policy and gate first.

@@ -1,0 +1,41 @@
+{
+  "name": "value-investing-research",
+  "version": "0.1.8",
+  "description": "A modular value-investing research skill with valuation routing, structured assumptions, executable valuation models, data gates, and fixed report output.",
+  "author": {
+    "name": "value_investing project",
+    "email": "",
+    "url": ""
+  },
+  "homepage": "",
+  "repository": "",
+  "license": "UNLICENSED",
+  "keywords": [
+    "value-investing",
+    "valuation",
+    "equity-research",
+    "dcf",
+    "margin-of-safety"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Value Investing Research",
+    "shortDescription": "Analyze companies with routed valuation models and margin-of-safety discipline.",
+    "longDescription": "A modular investment research plugin for company classification, valuation model routing, structured assumptions, data freshness and provenance gates, executable Python valuation models, and fixed report rendering.",
+    "developerName": "value_investing project",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "",
+    "privacyPolicyURL": "",
+    "termsOfServiceURL": "",
+    "defaultPrompt": [
+      "Analyze NVIDIA using the value investing workflow.",
+      "Run a reverse DCF and margin-of-safety check.",
+      "Compare GOOGL, AMZN, HOOD, and UNH."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

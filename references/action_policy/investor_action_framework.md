@@ -293,3 +293,21 @@ Avoid absolute personalized instructions:
 - "you should sell all"
 - "guaranteed"
 - "risk-free"
+
+
+---
+
+## v17.2 Mandatory Preservation Rule
+
+The Investor Action Framework is mandatory in default stock/company analysis.
+
+Do not remove this section when enforcing a shorter or fixed output format.
+
+The section must include:
+
+1. Price Zone table
+2. Position-Aware Suggestions table
+3. Tranche Plan
+4. Key Conditions
+
+If intrinsic value range or current price is missing, mark the section as blocked and list missing inputs. Do not replace it with a generic action paragraph.

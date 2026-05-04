@@ -366,3 +366,21 @@ Mind map output is optional.
 Pyramid output is the default final presentation style.
 
 Mind map may be used only when the user explicitly asks for mind map, tree, or visual outline.
+
+
+---
+
+## v17.2 Fixed Output Contract Compatibility
+
+The pyramid output policy is now governed by the Mandatory Output Contract.
+
+Every standard report must include:
+
+- Bear / Base / Bull valuation range, or explicit blocked status
+- Current price, or explicit blocked status
+- Margin of safety, or explicit blocked status
+- Price zones: Deep Value, Accumulation, Watchlist, Fair Value, Trim, Sell / Avoid
+- Position-aware suggestions for Empty Position, Half Position, Full Position, and Overweight Position investors
+- Tranche plan: starter, add, strong-add, hold, trim, exit-review ranges
+
+Do not shorten away the valuation range or investor action framework. If data is unavailable, render the field as `Blocked` and show missing inputs.

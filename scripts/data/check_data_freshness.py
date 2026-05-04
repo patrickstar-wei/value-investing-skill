@@ -38,7 +38,10 @@ def parse_date(value: str | date | None) -> Optional[date]:
         return None
     if isinstance(value, date):
         return value
-    return datetime.fromisoformat(value).date()
+    try:
+        return datetime.fromisoformat(value).date()
+    except ValueError:
+        return None
 
 
 def check_freshness(

@@ -1,4 +1,4 @@
-# Value Investing Core Skill v17.1
+# Value Investing Core Skill v17.2
 
 ## Purpose
 
@@ -39,6 +39,31 @@ Always load or obey these core policies before final output:
 - `references/core/investment_quality_gate.md`
 - `references/core/modular_workflow_architecture.md`
 
+## v17.2 Mandatory Output Contract and Renderer
+
+All workflows must use a fixed output contract. The workflow may perform specialized analysis, but it must not directly render the final report. It must return a structured payload to the core report renderer.
+
+Always obey these output policies before final output:
+
+- `references/output_policy/mandatory_output_contract.md`
+- `references/output_policy/workflow_payload_contract.md`
+- `references/output_policy/fixed_report_renderer.md`
+- `references/output_policy/output_validation_rules.md`
+
+The final report must preserve the following fields unless explicitly irrelevant or data-blocked:
+
+- reasonable intrinsic value range: Bear / Base / Bull
+- current price
+- margin of safety
+- valuation status
+- price zones: Deep Value, Accumulation, Watchlist, Fair Value, Trim, Sell / Avoid
+- position-aware suggestions for Empty Position, Half Position, Full Position, and Overweight Position investors
+- tranche plan: starter, add, strong-add, hold, trim, exit-review ranges
+- thesis conditions: add only if, hold only if, trim if, exit or avoid if
+
+If valuation data is missing, do not omit the Valuation Summary or Investor Action Framework. Mark those fields as `Blocked`, explain the missing inputs, and provide non-price-based next steps.
+
+
 The Core Skill must enforce these non-overridable principles:
 
 1. Business quality before valuation.
@@ -68,8 +93,9 @@ Primary workflows:
 - `workflows/07_reit_infrastructure.md`
 - `workflows/08_cyclical_commodity.md`
 - `workflows/09_watchlist_compare.md`
+- `workflows/10_fintech_brokerage.md`
 
-The final report should remain consistent across workflows: pyramid structure, valuation summary only, explicit risk checks, margin-of-safety judgment, and investor action framework.
+The final report must remain consistent across workflows: pyramid structure, valuation summary only, explicit risk checks, margin-of-safety judgment, investor action framework, and fixed price/action zones. The report must not drop reasonable valuation range, position-aware suggestions, or build/trim/sell ranges.
 
 ## Trigger Conditions
 
@@ -100,11 +126,13 @@ Use this skill when the user asks to:
    - Downside
    - Implied expectation
    - Overlay-specific models, if triggered
-7. Fetch only required data fields.
-8. Run scripts for calculations instead of expanding formulas in prompt.
-9. Audit assumptions, formulas, data lineage, and sensitivity internally.
-10. Generate output at the requested depth only.
-11. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
+7. Convert material model inputs into structured assumptions and constrain them with history, industry economics, management guidance, peer data, reverse DCF, and sensitivity checks.
+8. Fetch only required data fields.
+9. Use `schemas/valuation_input_packet.schema.json` to bind model inputs to data IDs, source metadata, freshness dates, and structured assumptions when executing valuation.
+10. Run scripts for calculations instead of expanding formulas in prompt. Prefer `scripts/valuation/valuation_executor.py` for routed model execution.
+11. Audit assumptions, formulas, data lineage, and sensitivity internally.
+12. Generate output at the requested depth only.
+13. Do not expose valuation model calculation process in the user-facing analysis unless the user explicitly asks for model audit, formulas, workbook-style detail, or debug output.
 
 
 
@@ -141,6 +169,7 @@ Specialist route families include:
 - Commodity / Deep Cyclical Producer
 - REIT / Infrastructure Yield Asset
 - Auto / EV / Mobility Platform
+- Fintech / Brokerage Platform
 
 ### Token-Control Rule
 
@@ -158,6 +187,7 @@ All other potentially relevant models should be listed as deferred modules rathe
 Load:
 
 - `references/valuation_rules/token_efficient_routing_policy_v17.md`
+- `references/valuation_rules/structured_assumption_policy.md`
 - `references/runtime_policy/token_efficiency_contract.md`
 - `scripts/routing/select_valuation_models.py`
 
@@ -237,6 +267,17 @@ Tech-enabled Mature Quality Compounder
 The internal scorecard may be used to classify the company, but default user-facing output should show only the classification result, model stack, missing data, confidence level, and deferred modules. Do not expose score-by-score internals unless explicitly requested.
 
 ## User-Facing Valuation Output Rule
+
+The default user-facing valuation output must include model selection and valuation conclusions, not calculation trace. For normal stock/company analysis it must include:
+
+- Bear / Base / Bull intrinsic value range, or explicit blocked status
+- Current price, or explicit blocked status
+- Margin of safety, or explicit blocked status
+- Valuation status: undervalued / fair / expensive / low-confidence / blocked
+- Key assumptions and sensitivity summary
+- Price zones and position-aware action guidance
+
+Do not show formulas, discounting schedules, model input tables, or internal scorecards unless explicitly requested.
 
 The skill should know how to calculate valuation internally, but the default report must not show the step-by-step valuation model calculation process.
 

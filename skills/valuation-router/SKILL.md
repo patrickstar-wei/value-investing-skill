@@ -1,4 +1,4 @@
-# Valuation Router Skill v17.1
+# Valuation Router Skill v17.2
 
 ## Purpose
 
@@ -16,6 +16,7 @@ Select primary, cross-check, downside, implied-expectation, and overlay-specific
 - Segment disclosure for technology-related businesses
 - Cyclicality exposures
 - Available data and freshness status
+- Structured assumptions and evidence for material forecast, normalization, multiple, discount, probability, or recovery inputs
 - User requested depth
 - Prior assumptions, if any
 
@@ -25,6 +26,7 @@ Select primary, cross-check, downside, implied-expectation, and overlay-specific
 - Overlay Tags
 - Structured valuation model stack
 - Missing data / blocked models
+- Assumption confidence and blocked / low-confidence assumption items
 - Confidence level
 - Next required action
 
@@ -157,6 +159,7 @@ Calculation detail is allowed only when the user explicitly requests audit, debu
 ## General Rules
 
 - State assumptions explicitly.
+- Convert material assumptions into structured, evidence-constrained inputs before relying on valuation output.
 - Flag missing or low-confidence data.
 - Prefer conservative assumptions.
 - Keep output auditable.
@@ -190,3 +193,21 @@ The router now selects workflows as well as valuation models. Default behavior:
 5. Do not expose internal scorecards, workflow internals, quality-gate internals, or valuation calculation traces unless explicitly requested.
 
 Final output must include business quality, valuation attractiveness, margin of safety, data confidence, and action.
+
+
+## v17.2 Fixed Output Contract
+
+The router must return routing and model-selection fields to the renderer. It must not write a custom final report.
+
+Default output must include these user-facing valuation/action fields through the fixed renderer:
+
+- selected valuation model stack
+- Bear / Base / Bull intrinsic value range, or blocked status
+- current price, or blocked status
+- margin of safety, or blocked status
+- price zones
+- position-aware suggestions for empty, half, full, and overweight investors
+- tranche plan
+- add / hold / trim / exit conditions
+
+If valuation range is unavailable, report the valuation and price/action framework as blocked with missing data. Do not drop these sections.

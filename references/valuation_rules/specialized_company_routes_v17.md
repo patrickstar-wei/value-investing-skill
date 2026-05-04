@@ -204,3 +204,31 @@ Use for auto manufacturers, EV platforms, and mobility companies.
 - Cross-check: EV/EBIT, unit economics, battery/software attach rates
 - Downside: auto-cycle and price-war stress
 - Implied expectation: implied vehicle volume, margin, and software value
+
+---
+
+## 11. Fintech / Brokerage Platform
+
+Use for fintech platforms, consumer brokerages, trading apps, crypto trading platforms, and hybrid financial platforms where value is driven by funded customers, assets under custody, transaction activity, net interest income, and regulatory constraints.
+
+Typical companies: Robinhood, Interactive Brokers, Coinbase-like trading platforms when brokerage / transaction economics dominate.
+
+### Required checks
+
+- Funded customers, retention, net deposits, and assets under custody
+- ARPU and revenue mix: options, equities, crypto, subscriptions, net interest income, and other revenue
+- Rate-cut sensitivity for net interest income
+- Transaction volume and crypto-cycle sensitivity
+- SBC, dilution, and share count
+- Brokerage, payment-for-order-flow, crypto, consumer protection, and capital / liquidity regulation
+
+### Model stack
+
+- Primary: Revenue build-up DCF / normalized earnings
+- Cross-check: EV/Revenue, EV/EBITDA, AUC / funded-customer comps
+- Downside: rate decline + crypto volume + regulatory stress
+- Implied expectation: Reverse DCF / implied ARPU and funded customer growth
+
+### Token rule
+
+Load fintech / brokerage route and financial risk gates. Defer bank, insurance, REIT, and pure SaaS routes unless those economics dominate.

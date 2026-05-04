@@ -10,6 +10,8 @@ scenario tables, taxes, reinvestment, dilution, and explicit forecast drivers.
 
 from typing import List
 
+from scripts.valuation.valuation_common import ValuationResult
+
 
 def market_implied_ev(market_cap: float, net_debt: float) -> float:
     return market_cap + net_debt
@@ -112,3 +114,37 @@ def solve_implied_revenue_growth(
         else:
             high = mid
     return (low + high) / 2
+
+
+def reverse_dcf_result(
+    market_cap: float,
+    net_debt: float,
+    base_fcf: float,
+    years: int,
+    discount_rate: float,
+    terminal_growth: float,
+    model_name: str = "Reverse DCF",
+) -> ValuationResult:
+    target_ev = market_implied_ev(market_cap, net_debt)
+    implied_growth = solve_implied_fcf_growth(
+        target_ev=target_ev,
+        base_fcf=base_fcf,
+        years=years,
+        discount_rate=discount_rate,
+        terminal_growth=terminal_growth,
+    )
+    return ValuationResult(
+        model_name=model_name,
+        base_value=target_ev,
+        key_assumptions=[
+            f"Market-implied EV: {target_ev}",
+            f"Base FCF: {base_fcf}",
+            f"Discount rate: {discount_rate}",
+            f"Terminal growth: {terminal_growth}",
+        ],
+        metadata={
+            "valuation_status": "usable",
+            "implied_fcf_growth": implied_growth,
+            "sensitivity_summary": f"Market price implies approximately {implied_growth:.2%} FCF CAGR.",
+        },
+    )

@@ -1,7 +1,7 @@
 {
   "name": "value-investing-research-skill",
-  "version": "0.1.7.1",
-  "description": "A token-efficient modular value investing core skill with lazy-loaded workflows, company routing, and a master-investor philosophy quality gate.",
+  "version": "0.1.8",
+  "description": "A modular value investing core skill with valuation routing, structured assumptions, executable valuation models, data gates, fixed report output, and Codex/Claude install scripts.",
   "entry": "SKILL.md",
   "commands": [
     "research",
@@ -20,6 +20,8 @@
     "technology-optionality",
     "token-efficient-analysis",
     "philosophy-gate",
-    "workflow-router"
+    "workflow-router",
+    "output-contract",
+    "render-report"
   ]
 }

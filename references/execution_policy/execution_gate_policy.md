@@ -41,6 +41,7 @@ or:
 | Reverse DCF Gate | Market expectations matter | Reverse DCF result or blocked |
 | Margin of Safety Gate | Intrinsic value discussed | MOS result or blocked |
 | Downside Case Gate | Any investment view | Downside case or blocked |
+| Structured Assumption Gate | Any valuation model using forecasts, normalization, multiples, probabilities, or discounts | Key assumptions + confidence / blocked |
 | Source Quality Gate | Financial data used | Source tier / confidence table |
 | Assumption Audit Gate | DCF / scenario / rNPV used | Assumption warnings or pass |
 | Formula Audit Gate | Any valuation model used | Formula suitability check |
@@ -53,6 +54,51 @@ or:
 | Restatement Gate | Latest filings used | Restatement / accounting change check |
 | Catalyst Gate | Special situation thesis | Catalyst probability / timing or blocked |
 | Thesis Review Gate | Repeat analysis | What changed since last analysis |
+
+---
+
+## Structured Assumption Gate
+
+| Gate | Trigger | Required Output |
+|---|---|---|
+| Structured Assumption Gate | Any valuation model uses forecast or judgment inputs | Assumption table or blocked |
+
+### Minimum Required Fields
+
+For every material assumption, capture:
+
+- Assumption name
+- Numeric value or explicit qualitative state
+- Scenario: Bear / Base / Bull / Single
+- Evidence or source/reason
+- Confidence: High / Medium / Low
+- Sensitivity: High / Medium / Low
+
+### Blocking Conditions
+
+Block or downgrade valuation confidence if:
+
+- A critical forecast assumption has no evidence or reason.
+- Reported earnings or cash flow clearly require normalization but no normalized input is provided.
+- Discount rate, terminal growth, peer multiple, success probability, or liquidation discount is unsupported.
+- Assumptions are internally inconsistent, such as high growth plus lower reinvestment without evidence.
+- Sensitivity is high and the report provides only one point estimate.
+
+### Required Output
+
+```text
+Structured Assumption Gate Result
+```
+
+or:
+
+```text
+Structured Assumption Gate Blocked
+- Missing assumption:
+- Why it matters:
+- Data or evidence needed:
+- Impact on valuation:
+```
 
 ---
 

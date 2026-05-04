@@ -5,11 +5,21 @@ This file is a navigation index. The master skill should read this first, then l
 | Task | Load These Files |
 |---|---|
 | Quick stock check | `SKILL.md`, `commands/quick-check.md`, `references/context_policy/token_budget_policy.md` |
-| Full research | `commands/research.md`, target market file, target industry file, `skills/valuation-router/SKILL.md`, `references/valuation_rules/company_classification_routing_policy.md`, `references/valuation_rules/valuation_model_router.md` |
-| Owner earnings DCF | `skills/owner-earnings-dcf/SKILL.md`, `references/valuation_rules/owner_earnings_dcf_rules.md` |
+| Full research | `commands/research.md`, target market file, target industry file, `skills/valuation-router/SKILL.md`, `references/valuation_rules/company_classification_routing_policy.md`, `references/valuation_rules/valuation_model_router.md`, `references/valuation_rules/structured_assumption_policy.md` |
+| Owner earnings DCF | `skills/owner-earnings-dcf/SKILL.md`, `references/valuation_rules/structured_assumption_policy.md` |
 | Reverse DCF | `skills/reverse-dcf/SKILL.md`, `scripts/valuation/valuation_reverse_dcf.py` |
 | Bank valuation | `skills/valuation-router/SKILL.md`, `references/valuation_rules/valuation_model_router.md`, `scripts/valuation/valuation_residual_income.py` |
-| Biotech valuation | `skills/rnpv-analysis/SKILL.md`, `scripts/valuation/valuation_biotech_rnpv.py` |
+| Biotech valuation | `skills/rnpv-analysis/SKILL.md`, `scripts/valuation/valuation_rnpv.py` |
+| Dividend valuation | `workflows/02_dividend_compounder.md`, `scripts/valuation/valuation_ddm.py` |
+| SOTP valuation | `references/valuation_rules/valuation_model_router.md`, `scripts/valuation/valuation_sotp.py` |
+| Comparable multiples | `skills/comps-analysis/SKILL.md`, `scripts/valuation/valuation_comps.py` |
+| Liquidation valuation | `skills/liquidation-value/SKILL.md`, `scripts/valuation/valuation_liquidation.py` |
+| REIT / infrastructure valuation | `workflows/07_reit_infrastructure.md`, `scripts/valuation/valuation_reit.py`, `scripts/valuation/valuation_nav.py` |
+| Cyclical valuation | `workflows/08_cyclical_commodity.md`, `scripts/valuation/valuation_cyclical.py` |
+| Insurance valuation | `references/valuation_rules/specialized_company_routes_v17.md`, `scripts/valuation/valuation_insurance.py` |
+| Scenario-weighted valuation | `references/valuation_rules/structured_assumption_policy.md`, `scripts/valuation/valuation_scenario.py` |
+| Fintech / brokerage valuation | `workflows/10_fintech_brokerage.md`, `scripts/valuation/valuation_fintech.py`, `scripts/valuation/valuation_comps.py`, `scripts/valuation/valuation_reverse_dcf.py` |
+| Unified valuation execution | `schemas/valuation_input_packet.schema.json`, `scripts/valuation/valuation_input_packet.py`, `scripts/audit/structured_assumption_audit.py`, `scripts/valuation/valuation_executor.py` |
 | Risk-only analysis | `skills/risk-analysis/SKILL.md` |
 | Report generation | `skills/report-generation/SKILL.md`, selected report template |
 | Audit | `skills/model-audit/SKILL.md`, `scripts/audit/*` |
@@ -53,7 +63,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 
 | Task | Load These Files |
 |---|---|
-| Current valuation | `skills/data-freshness-audit/SKILL.md`, `references/data_source_policy/data_freshness_policy.md`, `scripts/data/check_data_freshness.py` |
+| Current valuation | `skills/data-freshness-audit/SKILL.md`, `references/data_source_policy/data_freshness_policy.md`, `references/valuation_rules/structured_assumption_policy.md`, `scripts/data/check_data_freshness.py` |
 | Margin of safety calculation | `skills/data-freshness-audit/SKILL.md`, `scripts/data/check_data_freshness.py` |
 | Historical trend analysis | `references/data_source_policy/data_freshness_policy.md` |
 
@@ -62,6 +72,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Task | Load These Files |
 |---|---|
 | Gate audit | `skills/execution-gate-auditor/SKILL.md`, `references/execution_policy/execution_gate_policy.md`, `scripts/audit/execution_gate_audit.py` |
+| Structured assumption gate | `references/valuation_rules/structured_assumption_policy.md`, `scripts/audit/structured_assumption_audit.py` |
 | Failure mode review | `references/execution_policy/known_failure_modes.md` |
 
 ## Investor Action Tasks
@@ -108,8 +119,20 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 |---|---|
 | Company type coverage matrix | `commands/company-type-coverage.md`, `references/valuation_rules/company_type_coverage_matrix_v17.md`, `references/valuation_rules/token_efficient_routing_policy_v17.md` |
 | Token-efficient broad company query | `commands/token-efficient-analysis.md`, `references/valuation_rules/token_efficient_routing_policy_v17.md`, `scripts/routing/select_valuation_models.py` |
-| AI / semiconductor platform | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py` |
-| Digital platform / cloud platform | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py` |
-| Managed care / healthcare services | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py` |
-| Insurance float-backed holding company | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py` |
-| Commodity / REIT / SaaS / Auto specialist route | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py` |
+| AI / semiconductor platform | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_scenario.py`, `scripts/valuation/valuation_reverse_dcf.py` |
+| Digital platform / cloud platform | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_sotp.py`, `scripts/valuation/valuation_scenario.py` |
+| Managed care / healthcare services | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_owner_earnings_dcf.py`, `scripts/valuation/valuation_comps.py` |
+| Insurance float-backed holding company | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_insurance.py`, `scripts/valuation/valuation_sotp.py` |
+| Commodity / REIT / SaaS / Auto / Fintech specialist route | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_cyclical.py`, `scripts/valuation/valuation_reit.py`, `scripts/valuation/valuation_fintech.py`, `scripts/valuation/valuation_scenario.py` |
+
+
+## v17.2 Output Contract Tasks
+
+For every standard investment analysis final output, obey:
+
+- `references/output_policy/mandatory_output_contract.md`
+- `references/output_policy/workflow_payload_contract.md`
+- `references/output_policy/fixed_report_renderer.md`
+- `references/output_policy/output_validation_rules.md`
+
+These files enforce fixed report order, required valuation range, required price zones, position-aware suggestions, and no calculation-trace leakage.

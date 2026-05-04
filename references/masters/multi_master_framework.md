@@ -1,4 +1,4 @@
-# Multi-master Value Investing Framework v17.1
+# Multi-master Value Investing Framework v17.2
 
 This file is now a compact index. The full operating policy lives in `references/core/investment_philosophy_layer.md`.
 

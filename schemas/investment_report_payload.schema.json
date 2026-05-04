@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InvestmentReportPayloadV172",
+  "type": "object",
+  "required": [
+    "executive_conclusion",
+    "decision_snapshot",
+    "company_classification",
+    "core_thesis",
+    "key_evidence",
+    "valuation_summary",
+    "risks",
+    "execution_gate_checklist",
+    "investor_action_framework",
+    "data_provenance"
+  ],
+  "properties": {
+    "output_language": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "en",
+        "zh-CN"
+      ]
+    },
+    "executive_conclusion": {
+      "type": "object"
+    },
+    "decision_snapshot": {
+      "type": "array"
+    },
+    "company_classification": {
+      "type": "object"
+    },
+    "core_thesis": {
+      "type": "object"
+    },
+    "key_evidence": {
+      "type": "array"
+    },
+    "valuation_summary": {
+      "type": "object",
+      "required": [
+        "selected_models",
+        "bear_value",
+        "base_value",
+        "bull_value",
+        "current_price",
+        "margin_of_safety",
+        "valuation_status",
+        "key_assumptions",
+        "sensitivity_summary"
+      ],
+      "properties": {
+        "selected_models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bear_value": {},
+        "base_value": {},
+        "bull_value": {},
+        "current_price": {},
+        "margin_of_safety": {},
+        "valuation_status": {
+          "type": "string"
+        },
+        "key_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "structured_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "assumption": {
+                "type": "string"
+              },
+              "value": {},
+              "unit": {
+                "type": "string"
+              },
+              "scenario": {
+                "type": "string",
+                "enum": [
+                  "bear",
+                  "base",
+                  "bull",
+                  "single"
+                ]
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "sensitivity": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "source_or_reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "assumption_confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "sensitivity_summary": {
+          "type": "string"
+        },
+        "blocked_or_low_confidence_items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "execution_gate_checklist": {
+      "type": "array"
+    },
+    "investor_action_framework": {
+      "type": "object",
+      "required": [
+        "price_zones",
+        "position_aware_suggestions",
+        "tranche_plan",
+        "key_conditions"
+      ],
+      "properties": {
+        "price_zones": {
+          "type": "array",
+          "description": "Required price/action zones. Use blocked placeholders if valuation range is unavailable.",
+          "items": {
+            "type": "object",
+            "required": [
+              "zone",
+              "price_range",
+              "interpretation"
+            ],
+            "properties": {
+              "zone": {
+                "type": "string",
+                "enum": [
+                  "Deep Value",
+                  "Accumulation",
+                  "Watchlist",
+                  "Fair Value",
+                  "Trim",
+                  "Sell / Avoid"
+                ]
+              },
+              "price_range": {
+                "type": "string"
+              },
+              "interpretation": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "position_aware_suggestions": {
+          "type": "array",
+          "description": "Required conditional guidance by investor position type.",
+          "items": {
+            "type": "object",
+            "required": [
+              "investor_type",
+              "suggested_action",
+              "rationale"
+            ],
+            "properties": {
+              "investor_type": {
+                "type": "string",
+                "enum": [
+                  "Empty Position",
+                  "Half Position",
+                  "Full Position",
+                  "Overweight Position"
+                ]
+              },
+              "suggested_action": {
+                "type": "string"
+              },
+              "rationale": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "tranche_plan": {
+          "type": "object",
+          "required": [
+            "starter_range",
+            "add_range",
+            "strong_add_range",
+            "hold_range",
+            "trim_range",
+            "exit_review_range"
+          ],
+          "properties": {
+            "starter_range": {
+              "type": "string"
+            },
+            "add_range": {
+              "type": "string"
+            },
+            "strong_add_range": {
+              "type": "string"
+            },
+            "hold_range": {
+              "type": "string"
+            },
+            "trim_range": {
+              "type": "string"
+            },
+            "exit_review_range": {
+              "type": "string"
+            }
+          }
+        },
+        "key_conditions": {
+          "type": "object",
+          "required": [
+            "add_only_if",
+            "hold_only_if",
+            "trim_if",
+            "exit_or_avoid_if"
+          ],
+          "properties": {
+            "add_only_if": {
+              "type": "string"
+            },
+            "hold_only_if": {
+              "type": "string"
+            },
+            "trim_if": {
+              "type": "string"
+            },
+            "exit_or_avoid_if": {
+              "type": "string"
+            }
+          }
+        },
+        "framework_status": {
+          "type": "string",
+          "enum": [
+            "usable",
+            "blocked",
+            "low_confidence"
+          ]
+        }
+      }
+    },
+    "data_provenance": {
+      "type": "object"
+    }
+  }
+}

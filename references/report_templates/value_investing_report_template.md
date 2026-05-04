@@ -1,5 +1,19 @@
 # Value Investing Report
 
+## v17.2 Rendering Rule
+
+This template is rendered by the Fixed Report Renderer. Workflows must populate the structured payload and must not directly write a custom final report.
+
+The following user-facing elements are mandatory for stock/company analysis:
+- reasonable intrinsic value range: Bear / Base / Bull
+- current price
+- margin of safety
+- price zones
+- position-aware suggestions
+- build/add/hold/trim/exit-review ranges
+
+If unavailable, mark as `Blocked` and list missing data. Do not omit the section.
+
 ## 📌 Executive Conclusion
 
 **Rating:**  

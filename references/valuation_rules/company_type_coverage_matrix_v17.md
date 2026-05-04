@@ -34,6 +34,7 @@ The skill should not load every valuation framework. It should first classify th
 | Commodity / Deep Cyclical Producer | Exxon, Chevron, BHP, Rio Tinto | Mid-cycle EBITDA + commodity price scenarios + reserves | Specialized route |
 | REIT / Infrastructure Yield Asset | Realty Income, Prologis, AMT | AFFO / NOI / cap rate / leverage / distribution safety | Specialized route |
 | Auto / EV / Mobility Platform | Tesla, BYD, Toyota | Manufacturing normalized margin + software optionality + cycle stress | Specialized route |
+| Fintech / Brokerage Platform | Robinhood, Interactive Brokers | Revenue build-up / normalized earnings + AUC-user comps + rate/crypto/regulatory stress | Specialized route |
 
 ## Token-Efficient Routing Rule
 
@@ -56,6 +57,7 @@ Do not load unselected specialist routes.
 - Alphabet: Digital Platform Compounder + Cloud / AI Optionality.
 - Amazon: Digital Platform Compounder + Cloud + Retail Margin Recovery.
 - UnitedHealth: Managed Care / Healthcare Services.
+- Robinhood: Fintech / Brokerage Platform.
 - Berkshire Hathaway: Insurance Float-backed Holding Company.
 - Midea: Tech-enabled Mature Quality Compounder + Shareholder Return + Light Cyclical Manufacturing.
 - Kimberly-Clark: Dividend / Shareholder Return Compounder.

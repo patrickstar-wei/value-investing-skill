@@ -25,6 +25,7 @@ TASK_CONTEXT: Dict[str, List[str]] = {
         "skills/investment-style-router/SKILL.md",
         "skills/valuation-router/SKILL.md",
         "references/valuation_rules/valuation_model_router.md",
+        "references/valuation_rules/structured_assumption_policy.md",
         "references/report_templates/value_investing_report_template.md",
     ],
     "reverse_dcf": [
@@ -52,13 +53,52 @@ INDUSTRY_CONTEXT: Dict[str, List[str]] = {
     ],
     "biotech": [
         "skills/rnpv-analysis/SKILL.md",
-        "scripts/valuation/valuation_biotech_rnpv.py",
+        "scripts/valuation/valuation_rnpv.py",
     ],
     "quality_compounder": [
         "skills/owner-earnings-dcf/SKILL.md",
         "skills/epv-analysis/SKILL.md",
         "scripts/valuation/valuation_owner_earnings_dcf.py",
         "scripts/valuation/valuation_epv.py",
+        "scripts/valuation/valuation_reverse_dcf.py",
+    ],
+    "dividend": [
+        "workflows/02_dividend_compounder.md",
+        "references/valuation_rules/dividend_compounder_valuation_policy.md",
+        "scripts/valuation/valuation_ddm.py",
+    ],
+    "reit": [
+        "workflows/07_reit_infrastructure.md",
+        "scripts/valuation/valuation_reit.py",
+        "scripts/valuation/valuation_nav.py",
+    ],
+    "cyclical": [
+        "workflows/08_cyclical_commodity.md",
+        "scripts/valuation/valuation_cyclical.py",
+        "scripts/valuation/valuation_nav.py",
+    ],
+    "distressed": [
+        "skills/liquidation-value/SKILL.md",
+        "scripts/valuation/valuation_liquidation.py",
+        "scripts/valuation/valuation_nav.py",
+    ],
+    "platform": [
+        "workflows/03_tech_platform.md",
+        "scripts/valuation/valuation_sotp.py",
+        "scripts/valuation/valuation_scenario.py",
+        "scripts/valuation/valuation_owner_earnings_dcf.py",
+    ],
+    "fintech": [
+        "workflows/10_fintech_brokerage.md",
+        "scripts/valuation/valuation_fintech.py",
+        "scripts/valuation/valuation_comps.py",
+        "scripts/valuation/valuation_reverse_dcf.py",
+    ],
+    "brokerage": [
+        "workflows/10_fintech_brokerage.md",
+        "scripts/valuation/valuation_fintech.py",
+        "scripts/valuation/valuation_comps.py",
+        "scripts/valuation/valuation_reverse_dcf.py",
     ],
 }
 

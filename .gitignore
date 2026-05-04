@@ -82,7 +82,9 @@ credentials/
 *.sqlite
 reports/
 output/
+outputs/
 results/
+dist/
 
 # --------------------------------------------
 # Node (if any frontend tooling)
@@ -105,5 +107,4 @@ htmlcov/
 # --------------------------------------------
 # Keep .trae/skills/ for skill definitions
 # Ignore only local runtime caches if they exist
-.trae/cache/
-.trae/temp/
+.trae

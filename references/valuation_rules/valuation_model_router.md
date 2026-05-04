@@ -118,3 +118,28 @@ The router does not return:
 - Internal score-by-score logic
 - Line-by-line calculations
 - Discounting schedules
+
+## Python Implementation Map
+
+The router may select valuation methods conceptually, but executable calculations should load the smallest matching Python module set:
+
+| Method Family | Implementation File |
+|---|---|
+| Shared result envelope / structured assumptions | `scripts/valuation/valuation_common.py` |
+| Owner Earnings DCF / FCFE-style cash flow DCF | `scripts/valuation/valuation_owner_earnings_dcf.py` |
+| Reverse DCF | `scripts/valuation/valuation_reverse_dcf.py` |
+| EPV / No-growth EPV | `scripts/valuation/valuation_epv.py` |
+| Residual Income / P/B-ROE support | `scripts/valuation/valuation_residual_income.py` |
+| NAV | `scripts/valuation/valuation_nav.py` |
+| DDM / Gordon Growth / dividend yield band | `scripts/valuation/valuation_ddm.py` |
+| SOTP | `scripts/valuation/valuation_sotp.py` |
+| Comparable multiples | `scripts/valuation/valuation_comps.py` |
+| Liquidation value | `scripts/valuation/valuation_liquidation.py` |
+| rNPV | `scripts/valuation/valuation_rnpv.py` |
+| REIT / NOI cap rate / AFFO | `scripts/valuation/valuation_reit.py` |
+| Cyclical / mid-cycle valuation | `scripts/valuation/valuation_cyclical.py` |
+| Insurance / embedded-value support | `scripts/valuation/valuation_insurance.py` |
+| Scenario-weighted DCF / optionality | `scripts/valuation/valuation_scenario.py` |
+| Fintech / brokerage platform economics | `scripts/valuation/valuation_fintech.py` |
+
+Python modules handle deterministic calculation, validation, per-share conversion, and blocked/low-confidence output packaging. They do not invent unsupported inputs. Forecast growth, discount rates, normalized earnings, peer selection, segment multiples, success probabilities, liquidation discounts, and scenario weights must come from `references/valuation_rules/structured_assumption_policy.md`.

@@ -144,14 +144,19 @@ def test_token_efficiency_caps_l1_overlays():
     assert models["token_mode"] == "lazy_loaded_modular_workflow"
 
 
-def test_v171_exposes_primary_workflow_and_quality_gate():
+def test_v172_exposes_primary_workflow_quality_gate_and_output_contract():
     company = CompanyProfile(industry="ai semiconductor", is_ai_semiconductor_platform=True)
     models = select_valuation_models(company)
-    assert models["skill_version"] == "v17.1"
+    assert models["skill_version"] == "v17.2"
     assert models["primary_workflow"] == "workflows/04_ai_semiconductor.md"
     assert "core_quality_gate" in models
     assert "Margin of Safety" in models["core_quality_gate"]["required_final_labels"]
     assert models["token_control"]["one_primary_workflow"] is True
+    assert models["output_contract"]["valuation_range_required"] is True
+    assert models["output_contract"]["position_aware_actions_required"] is True
+    assert "references/valuation_rules/structured_assumption_policy.md" in models["active_route_files"]
+    assert "scripts/valuation/valuation_scenario.py" in models["valuation_algorithm_files"]
+    assert "scripts/valuation/valuation_reverse_dcf.py" in models["valuation_algorithm_files"]
 
 
 def test_dividend_overlay_loads_dividend_auxiliary_workflow():
@@ -163,3 +168,183 @@ def test_dividend_overlay_loads_dividend_auxiliary_workflow():
     models = select_valuation_models(company)
     assert "workflows/02_dividend_compounder.md" in models["auxiliary_workflows"]
     assert models["primary_workflow"] == "workflows/01_quality_company.md"
+    assert "scripts/valuation/valuation_ddm.py" in models["valuation_algorithm_files"]
+
+
+def test_fixed_renderer_preserves_valuation_range_and_action_framework():
+    from scripts.report.generate_markdown import render_report, validate_report
+
+    payload = {
+        "target_name": "Sample",
+        "executive_conclusion": {
+            "rating": "Watchlist",
+            "style_classification": "Quality Compounder",
+            "one_line_judgment": "Good business, wait for price.",
+            "key_reasons": ["✅ Quality", "⚠️ Valuation", "➡️ Wait for zone"],
+            "bottom_line": "Keep on watchlist."
+        },
+        "decision_snapshot": [{"dimension": "Action", "judgment": "Watch", "signal": "➡️"}],
+        "company_classification": {
+            "base_type": "Mature Quality Compounder",
+            "overlays": [],
+            "primary_workflow": "workflows/01_quality_company.md",
+            "auxiliary_workflows": [],
+            "classification_confidence": "high",
+            "classification_interpretation": "Stable cash flow business."
+        },
+        "core_thesis": {"bull_case": ["Moat"], "bear_case": ["Valuation"]},
+        "key_evidence": [{"fact": "FCF positive", "interpretation": "Cash flow supports value", "investment_implication": "Valuation range usable"}],
+        "valuation_summary": {
+            "selected_models": ["Owner Earnings DCF"],
+            "bear_value": "80",
+            "base_value": "100",
+            "bull_value": "120",
+            "current_price": "90",
+            "margin_of_safety": "10%",
+            "valuation_status": "fair",
+            "key_assumptions": ["FCF stable"],
+            "sensitivity_summary": "Margin sensitivity"
+        },
+        "risks": ["Multiple compression"],
+        "execution_gate_checklist": [{"gate": "MOS", "status": "⚠️", "comment": "Not enough"}],
+        "investor_action_framework": {
+            "price_zones": [
+                {"zone": "Deep Value", "price_range": "<=56", "interpretation": "Strong MOS"},
+                {"zone": "Accumulation", "price_range": "56-85", "interpretation": "Attractive"},
+                {"zone": "Watchlist", "price_range": "85-100", "interpretation": "Monitor"},
+                {"zone": "Fair Value", "price_range": "100-132", "interpretation": "Fair"},
+                {"zone": "Trim", "price_range": "132-156", "interpretation": "Trim"},
+                {"zone": "Sell / Avoid", "price_range": ">156", "interpretation": "Avoid"}
+            ],
+            "position_aware_suggestions": [
+                {"investor_type": "Empty Position", "suggested_action": "Wait", "rationale": "MOS limited"},
+                {"investor_type": "Half Position", "suggested_action": "Hold", "rationale": "Fair"},
+                {"investor_type": "Full Position", "suggested_action": "Hold", "rationale": "Quality"},
+                {"investor_type": "Overweight Position", "suggested_action": "Trim if risk rises", "rationale": "Concentration"}
+            ],
+            "tranche_plan": {
+                "starter_range": "85-100",
+                "add_range": "56-85",
+                "strong_add_range": "<=56",
+                "hold_range": "85-132",
+                "trim_range": "132-156",
+                "exit_review_range": ">156"
+            },
+            "key_conditions": {
+                "add_only_if": "Thesis intact",
+                "hold_only_if": "FCF stable",
+                "trim_if": "Above bull case",
+                "exit_or_avoid_if": "Thesis breaks"
+            }
+        },
+        "data_provenance": {"data_confidence": "medium", "missing_data": []}
+    }
+
+    report = render_report(payload)
+    assert "Bear value" in report
+    assert "Base value" in report
+    assert "Bull value" in report
+    assert "Position-Aware Suggestions" in report
+    assert "Empty Position" in report
+    assert "Overweight Position" in report
+    assert validate_report(report) == []
+
+
+def test_fixed_renderer_uses_chinese_when_requested():
+    from scripts.report.generate_markdown import render_report, validate_report
+
+    payload = {
+        "target_name": "NVIDIA",
+        "output_language": "zh-CN",
+        "executive_conclusion": {
+            "rating": "观察",
+            "style_classification": "AI / Semiconductor Hypergrowth Platform",
+            "one_line_judgment": "好公司，但需要估值纪律。",
+            "key_reasons": ["业务质量高", "估值依赖 AI 增长假设", "需要反向 DCF 校验"],
+            "bottom_line": "等待足够安全边际。"
+        },
+        "decision_snapshot": [{"dimension": "Action", "judgment": "Watch", "signal": "Review"}],
+        "company_classification": {
+            "base_type": "AI / Semiconductor Hypergrowth Platform",
+            "overlays": [],
+            "primary_workflow": "workflows/04_ai_semiconductor.md",
+            "auxiliary_workflows": [],
+            "classification_confidence": "high",
+            "classification_interpretation": "AI 半导体平台。"
+        },
+        "core_thesis": {"bull_case": ["AI 需求持续"], "bear_case": ["估值过高"]},
+        "key_evidence": [{"fact": "数据中心收入增长", "interpretation": "需求强", "investment_implication": "支撑增长假设"}],
+        "valuation_summary": {
+            "selected_models": ["Scenario-weighted DCF"],
+            "bear_value": "80",
+            "base_value": "100",
+            "bull_value": "140",
+            "current_price": "90",
+            "margin_of_safety": "10%",
+            "valuation_status": "fair",
+            "key_assumptions": ["FCF margin stable"],
+            "sensitivity_summary": "对增长和折现率敏感"
+        },
+        "risks": ["AI capex cycle"],
+        "execution_gate_checklist": [{"gate": "MOS", "status": "Review", "comment": "有限"}],
+        "investor_action_framework": {
+            "price_zones": [
+                {"zone": "Deep Value", "price_range": "<=56", "interpretation": "Strong MOS"}
+            ],
+            "position_aware_suggestions": [
+                {"investor_type": "Empty Position", "suggested_action": "Wait", "rationale": "MOS limited"}
+            ],
+            "tranche_plan": {
+                "starter_range": "85-100",
+                "add_range": "56-85",
+                "strong_add_range": "<=56",
+                "hold_range": "85-132",
+                "trim_range": "132-156",
+                "exit_review_range": ">156"
+            },
+            "key_conditions": {
+                "add_only_if": "Thesis intact",
+                "hold_only_if": "FCF stable",
+                "trim_if": "Above bull case",
+                "exit_or_avoid_if": "Thesis breaks"
+            }
+        },
+        "data_provenance": {"data_confidence": "medium", "missing_data": []}
+    }
+
+    report = render_report(payload)
+    assert "## 执行结论" in report
+    assert "## 估值摘要" in report
+    assert "## 投资者行动框架" in report
+    assert "Bear value" not in report
+    assert validate_report(report) == []
+
+
+def test_fixed_renderer_infers_chinese_from_user_request():
+    from scripts.report.generate_markdown import render_report
+
+    payload = {
+        "target_name": "NVDA",
+        "output_language": "auto",
+        "user_request": "请用这个 skill 分析 NVDA",
+        "executive_conclusion": {},
+        "valuation_summary": {
+            "bear_value": "Blocked",
+            "base_value": "Blocked",
+            "bull_value": "Blocked",
+            "current_price": "Blocked",
+            "margin_of_safety": "Blocked",
+            "valuation_status": "blocked",
+            "key_assumptions": [],
+            "sensitivity_summary": "N/A"
+        },
+        "investor_action_framework": {
+            "price_zones": [],
+            "position_aware_suggestions": [],
+            "tranche_plan": {},
+            "key_conditions": {}
+        }
+    }
+    report = render_report(payload)
+    assert "# NVDA 投资分析" in report
+    assert "## 执行结论" in report

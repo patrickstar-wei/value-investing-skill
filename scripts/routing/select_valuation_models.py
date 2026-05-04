@@ -1,4 +1,4 @@
-"""Valuation model router v17.1.
+"""Valuation model router v17.2.
 
 This router classifies a company by economic profile, not by name.
 It expands coverage through lazy-loaded workflows while preserving token discipline:
@@ -37,6 +37,8 @@ class CompanyProfile:
     is_reit_or_infrastructure: bool = False
     is_auto_or_mobility_platform: bool = False
     is_mature_pharma: bool = False
+    is_fintech_platform: bool = False
+    is_brokerage_platform: bool = False
 
     # v16 profile scores: use 0/1/2 per factor.
     mature_quality_scores: Dict[str, int] = field(default_factory=dict)
@@ -56,6 +58,7 @@ class CompanyProfile:
     commodity_scores: Dict[str, int] = field(default_factory=dict)
     reit_scores: Dict[str, int] = field(default_factory=dict)
     auto_mobility_scores: Dict[str, int] = field(default_factory=dict)
+    fintech_scores: Dict[str, int] = field(default_factory=dict)
 
     # Optional explicit evidence flags.
     has_separable_technology_segment: bool = False
@@ -94,6 +97,7 @@ def _route_scores(company: CompanyProfile) -> Dict[str, int]:
         "Commodity / Deep Cyclical Producer": _score(company.commodity_scores),
         "REIT / Infrastructure Yield Asset": _score(company.reit_scores),
         "Auto / EV / Mobility Platform": _score(company.auto_mobility_scores),
+        "Fintech / Brokerage Platform": _score(company.fintech_scores),
     }
 
     # Explicit flags are strong routing evidence.
@@ -117,6 +121,8 @@ def _route_scores(company: CompanyProfile) -> Dict[str, int]:
         scores["REIT / Infrastructure Yield Asset"] = max(scores["REIT / Infrastructure Yield Asset"], 8)
     if company.is_auto_or_mobility_platform:
         scores["Auto / EV / Mobility Platform"] = max(scores["Auto / EV / Mobility Platform"], 8)
+    if company.is_fintech_platform or company.is_brokerage_platform:
+        scores["Fintech / Brokerage Platform"] = max(scores["Fintech / Brokerage Platform"], 8)
 
     # Industry keywords are weak evidence, used only for fallback classification.
     keyword_boosts = {
@@ -134,6 +140,10 @@ def _route_scores(company: CompanyProfile) -> Dict[str, int]:
         "mining": "Commodity / Deep Cyclical Producer",
         "auto": "Auto / EV / Mobility Platform",
         "ev": "Auto / EV / Mobility Platform",
+        "fintech": "Fintech / Brokerage Platform",
+        "brokerage": "Fintech / Brokerage Platform",
+        "broker": "Fintech / Brokerage Platform",
+        "trading app": "Fintech / Brokerage Platform",
     }
     for word, route in keyword_boosts.items():
         if word in industry:
@@ -291,6 +301,12 @@ def _base_models(base_type: str) -> Dict[str, str]:
             "downside": "Auto-cycle, price-war, and margin stress",
             "implied": "Implied vehicle volume, margin, and software value",
         },
+        "Fintech / Brokerage Platform": {
+            "primary": "Revenue build-up DCF / normalized earnings",
+            "cross_check": "EV/Revenue, EV/EBITDA, AUC/user-based comps",
+            "downside": "Rate decline + crypto volume stress + regulatory stress",
+            "implied": "Reverse DCF / implied ARPU and funded customer growth",
+        },
     }
     return table.get(
         base_type,
@@ -401,6 +417,7 @@ def _deferred_routes(base_type: str, overlays: List[str]) -> List[str]:
         "Commodity / Deep Cyclical Producer",
         "REIT / Infrastructure Yield Asset",
         "Auto / EV / Mobility Platform",
+        "Fintech / Brokerage Platform",
         "Dividend / Shareholder Return Overlay",
         "Technology Optionality Overlay",
         "Light Cyclical Manufacturing Overlay",
@@ -434,6 +451,7 @@ def _workflow_for_base_type(base_type: str) -> str:
         "SaaS / Subscription Software Compounder": "workflows/03_tech_platform.md",
         "Mature Pharma / Pipeline Pharma": "workflows/05_healthcare_managed_care.md",
         "Auto / EV / Mobility Platform": "workflows/08_cyclical_commodity.md",
+        "Fintech / Brokerage Platform": "workflows/10_fintech_brokerage.md",
         "Bank": "workflows/00_router.md",
         "Insurance": "workflows/06_holding_company.md",
         "Asset-heavy": "workflows/07_reit_infrastructure.md",
@@ -466,8 +484,13 @@ def _active_route_files(base_type: str) -> List[str]:
         "references/core/investment_philosophy_layer.md",
         "references/core/investment_quality_gate.md",
         "references/core/modular_workflow_architecture.md",
+        "references/output_policy/mandatory_output_contract.md",
+        "references/output_policy/fixed_report_renderer.md",
+        "references/output_policy/output_validation_rules.md",
         "references/valuation_rules/token_efficient_routing_policy_v17.md",
+        "references/valuation_rules/structured_assumption_policy.md",
         "scripts/routing/select_valuation_models.py",
+        "scripts/report/generate_markdown.py",
     ]
     if base_type in {
         "AI / Semiconductor Hypergrowth Platform",
@@ -480,6 +503,7 @@ def _active_route_files(base_type: str) -> List[str]:
         "Commodity / Deep Cyclical Producer",
         "REIT / Infrastructure Yield Asset",
         "Auto / EV / Mobility Platform",
+        "Fintech / Brokerage Platform",
     }:
         files.append("references/valuation_rules/specialized_company_routes_v17.md:selected_section_only")
     else:
@@ -487,8 +511,113 @@ def _active_route_files(base_type: str) -> List[str]:
     return files
 
 
+def _valuation_algorithm_files(base_type: str, overlays: List[str]) -> List[str]:
+    files_by_base_type = {
+        "Bank": [
+            "scripts/valuation/valuation_residual_income.py",
+        ],
+        "Insurance": [
+            "scripts/valuation/valuation_insurance.py",
+        ],
+        "Biotech": [
+            "scripts/valuation/valuation_rnpv.py",
+        ],
+        "Cyclical": [
+            "scripts/valuation/valuation_cyclical.py",
+        ],
+        "Distressed": [
+            "scripts/valuation/valuation_liquidation.py",
+            "scripts/valuation/valuation_nav.py",
+        ],
+        "Asset-heavy": [
+            "scripts/valuation/valuation_nav.py",
+            "scripts/valuation/valuation_liquidation.py",
+        ],
+        "SaaS / Subscription Software Compounder": [
+            "scripts/valuation/valuation_scenario.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Mature Quality Compounder": [
+            "scripts/valuation/valuation_owner_earnings_dcf.py",
+            "scripts/valuation/valuation_epv.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+        ],
+        "Tech-enabled Mature Quality Compounder": [
+            "scripts/valuation/valuation_owner_earnings_dcf.py",
+            "scripts/valuation/valuation_epv.py",
+            "scripts/valuation/valuation_sotp.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+        ],
+        "AI / Semiconductor Hypergrowth Platform": [
+            "scripts/valuation/valuation_scenario.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Digital Platform Compounder": [
+            "scripts/valuation/valuation_sotp.py",
+            "scripts/valuation/valuation_owner_earnings_dcf.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Hyperscale Cloud / Digital Infrastructure Platform": [
+            "scripts/valuation/valuation_scenario.py",
+            "scripts/valuation/valuation_sotp.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Managed Care / Healthcare Services Compounder": [
+            "scripts/valuation/valuation_owner_earnings_dcf.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Insurance Float-backed Holding Company": [
+            "scripts/valuation/valuation_sotp.py",
+            "scripts/valuation/valuation_insurance.py",
+            "scripts/valuation/valuation_nav.py",
+        ],
+        "Mature Pharma / Pipeline Pharma": [
+            "scripts/valuation/valuation_owner_earnings_dcf.py",
+            "scripts/valuation/valuation_rnpv.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Commodity / Deep Cyclical Producer": [
+            "scripts/valuation/valuation_cyclical.py",
+            "scripts/valuation/valuation_nav.py",
+        ],
+        "REIT / Infrastructure Yield Asset": [
+            "scripts/valuation/valuation_reit.py",
+            "scripts/valuation/valuation_nav.py",
+        ],
+        "Auto / EV / Mobility Platform": [
+            "scripts/valuation/valuation_cyclical.py",
+            "scripts/valuation/valuation_scenario.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+        "Fintech / Brokerage Platform": [
+            "scripts/valuation/valuation_fintech.py",
+            "scripts/valuation/valuation_scenario.py",
+            "scripts/valuation/valuation_reverse_dcf.py",
+            "scripts/valuation/valuation_comps.py",
+        ],
+    }
+    files = ["scripts/valuation/valuation_common.py"]
+    files.extend(files_by_base_type.get(base_type, ["scripts/valuation/valuation_scenario.py"]))
+
+    if "Dividend / Shareholder Return Overlay" in overlays:
+        files.append("scripts/valuation/valuation_ddm.py")
+    if "Technology Optionality Overlay" in overlays or "Cloud / AI Infrastructure Overlay" in overlays:
+        files.extend(["scripts/valuation/valuation_sotp.py", "scripts/valuation/valuation_scenario.py"])
+    if "Light Cyclical Manufacturing Overlay" in overlays:
+        files.append("scripts/valuation/valuation_cyclical.py")
+
+    unique: List[str] = []
+    for file in files:
+        if file not in unique:
+            unique.append(file)
+    return unique
+
+
 def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
-    """Return a v17.1 token-efficient modular workflow routing decision.
+    """Return a v17.2 token-efficient modular workflow routing decision.
 
     The returned dictionary preserves legacy keys: primary, cross_check,
     downside, and implied.
@@ -500,7 +629,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
     route_scores = _route_scores(company)
 
     result: Dict[str, object] = {
-        "skill_version": "v17.1",
+        "skill_version": "v17.2",
         "base_type": base_type,
         "overlays": overlays,
         "primary_workflow": _workflow_for_base_type(base_type),
@@ -522,6 +651,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
         "missing_data": company.missing_data,
         "confidence": _confidence(company, base_type),
         "active_route_files": _active_route_files(base_type),
+        "valuation_algorithm_files": _valuation_algorithm_files(base_type, overlays),
         "deferred_routes": _deferred_routes(base_type, overlays),
         "token_mode": "lazy_loaded_modular_workflow",
         "token_control": {
@@ -535,10 +665,19 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
         "support_level": "supported with specialized route" if base_type in route_scores and route_scores[base_type] >= 7 else "direct or general support",
         "user_facing_rule": (
             "Show classification, selected workflow, activated model stack, deferred modules, "
-            "business quality, valuation attractiveness, margin of safety, data confidence, action, "
-            "key assumptions, sensitivity, and thesis-breaking risks only. "
+            "business quality, valuation attractiveness, Bear/Base/Bull valuation range, current price, "
+            "margin of safety, price zones, position-aware actions, data confidence, key assumptions, "
+            "sensitivity, and thesis-breaking risks only. "
             "Do not expose internal scorecards, quality-gate internals, or step-by-step calculation traces unless requested."
         ),
+        "output_contract": {
+            "renderer": "references/output_policy/fixed_report_renderer.md",
+            "validator": "references/output_policy/output_validation_rules.md",
+            "valuation_range_required": True,
+            "price_zones_required": True,
+            "position_aware_actions_required": True,
+            "calculation_trace_visible_by_default": False,
+        },
     }
     return result
 
