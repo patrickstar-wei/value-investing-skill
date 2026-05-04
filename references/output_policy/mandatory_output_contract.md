@@ -1,4 +1,4 @@
-# Mandatory Output Contract v17.2
+# Mandatory Output Contract v18
 
 ## Purpose
 

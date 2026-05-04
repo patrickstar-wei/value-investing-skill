@@ -1,4 +1,4 @@
-# Modular Workflow Architecture v17.2
+# Modular Workflow Architecture v18
 
 ## Purpose
 

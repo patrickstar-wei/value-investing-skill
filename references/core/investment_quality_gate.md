@@ -1,4 +1,4 @@
-# Investment Quality Gate v17.2
+# Investment Quality Gate v18
 
 This gate runs after a workflow produces its analysis and before the user-facing report is finalized.
 

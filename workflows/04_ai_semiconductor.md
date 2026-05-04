@@ -30,7 +30,7 @@ Emphasize market-implied expectations and downside if the AI capex cycle normali
 
 ---
 
-## v17.2 Workflow Output Rule
+## v18 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

@@ -30,7 +30,7 @@ Do not annualize peak-cycle profits as normal earnings.
 
 ---
 
-## v17.2 Workflow Output Rule
+## v18 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

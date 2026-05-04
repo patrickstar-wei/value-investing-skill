@@ -1,4 +1,4 @@
-# Value Investing Core Skill v17.2
+# Value Investing Core Skill v18
 
 ## Purpose
 
@@ -39,7 +39,7 @@ Always load or obey these core policies before final output:
 - `references/core/investment_quality_gate.md`
 - `references/core/modular_workflow_architecture.md`
 
-## v17.2 Mandatory Output Contract and Renderer
+## v18 Mandatory Output Contract and Renderer
 
 All workflows must use a fixed output contract. The workflow may perform specialized analysis, but it must not directly render the final report. It must return a structured payload to the core report renderer.
 

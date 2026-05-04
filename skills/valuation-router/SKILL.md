@@ -1,4 +1,4 @@
-# Valuation Router Skill v17.2
+# Valuation Router Skill v18
 
 ## Purpose
 
@@ -195,7 +195,7 @@ The router now selects workflows as well as valuation models. Default behavior:
 Final output must include business quality, valuation attractiveness, margin of safety, data confidence, and action.
 
 
-## v17.2 Fixed Output Contract
+## v18 Fixed Output Contract
 
 The router must return routing and model-selection fields to the renderer. It must not write a custom final report.
 

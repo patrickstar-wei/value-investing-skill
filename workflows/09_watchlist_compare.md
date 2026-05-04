@@ -26,7 +26,7 @@ Provide ranking and next-action buckets: Buy candidate, Watch, Deep Dive, Avoid.
 
 ---
 
-## v17.2 Workflow Output Rule
+## v18 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

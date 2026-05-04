@@ -26,7 +26,7 @@ Reason: [one sentence]
 
 ---
 
-## v17.2 Workflow Output Rule
+## v18 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

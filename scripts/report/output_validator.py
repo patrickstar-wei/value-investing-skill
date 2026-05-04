@@ -1,4 +1,4 @@
-"""Output validator v17.2.
+"""Output validator v18.
 
 Checks that user-facing reports preserve the fixed investment framework,
 including valuation range and position-aware action guidance.
