@@ -155,7 +155,7 @@ def test_token_efficiency_caps_l1_overlays():
 def test_v172_exposes_primary_workflow_quality_gate_and_output_contract():
     company = CompanyProfile(industry="ai semiconductor", is_ai_semiconductor_platform=True)
     models = select_valuation_models(company)
-    assert models["skill_version"] == "v19.1"
+    assert models["skill_version"] == "v20"
     assert models["primary_workflow"] == "workflows/04_ai_semiconductor.md"
     assert "core_quality_gate" in models
     assert "Margin of Safety" in models["core_quality_gate"]["required_final_labels"]

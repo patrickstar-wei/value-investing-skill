@@ -99,6 +99,15 @@ Proactively use or check:
 - public peer, customer, supplier, capex, industry, regulatory, and news sources where material
 - public market data helpers such as yfinance / OpenBB only if the runtime has a working connector; otherwise use verifiable web or official sources
 
+Available public-data connectors:
+
+- Public-data orchestrator: `scripts/connectors/public_data_packet_builder.py` builds one auditable packet from the available free/public connectors before valuation.
+- P0 SEC EDGAR: `scripts/connectors/sec_edgar_connector.py` for free official SEC submissions, latest filings, and XBRL companyfacts.
+- P1 yfinance / Yahoo Finance: `scripts/connectors/yfinance_connector.py` for free third-party quotes, market cap, shares, and basic market data. Treat as Tier 3 and cross-check when material.
+- P2 public IR release parser: `scripts/connectors/ir_release_parser.py` for public earnings releases, guidance snippets, and event evidence. Reconcile key numbers to official filings when available.
+
+When a ticker is compatible with these connectors, run or emulate the public-data orchestrator first and use its `sources_used`, `missing_data`, and `errors` fields to drive the data provenance and final optional-data suggestions.
+
 At the end of the report, suggest optional user-provided inputs only as quality enhancers:
 
 - Bloomberg / FactSet / Refinitiv consensus exports
@@ -108,7 +117,16 @@ At the end of the report, suggest optional user-provided inputs only as quality 
 - Wind / Choice / Morningstar exports
 - licensed datasets or local files
 
+OpenBB optional provider template:
+
+- Template: `config/openbb_providers.template.json`
+- Local secrets file: `config/openbb_providers.local.json` (ignored by git)
+- Runtime check: `scripts/connectors/openbb_provider_config.py`
+- Use OpenBB data only when the package is installed and at least one enabled provider has a key from the local config or environment.
+
 Do not bypass paywalls, store credentials in git, commit paid exports, reproduce long paid-report excerpts, or treat institutional target prices as intrinsic value.
+
+Claude package / copy installs exclude expanded master source materials by default. Use the compact `references/masters/*.md` cards during normal analysis; load source materials only when explicitly needed or when the user opts into packaging them.
 
 Load if institutional views are actually provided:
 

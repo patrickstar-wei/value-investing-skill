@@ -31,7 +31,7 @@ Do not use a single P/E or generic DCF for the whole company when segment econom
 
 ---
 
-## v19.1 Workflow Output Rule
+## v20 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

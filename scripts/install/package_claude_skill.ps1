@@ -2,6 +2,7 @@ param(
     [string]$PackageName = "value-investing-claude-skill",
     [string]$OutputDir = "dist",
     [switch]$IncludeTests,
+    [switch]$IncludeSourceMaterials,
     [switch]$NoZip,
     [switch]$Force
 )
@@ -14,18 +15,21 @@ function Get-RepoRoot {
 }
 
 function Test-SkippedPath {
-    param([string]$RelativePath, [bool]$IncludeTestsFlag)
+    param([string]$RelativePath, [bool]$IncludeTestsFlag, [bool]$IncludeSourceMaterialsFlag)
     $parts = $RelativePath -split "[\\/]+"
-    $skipDirs = @(".git", ".codex-plugin", ".trae", "__pycache__", ".pytest_cache", ".venv", "venv", "env", "dist", "reports", "output", "outputs", "results")
+    $skipDirs = @(".git", ".codex-plugin", ".trae", "__pycache__", ".pytest_cache", ".venv", "env", "dist", "reports", "output", "outputs", "results", "data", "institutional_reports", "licensed_data", "secrets", "credentials")
     if (-not $IncludeTestsFlag) {
         $skipDirs += "tests"
+    }
+    if (-not $IncludeSourceMaterialsFlag -and $RelativePath -match "^references[\\/]masters[\\/]source_materials(?:[\\/]|$)") {
+        return $true
     }
     foreach ($part in $parts) {
         if ($skipDirs -contains $part) {
             return $true
         }
     }
-    if ($RelativePath -like "*.pyc" -or $RelativePath -like "*.log" -or $RelativePath -like "*.tmp") {
+    if ($RelativePath -like "*.pyc" -or $RelativePath -like "*.log" -or $RelativePath -like "*.tmp" -or $RelativePath -like "config\*.local.json" -or $RelativePath -like "config/*.local.json") {
         return $true
     }
     if ($RelativePath -ieq "plugin.json" -or $RelativePath -ieq ".gitmodules") {
@@ -38,14 +42,15 @@ function Copy-SkillTree {
     param(
         [string]$Source,
         [string]$Destination,
-        [bool]$IncludeTestsFlag
+        [bool]$IncludeTestsFlag,
+        [bool]$IncludeSourceMaterialsFlag
     )
 
     New-Item -ItemType Directory -Force -Path $Destination | Out-Null
     $sourceFull = (Resolve-Path $Source).Path.TrimEnd("\", "/")
     Get-ChildItem -LiteralPath $sourceFull -Recurse -File | ForEach-Object {
         $relative = $_.FullName.Substring($sourceFull.Length).TrimStart("\", "/")
-        if (Test-SkippedPath -RelativePath $relative -IncludeTestsFlag $IncludeTestsFlag) {
+        if (Test-SkippedPath -RelativePath $relative -IncludeTestsFlag $IncludeTestsFlag -IncludeSourceMaterialsFlag $IncludeSourceMaterialsFlag) {
             return
         }
         $targetFile = Join-Path $Destination $relative
@@ -77,7 +82,7 @@ if ((Test-Path $packageRoot) -or (Test-Path $zipPath)) {
 }
 
 New-Item -ItemType Directory -Force -Path $distRoot | Out-Null
-Copy-SkillTree -Source $repoRoot -Destination $packageRoot -IncludeTestsFlag ([bool]$IncludeTests)
+Copy-SkillTree -Source $repoRoot -Destination $packageRoot -IncludeTestsFlag ([bool]$IncludeTests) -IncludeSourceMaterialsFlag ([bool]$IncludeSourceMaterials)
 
 $installNote = @"
 # Claude Skill Package
@@ -103,6 +108,7 @@ python -m unittest tests.test_valuation_models
 ```
 
 Tests are included only when the package script is run with `-IncludeTests`.
+Expanded master source materials are excluded by default; include them only with `-IncludeSourceMaterials`.
 "@
 
 Set-Content -Path (Join-Path $packageRoot "CLAUDE_INSTALL.md") -Value $installNote -Encoding UTF8

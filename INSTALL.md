@@ -109,6 +109,7 @@ Linux/macOS installers:
 --mode symlink|copy
 --force
 --include-tests
+--include-source-materials
 ```
 
 Windows installers:
@@ -120,6 +121,7 @@ Windows installers:
 -Mode Junction|Copy
 -Force
 -IncludeTests
+-IncludeSourceMaterials
 ```
 ## Codex and Claude compatibility
 
@@ -128,5 +130,5 @@ This project is maintained as a dual-use skill:
 - Codex uses the repo root `SKILL.md` plus `.codex-plugin/plugin.json` / `plugin.json` metadata.
 - Claude uses the same repo root `SKILL.md`; the file includes standard YAML frontmatter for Claude skill discovery.
 - Claude package / install scripts exclude Codex-only metadata such as `.codex-plugin/`, `plugin.json`, and `.gitmodules`.
+- Claude package / copy install excludes `references/masters/source_materials/` by default to keep the skill lean; use `--include-source-materials` or `-IncludeSourceMaterials` only when you need the raw master source library.
 - Codex install scripts keep the full repo shape so the local plugin and command metadata remain available.
-

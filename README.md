@@ -1,4 +1,4 @@
-# Value Investing Skill Project v19.1
+# Value Investing Skill Project v20
 
 This project is a modular value-investing research skill. It combines company-type routing, structured assumptions, executable valuation models, data freshness / provenance gates, and a fixed report contract.
 
@@ -202,12 +202,17 @@ python -c "import tests.test_valuation_router as t; [getattr(t, name)() for name
 - `scripts/audit/structured_assumption_audit.py`: structured assumption gate.
 - `scripts/data/check_data_freshness.py`: data freshness checks.
 - `scripts/audit/data_provenance_audit.py`: source / lineage checks.
+- `scripts/connectors/sec_edgar_connector.py`: free official SEC EDGAR submissions and companyfacts connector.
+- `scripts/connectors/yfinance_connector.py`: yfinance / Yahoo Finance market quote connector with Yahoo chart fallback.
+- `scripts/connectors/ir_release_parser.py`: public IR / earnings-release parser for metrics, guidance, and risk snippets.
+- `scripts/connectors/openbb_provider_config.py`: optional OpenBB provider template and runtime readiness checker.
+- `scripts/connectors/public_data_packet_builder.py`: orchestrates SEC, market quote, public IR release, and OpenBB readiness into one analysis packet.
 - `scripts/connectors/institutional_view_parser.py`: safe parser for user-provided institutional view exports.
 - `skills/institutional-view-ingestion/SKILL.md`: institutional view ingestion workflow.
 - `references/data_source_policy/institutional_view_policy.md`: safety and copyright policy for institutional research.
 - `references/core/investment_philosophy_layer.md`: mandatory investment philosophy and quality-control layer.
 - `references/masters/`: visual master-lens library with one file per investor framework.
-- `references/masters/source_materials/`: Git submodule source library for expanded master-lens materials.
+- `references/masters/source_materials/`: Git submodule source library for expanded master-lens materials. Claude packages exclude it by default; pass the explicit source-materials option only when you need the raw library.
 - `references/valuation_rules/structured_assumption_policy.md`: assumption policy.
 - `references/output_policy/`: fixed output contract and renderer policy.
 - `schemas/valuation_input_packet.schema.json`: valuation input packet schema.

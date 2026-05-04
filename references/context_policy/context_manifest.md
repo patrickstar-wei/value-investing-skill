@@ -91,6 +91,11 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Source verification | `skills/data-provenance-audit/SKILL.md`, `references/data_source_policy/data_provenance_policy.md`, `scripts/audit/data_provenance_audit.py` |
 | Data lineage creation | `scripts/data/data_provenance.py`, `schemas/data_point.schema.json` |
 | Human verification mode | `references/data_source_policy/data_provenance_policy.md`, `commands/source-check.md` |
+| SEC filings and XBRL facts | `scripts/connectors/sec_edgar_connector.py`, `references/data_source_policy/data_source_policy.md` |
+| Current quote / market cap | `scripts/connectors/yfinance_connector.py`, `references/data_source_policy/data_source_policy.md` |
+| Public IR / earnings release | `scripts/connectors/ir_release_parser.py`, `references/data_source_policy/data_source_policy.md` |
+| OpenBB optional provider readiness | `config/openbb_providers.template.json`, `scripts/connectors/openbb_provider_config.py`, `references/data_source_policy/data_source_policy.md` |
+| Automatic public data packet | `scripts/connectors/public_data_packet_builder.py`, `references/data_source_policy/data_source_policy.md` |
 | Institutional view ingestion | `skills/institutional-view-ingestion/SKILL.md`, `references/data_source_policy/institutional_view_policy.md`, `schemas/institutional_view.schema.json`, `scripts/connectors/institutional_view_parser.py` |
 
 ## Cross-Model Consistency Tasks
@@ -129,7 +134,7 @@ Master Summary → Task Command → Router → One Sub-skill → Data Packet →
 | Commodity / REIT / SaaS / Auto / Fintech specialist route | `references/valuation_rules/specialized_company_routes_v17.md`, selected route section only, `scripts/routing/select_valuation_models.py`, `scripts/valuation/valuation_cyclical.py`, `scripts/valuation/valuation_reit.py`, `scripts/valuation/valuation_fintech.py`, `scripts/valuation/valuation_scenario.py` |
 
 
-## v19.1 Output Contract Tasks
+## v20 Output Contract Tasks
 
 For every standard investment analysis final output, obey:
 

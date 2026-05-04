@@ -30,7 +30,7 @@ Do not rely on accounting EPS as the main valuation metric for REITs.
 
 ---
 
-## v19.1 Workflow Output Rule
+## v20 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

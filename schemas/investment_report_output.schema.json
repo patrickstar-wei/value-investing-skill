@@ -30,7 +30,61 @@
       "type": "object"
     },
     "data_provenance": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "data_confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "analysis_as_of": {
+          "type": "string"
+        },
+        "market_data_as_of": {
+          "type": "string"
+        },
+        "latest_financial_period": {
+          "type": "string"
+        },
+        "missing_data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "public_data_sources_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suggested_user_provided_inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "item",
+              "why_it_helps",
+              "how_to_provide"
+            ],
+            "properties": {
+              "item": {
+                "type": "string"
+              },
+              "why_it_helps": {
+                "type": "string"
+              },
+              "how_to_provide": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
     "valuation_model_selection": {
       "type": "object",

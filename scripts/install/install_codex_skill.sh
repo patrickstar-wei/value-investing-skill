@@ -78,6 +78,11 @@ else
     --exclude='venv'
     --exclude='env'
     --exclude='dist'
+    --exclude='data'
+    --exclude='institutional_reports'
+    --exclude='licensed_data'
+    --exclude='secrets'
+    --exclude='credentials'
     --exclude='reports'
     --exclude='output'
     --exclude='outputs'
@@ -85,6 +90,7 @@ else
     --exclude='*.pyc'
     --exclude='*.log'
     --exclude='*.tmp'
+    --exclude='config/*.local.json'
   )
   if [[ "$INCLUDE_TESTS" -ne 1 ]]; then
     EXCLUDES+=(--exclude='tests')

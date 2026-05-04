@@ -11,6 +11,7 @@ CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$DEFAULT_CLAUDE_SKILLS_DIR}"
 MODE="copy"
 FORCE=0
 INCLUDE_TESTS=0
+INCLUDE_SOURCE_MATERIALS=0
 
 usage() {
   cat <<'EOF'
@@ -22,6 +23,8 @@ Options:
   --mode copy|symlink      Install mode (default: copy)
   --force                  Replace existing target
   --include-tests          Include tests when --mode copy is used
+  --include-source-materials
+                           Include expanded master source-material submodules when --mode copy is used
   -h, --help               Show help
 EOF
 }
@@ -38,6 +41,8 @@ while [[ $# -gt 0 ]]; do
       FORCE=1; shift ;;
     --include-tests)
       INCLUDE_TESTS=1; shift ;;
+    --include-source-materials)
+      INCLUDE_SOURCE_MATERIALS=1; shift ;;
     -h|--help)
       usage; exit 0 ;;
     *)
@@ -83,6 +88,11 @@ else
     --exclude='venv'
     --exclude='env'
     --exclude='dist'
+    --exclude='data'
+    --exclude='institutional_reports'
+    --exclude='licensed_data'
+    --exclude='secrets'
+    --exclude='credentials'
     --exclude='reports'
     --exclude='output'
     --exclude='outputs'
@@ -92,9 +102,13 @@ else
     --exclude='*.tmp'
     --exclude='plugin.json'
     --exclude='.gitmodules'
+    --exclude='config/*.local.json'
   )
   if [[ "$INCLUDE_TESTS" -ne 1 ]]; then
     EXCLUDES+=(--exclude='tests')
+  fi
+  if [[ "$INCLUDE_SOURCE_MATERIALS" -ne 1 ]]; then
+    EXCLUDES+=(--exclude='references/masters/source_materials')
   fi
   if command -v rsync >/dev/null 2>&1; then
     rsync -a "${EXCLUDES[@]}" "${REPO_ROOT}/" "${TARGET}/"

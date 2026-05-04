@@ -1,0 +1,42 @@
+{
+  "enabled": true,
+  "notes": "Copy to config/openbb_providers.local.json and fill only providers you are licensed or allowed to use. Do not commit the local file.",
+  "providers": {
+    "fmp": {
+      "enabled": false,
+      "api_key_env": "FMP_API_KEY",
+      "api_key": "",
+      "use_for": ["financial_statements", "ratios", "market_data"]
+    },
+    "polygon": {
+      "enabled": false,
+      "api_key_env": "POLYGON_API_KEY",
+      "api_key": "",
+      "use_for": ["market_data", "historical_prices"]
+    },
+    "alpha_vantage": {
+      "enabled": false,
+      "api_key_env": "ALPHA_VANTAGE_API_KEY",
+      "api_key": "",
+      "use_for": ["market_data", "fundamentals"]
+    },
+    "tiingo": {
+      "enabled": false,
+      "api_key_env": "TIINGO_API_KEY",
+      "api_key": "",
+      "use_for": ["historical_prices", "news"]
+    },
+    "fred": {
+      "enabled": false,
+      "api_key_env": "FRED_API_KEY",
+      "api_key": "",
+      "use_for": ["macro_data", "rates"]
+    },
+    "nasdaq": {
+      "enabled": false,
+      "api_key_env": "NASDAQ_DATA_LINK_API_KEY",
+      "api_key": "",
+      "use_for": ["market_data", "industry_data"]
+    }
+  }
+}

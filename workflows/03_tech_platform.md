@@ -30,7 +30,7 @@ Separate core cash-flow engine from technology optionality. Do not automatically
 
 ---
 
-## v19.1 Workflow Output Rule
+## v20 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

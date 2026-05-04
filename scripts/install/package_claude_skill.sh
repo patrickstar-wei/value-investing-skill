@@ -4,6 +4,7 @@ set -euo pipefail
 PACKAGE_NAME="value-investing-claude-skill"
 OUTPUT_DIR="dist"
 INCLUDE_TESTS=0
+INCLUDE_SOURCE_MATERIALS=0
 NO_ZIP=0
 FORCE=0
 OS_NAME="$(uname -s 2>/dev/null || echo unknown)"
@@ -16,6 +17,8 @@ Options:
   --name NAME              Package folder / zip base name
   --output-dir DIR         Output directory (default: dist)
   --include-tests          Include tests in the package
+  --include-source-materials
+                           Include expanded master source-material submodules
   --no-zip                 Create folder only
   --force                  Replace existing package output
   -h, --help               Show help
@@ -30,6 +33,8 @@ while [[ $# -gt 0 ]]; do
       OUTPUT_DIR="$2"; shift 2 ;;
     --include-tests)
       INCLUDE_TESTS=1; shift ;;
+    --include-source-materials)
+      INCLUDE_SOURCE_MATERIALS=1; shift ;;
     --no-zip)
       NO_ZIP=1; shift ;;
     --force)
@@ -76,6 +81,11 @@ EXCLUDES=(
   --exclude='venv'
   --exclude='env'
   --exclude='dist'
+  --exclude='data'
+  --exclude='institutional_reports'
+  --exclude='licensed_data'
+  --exclude='secrets'
+  --exclude='credentials'
   --exclude='reports'
   --exclude='output'
   --exclude='outputs'
@@ -85,9 +95,13 @@ EXCLUDES=(
   --exclude='*.tmp'
   --exclude='plugin.json'
   --exclude='.gitmodules'
+  --exclude='config/*.local.json'
 )
 if [[ "$INCLUDE_TESTS" -ne 1 ]]; then
   EXCLUDES+=(--exclude='tests')
+fi
+if [[ "$INCLUDE_SOURCE_MATERIALS" -ne 1 ]]; then
+  EXCLUDES+=(--exclude='references/masters/source_materials')
 fi
 
 if command -v rsync >/dev/null 2>&1; then
@@ -126,6 +140,7 @@ python3 -m unittest tests.test_valuation_models
 ```
 
 Tests are included only when the package script is run with `--include-tests`.
+Expanded master source materials are excluded by default; include them only with `--include-source-materials`.
 EOF
 
 if [[ "$NO_ZIP" -ne 1 ]]; then

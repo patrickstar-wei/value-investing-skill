@@ -68,6 +68,7 @@ desktop.ini
 *.key
 secrets/
 credentials/
+config/*.local.json
 .env.local
 .env.*.local
 

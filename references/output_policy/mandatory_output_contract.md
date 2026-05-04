@@ -1,4 +1,4 @@
-# Mandatory Output Contract v19.1
+# Mandatory Output Contract v20
 
 ## Purpose
 
@@ -193,6 +193,8 @@ For standard company analysis, the skill must proactively use public data that d
 - public peer, customer, supplier, capex, and industry disclosures
 - public news, regulatory events, and company announcements
 - yfinance / OpenBB only if available in the runtime; otherwise use verifiable web or official sources
+
+When `scripts/connectors/public_data_packet_builder.py` is usable for the ticker, treat its packet as the first-pass public evidence bundle. Reflect its `sources_used`, `missing_data`, and `errors` in the report's data provenance and optional-data suggestions.
 
 At the end of the report, list optional user-provided data that would improve assumption quality, such as:
 
