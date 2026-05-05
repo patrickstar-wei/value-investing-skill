@@ -26,6 +26,7 @@ TASK_CONTEXT: Dict[str, List[str]] = {
         "skills/valuation-router/SKILL.md",
         "references/core/investment_philosophy_layer.md",
         "references/masters/multi_master_framework.md",
+        "references/masters/jin_jiancheng.md",
         "references/valuation_rules/valuation_model_router.md",
         "references/valuation_rules/structured_assumption_policy.md",
         "references/report_templates/value_investing_report_template.md",

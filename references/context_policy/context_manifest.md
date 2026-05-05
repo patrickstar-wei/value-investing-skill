@@ -31,6 +31,7 @@ This file is a navigation index. The master skill should read this first, then l
 |---|---|
 | Any standard investment analysis | `references/core/investment_philosophy_layer.md`, `references/core/investment_quality_gate.md`, selected workflow only |
 | Master lens lookup | `references/masters/multi_master_framework.md`, selected `references/masters/*.md` lens only |
+| Jin Jiancheng action lens lookup | `references/masters/multi_master_framework.md`, `references/masters/jin_jiancheng.md` |
 | Full master source lookup | selected file under `references/masters/source_materials/` only |
 | Workflow routing | `commands/workflow-router.md`, `workflows/00_router.md`, `scripts/routing/select_valuation_models.py` |
 | Philosophy / quality gate audit | `commands/philosophy-gate.md`, `references/core/investment_philosophy_layer.md`, `references/core/investment_quality_gate.md` |

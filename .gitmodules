@@ -7,3 +7,6 @@
 [submodule "references/masters/source_materials/ai_hedge_fund"]
 	path = references/masters/source_materials/ai_hedge_fund
 	url = git@github.com:virattt/ai-hedge-fund.git
+[submodule "references/masters/source_materials/raw_mental_model"]
+	path = references/masters/source_materials/raw_mental_model
+	url = git@github.com:patrickstar-wei/raw_mental_model.git

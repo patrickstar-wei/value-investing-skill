@@ -62,6 +62,7 @@ The detailed master files live in `references/masters/`. Use `references/masters
 | Greenwald | `references/masters/greenwald.md` | EPV, competitive advantage, reproduction value | Mature stable businesses and moat verification |
 | Mauboussin / Rappaport | `references/masters/mauboussin_rappaport.md` | Expectations investing, reverse DCF | High-expectation stocks and market-implied growth analysis |
 | Damodaran | `references/masters/damodaran.md` | Narrative and numbers, lifecycle-based valuation | Model selection across company lifecycle and story-to-number consistency |
+| Jin Jiancheng | `references/masters/jin_jiancheng.md` | Do not predict; prepare. Cash flow, position sizing, valuation zones, staged add/trim discipline | Translating valuation into executable action plans, especially U.S. equities / ETFs and portfolio-aware decisions |
 
 ## Workflow-specific philosophy mapping
 
@@ -76,6 +77,8 @@ The detailed master files live in `references/masters/`. Use `references/masters
 | REIT / Infrastructure | `graham.md`, `greenwald.md`, `damodaran.md`, rate-cycle discipline |
 | Cyclical / Commodity | `howard_marks.md`, `graham.md`, `greenwald.md` |
 | Watchlist / Compare | `greenblatt.md`, `buffett_munger.md`, `graham.md` |
+
+Use `references/masters/jin_jiancheng.md` as an auxiliary action overlay when the analysis needs price zones, tranche plans, cash-reserve discipline, position-aware guidance, or a drawdown check that separates temporary shock from fundamental deterioration. Do not use it to replace the routed valuation workflow.
 
 ## User-facing philosophy output
 

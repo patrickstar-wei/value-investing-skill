@@ -15,6 +15,7 @@ This folder is the operating map for investor-style lenses. It is not a biograph
 | Greenwald | `greenwald.md` | EPV, competitive advantage, reproduction value | Mature stable businesses and moat verification |
 | Mauboussin / Rappaport | `mauboussin_rappaport.md` | Expectations investing, reverse DCF | High-expectation stocks and market-implied growth analysis |
 | Damodaran | `damodaran.md` | Narrative and numbers, lifecycle valuation | Model selection and story-to-number consistency |
+| Jin Jiancheng | `jin_jiancheng.md` | Do not predict; prepare. Cash flow, position sizing, valuation zones, staged add/trim discipline | Translating company value into executable action plans, especially U.S. equities / ETFs and portfolio-aware decisions |
 
 ## Folder Rule
 
@@ -35,6 +36,10 @@ Full source materials for expanded master lenses live under `references/masters/
 | REIT / Infrastructure | `graham.md`, `greenwald.md`, `damodaran.md` |
 | Cyclical / Commodity | `howard_marks.md`, `graham.md`, `greenwald.md` |
 | Watchlist / Compare | `greenblatt.md`, `buffett_munger.md`, `graham.md` |
+
+## Action Overlay Activation
+
+Load `jin_jiancheng.md` as an auxiliary action lens when a stock/company report needs price zones, staged add/trim rules, cash reserve discipline, position-aware guidance, U.S. asset allocation context, or a check on whether a drawdown is a temporary shock versus a fundamental change. Keep it compact and do not load the raw `jin-jiancheng-perspective` source skill unless the user explicitly asks for that perspective or source-detail lookup.
 
 ## Output Rule
 

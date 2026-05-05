@@ -111,6 +111,7 @@ class ValuationModelTests(unittest.TestCase):
         self.assertIn("scripts/valuation/valuation_rnpv.py", files)
         self.assertNotIn("scripts/valuation/valuation_biotech_rnpv.py", files)
         self.assertIn("references/masters/multi_master_framework.md", files)
+        self.assertIn("references/masters/jin_jiancheng.md", files)
 
     def test_valuation_router_exposes_algorithm_files(self):
         models = select_valuation_models(

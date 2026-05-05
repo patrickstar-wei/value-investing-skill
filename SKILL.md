@@ -182,6 +182,7 @@ Default lens mapping:
 - Tech platform: Buffett-Munger, Fisher, Mauboussin-Rappaport, Damodaran
 - AI semiconductor: Fisher, Mauboussin-Rappaport, Howard Marks, Damodaran
 - Cyclical / commodity: Howard Marks, Graham, Greenwald
+- Action / position overlay: Jin Jiancheng when the analysis needs price zones, staged add/trim rules, cash reserve discipline, U.S. equity / ETF context, or a check on whether a drawdown is temporary shock versus fundamental change
 
 The final report must include a compact `Master Lens Used` section with rationale and impact. Do not dump every master framework.
 
