@@ -370,7 +370,7 @@ Mind map may be used only when the user explicitly asks for mind map, tree, or v
 
 ---
 
-## v20 Fixed Output Contract Compatibility
+## v20.1 Fixed Output Contract Compatibility
 
 The pyramid output policy is now governed by the Mandatory Output Contract.
 

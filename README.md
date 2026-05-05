@@ -1,4 +1,4 @@
-# Value Investing Skill Project v20
+# Value Investing Skill Project v20.1
 
 This project is a modular value-investing research skill. It combines company-type routing, structured assumptions, executable valuation models, data freshness / provenance gates, and a fixed report contract.
 

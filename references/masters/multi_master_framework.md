@@ -1,4 +1,4 @@
-# Multi-master Value Investing Framework v20
+# Multi-master Value Investing Framework v20.1
 
 This folder is the operating map for investor-style lenses. It is not a biography library. Each file should answer: when to use the lens, what questions to ask, what evidence is required, and how it affects valuation.
 

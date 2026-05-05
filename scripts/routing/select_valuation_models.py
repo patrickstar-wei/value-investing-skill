@@ -1,4 +1,4 @@
-"""Valuation model router v20.
+"""Valuation model router v20.1.
 
 This router classifies a company by economic profile, not by name.
 It expands coverage through lazy-loaded workflows while preserving token discipline:
@@ -617,7 +617,7 @@ def _valuation_algorithm_files(base_type: str, overlays: List[str]) -> List[str]
 
 
 def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
-    """Return a v20 token-efficient modular workflow routing decision.
+    """Return a v20.1 token-efficient modular workflow routing decision.
 
     The returned dictionary preserves legacy keys: primary, cross_check,
     downside, and implied.
@@ -629,7 +629,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
     route_scores = _route_scores(company)
 
     result: Dict[str, object] = {
-        "skill_version": "v20",
+        "skill_version": "v20.1",
         "base_type": base_type,
         "overlays": overlays,
         "primary_workflow": _workflow_for_base_type(base_type),

@@ -3,7 +3,7 @@ name: value-investing-research
 description: Use for value-oriented company or stock analysis, intrinsic value estimation, reverse DCF, margin-of-safety checks, investment memos, earnings reviews, valuation model routing, structured assumption audits, and investor action price zones. Supports Codex and Claude skill usage with lazy-loaded references, executable Python valuation scripts, and fixed bilingual report output.
 ---
 
-# Value Investing Core Skill v19.2
+# Value Investing Core Skill v20.1
 
 ## Purpose
 

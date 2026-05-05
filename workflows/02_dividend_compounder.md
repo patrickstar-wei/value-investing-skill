@@ -31,7 +31,7 @@ Show dividend safety, shareholder yield attractiveness, valuation range, margin 
 
 ---
 
-## v20 Workflow Output Rule
+## v20.1 Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 
