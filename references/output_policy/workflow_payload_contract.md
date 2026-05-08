@@ -1,4 +1,4 @@
-# Workflow Payload Contract v20.1
+# Workflow Payload Contract 
 
 ## Purpose
 

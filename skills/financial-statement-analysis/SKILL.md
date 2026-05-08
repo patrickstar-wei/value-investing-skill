@@ -1,3 +1,8 @@
+---
+name: financial-statement-analysis
+description: Use this skill to analyze income statement, balance sheet, cash flow, ROIC, FCF conversion, leverage, and accounting quality. Trigger for fundamental company analysis, financial quality checks, margin trends, or cash-flow reality checks.
+---
+
 # Financial Statement Analysis Skill
 
 ## Purpose

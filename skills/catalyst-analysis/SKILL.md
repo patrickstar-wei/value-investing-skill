@@ -1,3 +1,8 @@
+---
+name: catalyst-analysis
+description: Use this skill to identify catalysts that may close the gap between price and intrinsic value. Trigger for earnings events, guidance changes, buybacks, divestitures, regulatory milestones, product cycles, activist pressure, or other thesis-changing events.
+---
+
 # Catalyst Analysis Skill
 
 ## Purpose

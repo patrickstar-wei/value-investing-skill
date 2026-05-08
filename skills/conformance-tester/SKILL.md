@@ -1,3 +1,8 @@
+---
+name: conformance-tester
+description: Use this skill to test whether value-investing reports follow required workflow, schema, output, data, and execution-gate rules. Trigger after skill changes, model changes, report inconsistency, token optimization, or new valuation-module additions.
+---
+
 # Conformance Tester Skill
 
 ## Purpose

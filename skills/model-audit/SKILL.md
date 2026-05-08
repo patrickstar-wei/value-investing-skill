@@ -1,3 +1,8 @@
+---
+name: model-audit
+description: Use this skill to audit valuation model suitability, assumptions, formulas, sensitivity, data lineage, and blocked/low-confidence items. Trigger when reviewing a model, checking assumptions, validating calculations, or diagnosing valuation reliability.
+---
+
 # Model Audit Skill
 
 ## Purpose

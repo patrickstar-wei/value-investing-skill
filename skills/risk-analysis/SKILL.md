@@ -1,3 +1,8 @@
+---
+name: risk-analysis
+description: Use this skill to identify permanent capital loss risks, stress cases, regulatory exposure, leverage risk, cycle risk, thesis-break triggers, and downside asymmetry. Trigger whenever an investment view needs bear-case discipline.
+---
+
 # Risk Analysis Skill
 
 ## Purpose

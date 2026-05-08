@@ -1,3 +1,8 @@
+---
+name: data-ingestion
+description: Use this skill to fetch, normalize, validate, and confidence-score public or user-provided investment data. Trigger before valuation when the analysis needs SEC filings, market quotes, IR releases, financial metrics, or structured data packets.
+---
+
 # Data Ingestion Skill
 
 ## Purpose

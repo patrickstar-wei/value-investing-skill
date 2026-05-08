@@ -1,3 +1,8 @@
+---
+name: investment-style-router
+description: Use this skill to map an investment question to Graham, Buffett/Munger, Fisher, Klarman, Greenblatt, Marks, Greenwald, Mauboussin, Damodaran, or other master-investor lenses. Trigger when a report needs a philosophy lens or style-specific judgment.
+---
+
 # Investment Style Router Skill
 
 ## Purpose

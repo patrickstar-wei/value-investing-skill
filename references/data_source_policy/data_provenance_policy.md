@@ -33,6 +33,8 @@ Unverified / Assumption / User-provided / Requires source
 
 and must not drive the final valuation conclusion.
 
+Current price has an additional provenance requirement: generic WebSearch snippets, search-result cards, and webpage snapshots are not valid current-price sources unless they include an explicit same-day market timestamp. A timestamp-free page price must be labeled `Requires source` / `Blocked` and must not drive margin of safety, reverse DCF, or price/action zones.
+
 ---
 
 ## Data Classes

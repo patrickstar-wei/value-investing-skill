@@ -1,3 +1,8 @@
+---
+name: epv-analysis
+description: Use this skill to estimate earnings power value, no-growth value, and franchise value for stable businesses. Trigger when downside protection, normalized EBIT, no-growth EPV, or Greenwald-style valuation cross-checks are needed.
+---
+
 # EPV Analysis Skill
 
 ## Purpose

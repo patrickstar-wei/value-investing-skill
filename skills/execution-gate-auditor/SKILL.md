@@ -1,3 +1,8 @@
+---
+name: execution-gate-auditor
+description: Use this skill to verify that selected valuation, freshness, provenance, risk, and output modules were actually executed or explicitly blocked. Trigger before final reports, after model routing, or when silent skips and incomplete analysis are suspected.
+---
+
 # Execution Gate Auditor Skill
 
 ## Purpose

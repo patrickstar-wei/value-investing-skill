@@ -29,7 +29,7 @@ Show classification, business quality, valuation summary, risk, action. Do not s
 
 ---
 
-## v20.1 Workflow Output Rule
+##  Workflow Output Rule
 
 This workflow must not render the final user-facing report directly.
 

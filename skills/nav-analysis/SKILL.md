@@ -1,3 +1,8 @@
+---
+name: nav-analysis
+description: Use this skill to estimate net asset value for asset-driven companies, holdings, real estate, investment portfolios, and infrastructure assets. Trigger when fair value of assets minus liabilities is the right valuation anchor.
+---
+
 # NAV Analysis Skill
 
 ## Purpose

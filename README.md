@@ -1,18 +1,28 @@
-# Value Investing Skill Project v20.1
+# Value Investing Skill Project 
 
 This project is a modular value-investing research skill. It combines company-type routing, structured assumptions, executable valuation models, data freshness / provenance gates, and a fixed report contract.
 
 ## What It Does
 
-The skill analyzes a company through this default flow:
+The skill helps answer a specific investment question:
 
 ```text
-CompanyProfile
--> valuation router
--> structured assumption gate
+Is this public stock or listed company a good business, supported by good financials, available at a good price, and suitable for a conditional action plan?
+```
+
+It turns public evidence, relevant company or industry news, and structured assumptions into auditable value judgments and buy / add / hold / trim / sell price zones. It is designed for value-oriented equity research, not near-term price prediction or technical trading.
+
+The default flow is:
+
+```text
+Public company / stock request
+-> company type and workflow routing
+-> public data, filing, market data, and material news checks
+-> structured assumptions
 -> data freshness / provenance gates
--> selected Python valuation models
--> ValuationResult
+-> selected executable valuation models
+-> valuation and risk result
+-> investor action framework
 -> fixed report renderer
 ```
 
@@ -20,6 +30,8 @@ The system is designed to avoid two common mistakes:
 
 - Using a generic DCF for every business.
 - Producing precise-looking valuation numbers from unsupported assumptions.
+
+News summaries are in scope when they affect the investment thesis, risk rating, catalyst path, valuation assumptions, earnings update, or data freshness. Pure news summarization without an investment decision context is outside the main scope.
 
 ## Core Principles
 
@@ -170,6 +182,30 @@ Run valuation model tests:
 
 ```bash
 python -m unittest tests.test_valuation_models
+```
+
+Run skill metadata and eval prompt health checks:
+
+```bash
+python -m scripts.testing.skill_health_check
+```
+
+Benchmark assets:
+
+- `evals/trigger_eval_set.json` checks whether the root skill should trigger for relevant and irrelevant prompts.
+- `evals/evals.json` contains output-quality eval prompts and `expectations` that graders or benchmark runs should score.
+- `scripts/testing/skill_health_check.py` validates skill metadata and requires every output eval to include non-empty expectations.
+
+Run the root skill trigger eval set with `skill-creator`:
+
+```bash
+PYTHONPATH=/home/qitong/repo/skills/skills/skill-creator \
+python /home/qitong/repo/skills/skills/skill-creator/scripts/run_eval.py \
+  --eval-set evals/trigger_eval_set.json \
+  --skill-path . \
+  --num-workers 2 \
+  --timeout 45 \
+  --runs-per-query 1
 ```
 
 Analyze with local institutional-view files:

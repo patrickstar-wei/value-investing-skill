@@ -1,6 +1,6 @@
 # Value Investing Report
 
-## v20.1 Rendering Rule
+##  Rendering Rule
 
 This template is rendered by the Fixed Report Renderer. Workflows must populate the structured payload and must not directly write a custom final report.
 

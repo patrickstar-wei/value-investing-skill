@@ -1,3 +1,8 @@
+---
+name: pyramid-summary
+description: Use this skill to rewrite a completed investment analysis in pyramid-principle form with conclusion first, core reasons, evidence, valuation, risks, gates, and action framework. Trigger when the user asks for clearer structure, executive summary, or symbol-based output.
+---
+
 # Pyramid Summary Skill
 
 ## Purpose

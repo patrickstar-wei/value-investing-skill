@@ -1,3 +1,8 @@
+---
+name: rnpv-analysis
+description: Use this skill to estimate risk-adjusted net present value for biotech pipelines, clinical assets, drug programs, or project portfolios. Trigger when valuation depends on approval probabilities, milestones, peak sales, patent life, or cash burn.
+---
+
 # rNPV Analysis Skill
 
 ## Purpose

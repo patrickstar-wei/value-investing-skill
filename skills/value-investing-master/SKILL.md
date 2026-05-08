@@ -1,3 +1,8 @@
+---
+name: value-investing-master
+description: Use this skill to orchestrate value-investing analysis across company classification, data ingestion, valuation routing, risk checks, master lenses, execution gates, and final action guidance. Trigger for full investment memos or multi-module stock research.
+---
+
 # Master Orchestrator Skill
 
 ## Purpose

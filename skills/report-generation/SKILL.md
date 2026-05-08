@@ -1,3 +1,8 @@
+---
+name: report-generation
+description: Use this skill to render investment analysis into stable user-facing reports, markdown, PDF/DOCX/XLSX/PPTX/HTML outputs, or audit logs. Trigger when the user asks to generate, render, export, or package a final research report.
+---
+
 # Report Generation Skill
 
 ## Purpose

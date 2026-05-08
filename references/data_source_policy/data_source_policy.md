@@ -30,6 +30,8 @@ Each data point should store:
 
 Do not treat web summaries as primary financial statement data when official filings are available.
 
+Do not treat generic WebSearch snippets, search-result cards, or webpage snapshots as valid current-price sources unless they include an explicit same-day market timestamp. A visible price without a market timestamp is not current market data and must not drive margin of safety, reverse DCF, or price/action zones.
+
 ## Default Public Data Retrieval Rule
 
 For normal L1/L2 company analysis, use public sources proactively before asking the user for more data:
@@ -38,6 +40,8 @@ For normal L1/L2 company analysis, use public sources proactively before asking 
 - Public market data for current price, market capitalization, shares outstanding, rates, and FX where material.
 - Public peer, customer, supplier, capex, industry, regulatory, and news sources where they materially constrain assumptions.
 - yfinance / OpenBB when available in the runtime; if unavailable, use official pages or other verifiable public web sources.
+
+For current price, "verifiable public web source" means a source with an explicit same-day market timestamp. Undated webpage prices are blocked.
 
 Only ask for or list user-provided inputs when they are optional quality enhancers or the analysis is blocked without them.
 

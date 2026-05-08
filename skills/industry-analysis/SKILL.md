@@ -1,3 +1,8 @@
+---
+name: industry-analysis
+description: Use this skill to analyze industry structure, competitive dynamics, cyclicality, regulatory pressure, and valuation methods. Trigger when the user asks about sector context, moat durability, industry risks, or peer/market structure.
+---
+
 # Industry Analysis Skill
 
 ## Purpose

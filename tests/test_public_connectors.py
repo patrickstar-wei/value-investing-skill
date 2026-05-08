@@ -4,6 +4,7 @@ from scripts.connectors.public_data_packet_builder import build_public_data_pack
 from scripts.connectors.sec_edgar_connector import latest_us_gaap_fact, recent_filings, ticker_to_cik
 from scripts.connectors.yfinance_connector import get_market_quote
 from urllib.error import HTTPError
+from datetime import datetime, timezone
 
 
 def test_sec_ticker_to_cik_with_mocked_fetcher():
@@ -54,6 +55,8 @@ def test_sec_latest_us_gaap_fact_uses_latest_period():
 
 
 def test_yfinance_connector_uses_yahoo_fallback_with_mocked_fetcher():
+    market_time = 1_700_000_000
+
     def fetcher(url):
         return {
             "quoteResponse": {
@@ -64,19 +67,24 @@ def test_yfinance_connector_uses_yahoo_fallback_with_mocked_fetcher():
                         "marketCap": 5_000_000_000_000,
                         "sharesOutstanding": 25_000_000_000,
                         "regularMarketPreviousClose": 198.0,
-                        "regularMarketTime": 1_700_000_000,
+                        "regularMarketTime": market_time,
                     }
                 ]
             }
         }
 
-    quote = get_market_quote("NVDA", prefer_package=False, fetcher=fetcher)
+    analysis_as_of = datetime.fromtimestamp(market_time, tz=timezone.utc).isoformat()
+    quote = get_market_quote("NVDA", prefer_package=False, fetcher=fetcher, analysis_as_of=analysis_as_of)
     assert quote["price"] == 200.0
     assert quote["source_tier"] == 3
     assert quote["confidence"] == "medium"
+    assert quote["price_date_status"] == "same_day"
+    assert quote["is_same_day"] is True
 
 
 def test_yfinance_connector_falls_back_to_chart_when_quote_is_blocked():
+    market_time = 1_700_000_000
+
     def fetcher(url):
         if "/v7/finance/quote" in url:
             raise HTTPError(url, 401, "Unauthorized", hdrs=None, fp=None)
@@ -88,17 +96,48 @@ def test_yfinance_connector_falls_back_to_chart_when_quote_is_blocked():
                             "regularMarketPrice": 201.0,
                             "currency": "USD",
                             "previousClose": 199.0,
-                            "regularMarketTime": 1_700_000_000,
+                            "regularMarketTime": market_time,
                         }
                     }
                 ]
             }
         }
 
-    quote = get_market_quote("NVDA", prefer_package=False, fetcher=fetcher)
+    analysis_as_of = datetime.fromtimestamp(market_time, tz=timezone.utc).isoformat()
+    quote = get_market_quote("NVDA", prefer_package=False, fetcher=fetcher, analysis_as_of=analysis_as_of)
     assert quote["price"] == 201.0
     assert quote["market_cap"] is None
     assert "chart fallback" in quote["notes"]
+    assert quote["is_same_day"] is True
+
+
+def test_yfinance_connector_marks_non_same_day_price_stale():
+    market_time = 1_700_000_000
+
+    def fetcher(url):
+        return {
+            "quoteResponse": {
+                "result": [
+                    {
+                        "regularMarketPrice": 200.0,
+                        "currency": "USD",
+                        "marketCap": 5_000_000_000_000,
+                        "sharesOutstanding": 25_000_000_000,
+                        "regularMarketPreviousClose": 198.0,
+                        "regularMarketTime": market_time,
+                    }
+                ]
+            }
+        }
+
+    quote = get_market_quote(
+        "NVDA",
+        prefer_package=False,
+        fetcher=fetcher,
+        analysis_as_of="2026-05-08T20:00:00+00:00",
+    )
+    assert quote["price_date_status"] == "not_same_day"
+    assert quote["is_same_day"] is False
 
 
 def test_ir_release_parser_extracts_metrics_and_guidance():
@@ -188,6 +227,7 @@ def test_public_data_packet_builder_orchestrates_mocked_sources():
         raise AssertionError(f"unexpected SEC URL: {url}")
 
     def market_fetcher(url):
+        market_time = 1_774_445_400
         return {
             "quoteResponse": {
                 "result": [
@@ -197,6 +237,7 @@ def test_public_data_packet_builder_orchestrates_mocked_sources():
                         "marketCap": 4_900_000_000_000,
                         "sharesOutstanding": 24_700_000_000,
                         "regularMarketPreviousClose": 197.0,
+                        "regularMarketTime": market_time,
                     }
                 ]
             }

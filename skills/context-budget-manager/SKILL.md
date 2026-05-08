@@ -1,3 +1,8 @@
+---
+name: context-budget-manager
+description: Use this skill to keep value-investing research runs token-efficient through routing, progressive disclosure, and context packet selection. Trigger when reports become long, many files are loaded, token usage is high, or a new sub-skill/reference is added.
+---
+
 # Context Budget Manager Skill
 
 ## Purpose

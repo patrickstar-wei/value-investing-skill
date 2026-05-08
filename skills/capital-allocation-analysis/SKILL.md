@@ -1,3 +1,8 @@
+---
+name: capital-allocation-analysis
+description: Use this skill to evaluate capital allocation quality, including reinvestment, M&A, buybacks, dividends, leverage, and ROIC discipline. Trigger when an investment analysis needs management capital allocation judgment or shareholder return quality.
+---
+
 # Capital Allocation Analysis Skill
 
 ## Purpose

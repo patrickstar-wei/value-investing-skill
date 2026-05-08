@@ -1,4 +1,4 @@
-# Mandatory Output Contract v20.1
+# Mandatory Output Contract 
 
 ## Purpose
 

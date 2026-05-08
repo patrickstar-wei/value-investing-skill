@@ -1,3 +1,8 @@
+---
+name: comps-analysis
+description: Use this skill to run peer multiple analysis with quality, growth, leverage, and margin adjustments. Trigger when the user asks for comparable companies, relative valuation, P/E or EV/EBITDA bands, peer sanity checks, or valuation triangulation.
+---
+
 # Comps Analysis Skill
 
 ## Purpose

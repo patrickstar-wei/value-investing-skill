@@ -1,26 +1,39 @@
 ---
 name: value-investing-research
-description: Use for value-oriented company or stock analysis, intrinsic value estimation, reverse DCF, margin-of-safety checks, investment memos, earnings reviews, valuation model routing, structured assumption audits, and investor action price zones. Supports Codex and Claude skill usage with lazy-loaded references, executable Python valuation scripts, and fixed bilingual report output.
+description: Use this skill whenever the user asks about public-stock or listed-company investment analysis, intrinsic value, margin of safety, valuation model selection, reverse DCF, implied market expectations, data freshness, source checks, orphan numbers, data provenance, earnings reviews, thesis updates, relevant company/industry news, risk reviews, or buy/add/hold/trim/sell price zones. It routes company type, gathers public data when possible, runs executable valuation models, audits assumptions and sources, and produces decision-oriented value-investing reports.
 ---
 
-# Value Investing Core Skill v20.1
+# Value Investing Core Skill 
 
 ## Purpose
 
-Perform value-oriented investment research with business-quality discipline, valuation model routing, structured assumptions, executable Python valuation, data provenance checks, master-investor lenses, and fixed decision-oriented output.
+Analyze public stocks and listed companies through a value-investing lens. The skill is designed to judge business quality, estimate intrinsic value, check margin of safety, audit data reliability, summarize material company or industry news when it affects the thesis, and translate the conclusion into conditional buy, add, hold, trim, or sell price zones.
 
-This file is the compact entrypoint for both Codex and Claude. Detailed rules live in `references/`, workflows live in `workflows/`, and deterministic calculations live in `scripts/`.
+The purpose is not to predict near-term price moves. It converts public evidence and structured assumptions into auditable value judgments and action ranges.
+
+This file is the compact entrypoint. Detailed rules live in `references/`, workflows in `workflows/`, and deterministic calculations in `scripts/`.
 
 ## Trigger Conditions
 
 Use this skill when the user asks to:
 
-- analyze a stock, company, industry, or investment opportunity
+- analyze a public stock, listed company, peer group, industry, or equity investment opportunity
 - estimate intrinsic value or margin of safety
 - run reverse DCF, DCF, SOTP, EPV, NAV, DDM, residual-income, rNPV, REIT, insurance, cyclical, fintech, or scenario valuation
 - build, audit, or explain a valuation model
 - generate an investment memo, earnings review, thesis update, risk review, or price/action framework
+- summarize material company, sector, regulatory, litigation, product, management, or capital-allocation news when it may change the thesis, catalyst path, risk rating, valuation assumptions, or data freshness
 - compare companies or check whether a company type is supported
+
+Do not use this as the primary skill for:
+
+- short-term price prediction, chart patterns, day trading, or technical-analysis-only requests
+- options strategy, leverage design, tax planning, legal advice, or broad personal financial planning
+- private-company diligence unless the user provides enough source data to support the analysis
+- generic macro forecasting unless it directly supports a valuation assumption
+- pure news summarization with no connection to a stock thesis, risk review, catalyst, earnings update, or investment decision
+
+If the request is mainly news-oriented, keep the output focused on investment relevance: what happened, why it matters to the thesis, which assumptions or risks changed, and what evidence would confirm or refute the change.
 
 ## Progressive Loading Rule
 
@@ -32,27 +45,21 @@ Default context pattern:
 Request -> Context Manifest -> Router -> One Primary Workflow -> Needed Policies -> Scripts -> Fixed Renderer
 ```
 
-Read first for normal analysis:
+Read `references/context_policy/token_budget_policy.md` and `references/context_policy/context_manifest.md` first for normal analysis. Use the context manifest as the navigation index.
 
-- `references/context_policy/token_budget_policy.md`
-- `references/context_policy/context_manifest.md`
+## L0 / L1 Quick Path
 
-Use the context manifest as the navigation index for task-specific files.
+For short checks, sell-zone questions, reverse DCF requests, data-source audits, or thesis updates, do not run the full memo flow unless the user asks for it.
+
+1. Identify the ticker / company, user question, and whether the request is current.
+2. Load only the relevant workflow or sub-skill plus the needed policy.
+3. Use public data when current price, latest filing, or material news affects the answer.
+4. Execute the selected model / audit, or explicitly block it with missing inputs.
+5. Return the compact output required by the fixed renderer or the selected sub-skill.
 
 ## Non-Overridable Investment Principles
 
-Every stock/company analysis must obey:
-
-1. Business quality before valuation.
-2. Cash-flow reality over accounting appearance.
-3. Valuation model must match company type.
-4. Margin of safety is required.
-5. Evidence must support every investment conclusion.
-6. Bear-case discipline is mandatory.
-7. Calculation trace is internal by default.
-8. Data confidence gates the action.
-9. Good business and good price must be judged separately.
-10. Missing or stale data must be flagged or blocked.
+Every stock/company analysis must obey: business quality before valuation; cash-flow reality over accounting appearance; model-company fit; required margin of safety; evidence-backed conclusions; explicit bear case; internal calculation traces by default; data confidence gating action; separate judgment of good business and good price; missing/stale data flagged or blocked.
 
 Load for the core philosophy and quality gate:
 
@@ -69,17 +76,8 @@ For L1/L2 current company analysis:
 3. Identify target, ticker, market, industry, lifecycle, and likely business type.
 4. Use `scripts/context/context_router.py` and `references/context_policy/context_manifest.md` to select the smallest useful context packet.
 5. Route to one primary workflow and no more than two auxiliary workflows for L0/L1.
-6. Classify the company by evidence, not name alone:
-   - Base Business Type
-   - Shareholder Return Overlay
-   - Technology Optionality Overlay
-   - Cyclicality / Risk Overlay
-7. Route valuation models:
-   - primary model
-   - cross-check model
-   - downside model
-   - implied-expectation / reverse DCF model
-   - material overlay models only
+6. Classify the company by evidence, not name alone: base business type plus shareholder-return, technology-optionality, and cyclicality / risk overlays.
+7. Route primary, cross-check, downside, implied-expectation / reverse DCF, and material overlay valuation models.
 8. Proactively fetch or verify public data that does not require user credentials or files.
 9. Convert important inputs into structured assumptions with evidence, confidence, and sensitivity.
 10. Bind model inputs to source metadata where possible with `schemas/valuation_input_packet.schema.json`.
@@ -96,70 +94,30 @@ Proactively use or check:
 
 - official filings, annual reports, 10-K / 10-Q, exchange filings, earnings releases, IR pages, presentations, and management guidance
 - current price, market capitalization, shares, rates, and FX where material
-- public peer, customer, supplier, capex, industry, regulatory, and news sources where material
+- public peer, customer, supplier, capex, industry, regulatory, litigation, and news sources where material to the thesis
 - public market data helpers such as yfinance / OpenBB only if the runtime has a working connector; otherwise use verifiable web or official sources
 
-Available public-data connectors:
+Use public-data connectors when possible: `scripts/connectors/public_data_packet_builder.py`, `sec_edgar_connector.py`, `yfinance_connector.py`, `ir_release_parser.py`, and `openbb_provider_config.py`.
 
-- Public-data orchestrator: `scripts/connectors/public_data_packet_builder.py` builds one auditable packet from the available free/public connectors before valuation.
-- P0 SEC EDGAR: `scripts/connectors/sec_edgar_connector.py` for free official SEC submissions, latest filings, and XBRL companyfacts.
-- P1 yfinance / Yahoo Finance: `scripts/connectors/yfinance_connector.py` for free third-party quotes, market cap, shares, and basic market data. Treat as Tier 3 and cross-check when material.
-- P2 public IR release parser: `scripts/connectors/ir_release_parser.py` for public earnings releases, guidance snippets, and event evidence. Reconcile key numbers to official filings when available.
+Reflect `sources_used`, `missing_data`, and `errors` in data provenance and optional-data suggestions.
 
-When a ticker is compatible with these connectors, run or emulate the public-data orchestrator first and use its `sources_used`, `missing_data`, and `errors` fields to drive the data provenance and final optional-data suggestions.
+For current valuation, current price must have a same-day market timestamp. If the quote timestamp is missing or from a prior date, block current margin of safety, reverse DCF, and price-zone conclusions until same-day market data is available.
 
-At the end of the report, suggest optional user-provided inputs only as quality enhancers:
-
-- Bloomberg / FactSet / Refinitiv consensus exports
-- broker paid-research summaries or structured exports
-- the user's cost basis, position size, risk budget, and time horizon
-- private notes or internal materials
-- Wind / Choice / Morningstar exports
-- licensed datasets or local files
-
-OpenBB optional provider template:
-
-- Template: `config/openbb_providers.template.json`
-- Local secrets file: `config/openbb_providers.local.json` (ignored by git)
-- Runtime check: `scripts/connectors/openbb_provider_config.py`
-- Use OpenBB data only when the package is installed and at least one enabled provider has a key from the local config or environment.
+Do not use generic WebSearch snippets, search-result cards, or webpage snapshots as current-price sources unless they include an explicit same-day market timestamp. Undated or timestamp-free page prices are invalid for current valuation and must be marked blocked.
 
 Do not bypass paywalls, store credentials in git, commit paid exports, reproduce long paid-report excerpts, or treat institutional target prices as intrinsic value.
 
-Claude package / copy installs exclude expanded master source materials by default. Use the compact `references/masters/*.md` cards during normal analysis; load source materials only when explicitly needed or when the user opts into packaging them.
-
-Load if institutional views are actually provided:
-
-- `skills/institutional-view-ingestion/SKILL.md`
-- `references/data_source_policy/institutional_view_policy.md`
-- `schemas/institutional_view.schema.json`
-- `scripts/connectors/institutional_view_parser.py`
+If institutional views are provided, load `skills/institutional-view-ingestion/SKILL.md`, `references/data_source_policy/institutional_view_policy.md`, `schemas/institutional_view.schema.json`, and `scripts/connectors/institutional_view_parser.py`.
 
 ## Routing Files
 
 Use these routers and policies when a current stock/company analysis needs classification or valuation model selection:
 
-- `workflows/00_router.md`
-- `skills/valuation-router/SKILL.md`
-- `references/valuation_rules/company_classification_routing_policy.md`
-- `references/valuation_rules/token_efficient_routing_policy_v17.md`
-- `references/valuation_rules/structured_assumption_policy.md`
-- `references/valuation_rules/company_type_coverage_matrix_v17.md` when coverage is uncertain or requested
-- `references/valuation_rules/specialized_company_routes_v17.md` only for specialist company types
-- `scripts/routing/select_valuation_models.py`
+Core routing files: `workflows/00_router.md`, `skills/valuation-router/SKILL.md`, `references/valuation_rules/company_classification_routing_policy.md`, `token_efficient_routing_policy_v17.md`, `structured_assumption_policy.md`, and `scripts/routing/select_valuation_models.py`.
 
-Primary workflows:
+Use `company_type_coverage_matrix_v17.md` when coverage is uncertain, and `specialized_company_routes_v17.md` only for specialist company types.
 
-- `workflows/01_quality_company.md`
-- `workflows/02_dividend_compounder.md`
-- `workflows/03_tech_platform.md`
-- `workflows/04_ai_semiconductor.md`
-- `workflows/05_healthcare_managed_care.md`
-- `workflows/06_holding_company.md`
-- `workflows/07_reit_infrastructure.md`
-- `workflows/08_cyclical_commodity.md`
-- `workflows/09_watchlist_compare.md`
-- `workflows/10_fintech_brokerage.md`
+Primary workflows: `01_quality_company`, `02_dividend_compounder`, `03_tech_platform`, `04_ai_semiconductor`, `05_healthcare_managed_care`, `06_holding_company`, `07_reit_infrastructure`, `08_cyclical_commodity`, `09_watchlist_compare`, and `10_fintech_brokerage`.
 
 Default L0/L1 route cap:
 
@@ -176,15 +134,9 @@ Default L0/L1 route cap:
 
 Use `references/masters/multi_master_framework.md` as the index. Load individual files under `references/masters/` only when materially relevant to the selected workflow or explicitly requested.
 
-Default lens mapping:
+Default lens mapping: quality / dividend / holding company -> Buffett-Munger, Graham, Greenwald; tech platform -> Buffett-Munger, Fisher, Mauboussin-Rappaport, Damodaran; AI semiconductor -> Fisher, Mauboussin-Rappaport, Howard Marks, Damodaran; cyclical / commodity -> Howard Marks, Graham, Greenwald; action / position overlay -> Jin Jiancheng.
 
-- Quality / dividend / holding company: Buffett-Munger, Graham, Greenwald as relevant
-- Tech platform: Buffett-Munger, Fisher, Mauboussin-Rappaport, Damodaran
-- AI semiconductor: Fisher, Mauboussin-Rappaport, Howard Marks, Damodaran
-- Cyclical / commodity: Howard Marks, Graham, Greenwald
-- Action / position overlay: Jin Jiancheng when the analysis needs price zones, staged add/trim rules, cash reserve discipline, U.S. equity / ETF context, or a check on whether a drawdown is temporary shock versus fundamental change
-
-The final report must include a compact `Master Lens Used` section with rationale and impact. Do not dump every master framework.
+Include a compact `Master Lens Used` section only for lenses that materially affect the analysis.
 
 ## Output Contract
 
@@ -195,30 +147,11 @@ Every standard stock/company report must obey:
 - `references/output_policy/fixed_report_renderer.md`
 - `references/output_policy/output_validation_rules.md`
 
-Required final fields unless irrelevant or data-blocked:
+The final report must preserve valuation range, current price, margin of safety, selected models, key assumptions, sensitivity, risks, data provenance, execution gates, and investor action zones when relevant and available.
 
-- Bear / Base / Bull intrinsic value range
-- current price
-- margin of safety
-- valuation status
-- selected models
-- key assumptions
-- structured assumptions where material
-- sensitivity summary
-- conclusion change triggers
-- price zones: Deep Value, Accumulation, Watchlist, Fair Value, Trim, Sell / Avoid
-- price zone assumption basis
-- position-aware suggestions: Empty, Half, Full, Overweight
-- tranche plan: starter, add, strong-add, hold, trim, exit-review
-- thesis conditions: add only if, hold only if, trim if, exit or avoid if
-- execution gate checklist
-- data provenance
-- public data sources used / checked
-- optional user-provided data suggestions
+If valuation or market data is missing, keep the affected sections, mark them `Blocked`, explain missing inputs, and provide non-price-based next steps.
 
-If valuation data is missing, keep the Valuation Summary and Investor Action Framework, mark affected fields as `Blocked`, explain missing inputs, and provide non-price-based next steps.
-
-Do not show formulas, spreadsheet-style steps, internal routing scorecards, quality-gate internals, discount schedules, derived metric tables, or debug traces unless explicitly requested.
+Do not show formulas, spreadsheet-style steps, internal scorecards, detailed DCF schedules, or debug traces unless explicitly requested.
 
 ## Execution Gates
 
@@ -230,24 +163,17 @@ Important modules must be executed or explicitly blocked. If a selected valuatio
 
 Load when needed:
 
-- `references/execution_policy/execution_gate_policy.md`
-- `references/valuation_rules/reverse_dcf_execution_policy.md`
-- `skills/execution-gate-auditor/SKILL.md`
-- `scripts/audit/execution_gate_audit.py`
+`references/execution_policy/execution_gate_policy.md`, `references/valuation_rules/reverse_dcf_execution_policy.md`, `skills/execution-gate-auditor/SKILL.md`, and `scripts/audit/execution_gate_audit.py`.
 
 ## Data Rules
 
-Every material number must be sourced, derived from sourced inputs, clearly user-provided, or explicitly labeled as an assumption. Unsourced numbers must not drive the final conclusion.
+Every material number must be sourced, derived from sourced inputs, user-provided, or labeled as an assumption. Unsourced numbers must not drive the final conclusion.
 
 Load when needed:
 
-- `references/data_source_policy/data_source_policy.md`
-- `references/data_source_policy/data_freshness_policy.md`
-- `references/data_source_policy/data_provenance_policy.md`
-- `scripts/data/check_data_freshness.py`
-- `scripts/audit/data_provenance_audit.py`
+`references/data_source_policy/data_source_policy.md`, `data_freshness_policy.md`, `data_provenance_policy.md`, `scripts/data/check_data_freshness.py`, and `scripts/audit/data_provenance_audit.py`.
 
-For current analysis, state analysis date, market data date, latest financial period, and important missing data.
+For current analysis, state analysis date, market data date, latest financial period, and important missing data. Detailed data-source rules live in the data source policies.
 
 ## Investor Action
 
@@ -255,9 +181,7 @@ When the user asks for buy/add/hold/trim/sell guidance, or when a standard stock
 
 Load:
 
-- `skills/investor-action-framework/SKILL.md`
-- `references/action_policy/investor_action_framework.md`
-- `scripts/scoring/investor_action_framework.py`
+`skills/investor-action-framework/SKILL.md`, `references/action_policy/investor_action_framework.md`, and `scripts/scoring/investor_action_framework.py`.
 
 Use conditional language: consider, wait for, monitor, add only if, trim if, reassess if. Do not give absolute personalized financial advice.
 
@@ -265,34 +189,8 @@ Use conditional language: consider, wait for, monitor, add only if, trim if, rea
 
 Default final presentation is pyramid-principle structured output through the fixed renderer.
 
-Load only when needed:
-
-- `skills/pyramid-summary/SKILL.md`
-- `references/presentation_policy/pyramid_output_policy.md`
-- `skills/mindmap-summary/SKILL.md`
-- `references/presentation_policy/mindmap_output_policy.md`
-- `scripts/presentation/pyramid_builder.py`
-- `scripts/presentation/mindmap_builder.py`
-
-Mind map output is optional and should be used only when requested.
-
-## Platform Compatibility
-
-This repository is dual-use:
-
-- Claude discovers this skill from `SKILL.md` frontmatter and this compact body.
-- Codex can use the same `SKILL.md` plus repo/plugin metadata such as `.codex-plugin/plugin.json` and `plugin.json`.
-- Claude install/package scripts should exclude Codex-only metadata.
-- Codex install scripts should preserve the repo/plugin shape.
+Load `skills/pyramid-summary`, `skills/mindmap-summary`, presentation policies, and presentation scripts only when requested.
 
 ## Hard Rules
 
-- Always state assumptions.
-- Always flag missing data.
-- Always distinguish good business from good price.
-- Always include margin of safety for valuation work.
-- Always include downside risk.
-- Always include price zone assumption basis and conclusion change triggers.
-- Never use a single valuation multiple as the whole conclusion.
-- Never load all sub-skills or master source materials unless explicitly required.
-- Never let optional paid or private data block a normal public-data L1/L2 analysis.
+Always state assumptions, flag missing data, separate good business from good price, include margin of safety and downside risk for valuation work, avoid single-multiple conclusions, avoid loading all sub-skills or master source materials by default, and do not let optional paid/private data block normal public-data L1/L2 analysis.

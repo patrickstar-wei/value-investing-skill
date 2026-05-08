@@ -87,11 +87,17 @@ def build_public_data_packet(
         "ir_releases": [],
         "openbb": None,
         "missing_data": missing_data,
+        "stale_data": [],
         "errors": errors,
     }
 
     try:
-        quote = get_market_quote(normalized, prefer_package=prefer_yfinance_package, fetcher=market_fetcher)
+        quote = get_market_quote(
+            normalized,
+            prefer_package=prefer_yfinance_package,
+            fetcher=market_fetcher,
+            analysis_as_of=packet["created_at"],
+        )
         packet["market_quote"] = quote
         sources_used.append(
             {
@@ -105,6 +111,12 @@ def build_public_data_packet(
             missing_data.append("market_quote.market_cap")
         if quote.get("shares_outstanding") is None:
             missing_data.append("market_quote.shares_outstanding")
+        if quote.get("price") is None:
+            missing_data.append("market_quote.price")
+        if not quote.get("regular_market_time"):
+            missing_data.append("market_quote.regular_market_time")
+        if quote.get("price") is not None and not quote.get("is_same_day"):
+            packet["stale_data"].append("market_quote.price_not_same_day")
     except Exception as exc:  # pragma: no cover - exercised through mocked failure paths by callers
         _append_error(errors, "market_quote", exc)
         missing_data.append("market_quote")

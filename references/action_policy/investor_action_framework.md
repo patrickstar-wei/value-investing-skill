@@ -304,7 +304,7 @@ Avoid absolute personalized instructions:
 
 ---
 
-## v20.1 Mandatory Preservation Rule
+##  Mandatory Preservation Rule
 
 The Investor Action Framework is mandatory in default stock/company analysis.
 

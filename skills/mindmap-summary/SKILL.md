@@ -1,3 +1,8 @@
+---
+name: mindmap-summary
+description: Use this skill to compress a completed investment analysis into a mind-map-friendly summary. Trigger when the user asks for a mind map, Mermaid mindmap, ASCII tree, visual structure, or compact executive summary of an existing report.
+---
+
 # Mind Map Summary Skill
 
 ## Purpose

@@ -1,8 +1,20 @@
-# Valuation Router Skill v20.1
+---
+name: valuation-router
+description: Use this skill to classify a public company by economic characteristics and select primary, cross-check, downside, implied-expectation, and overlay valuation models. Trigger for stock analysis, intrinsic value estimates, model selection, company-type routing, peer comparisons, or questions like which valuation method fits this business.
+---
+
+# Valuation Router Skill 
 
 ## Purpose
 
 Select primary, cross-check, downside, implied-expectation, and overlay-specific valuation models by classifying the company through economic characteristics, not by company name alone.
+
+## Trigger Examples
+
+- "Which valuation model should I use for UNH / NVDA / AAPL?"
+- "Classify this company before running valuation."
+- "Compare AAPL, GOOGL, and AMZN as quality compounders."
+- "Is this a bank, compounder, managed care company, platform, REIT, or cyclical?"
 
 ## Inputs
 
@@ -20,6 +32,12 @@ Select primary, cross-check, downside, implied-expectation, and overlay-specific
 - User requested depth
 - Prior assumptions, if any
 
+## Required Inputs
+
+Minimum usable routing requires target name or ticker plus at least one of: industry, business description, segment profile, revenue / earnings / cash-flow profile, or explicit user-provided classification clues.
+
+If the request is current and valuation/action guidance will follow, current price, latest filing period, and freshness status should be supplied or marked missing.
+
 ## Outputs
 
 - Base Business Type
@@ -29,6 +47,26 @@ Select primary, cross-check, downside, implied-expectation, and overlay-specific
 - Assumption confidence and blocked / low-confidence assumption items
 - Confidence level
 - Next required action
+
+## Blocking Behavior
+
+Do not invent company type from ticker alone when evidence is missing. If classification evidence is insufficient, return:
+
+```text
+Valuation Routing Blocked:
+- Missing company / industry evidence:
+- Models that cannot be selected:
+- Minimum data needed:
+```
+
+If only partial classification is possible, return a low-confidence route and defer non-material overlays.
+
+## Script Mapping
+
+- Routing implementation: `scripts/routing/select_valuation_models.py`
+- Unified execution handoff: `scripts/valuation/valuation_executor.py`
+- Structured assumption policy: `references/valuation_rules/structured_assumption_policy.md`
+- Specialist routes: `references/valuation_rules/specialized_company_routes_v17.md`
 
 ## Company Classification Flow
 
@@ -195,7 +233,7 @@ The router now selects workflows as well as valuation models. Default behavior:
 Final output must include business quality, valuation attractiveness, margin of safety, data confidence, and action.
 
 
-## v20.1 Fixed Output Contract
+##  Fixed Output Contract
 
 The router must return routing and model-selection fields to the renderer. It must not write a custom final report.
 

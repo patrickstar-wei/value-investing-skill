@@ -1,3 +1,8 @@
+---
+name: owner-earnings-dcf
+description: Use this skill to value quality companies through owner earnings, FCFE-style cash flows, long-term cash generation, discount rates, terminal growth, and margin-of-safety analysis. Trigger when cash-flow DCF is the routed primary model.
+---
+
 # Owner Earnings DCF Skill
 
 ## Purpose

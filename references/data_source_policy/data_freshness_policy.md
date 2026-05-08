@@ -115,6 +115,15 @@ If current price is missing or stale:
 Do not calculate current margin of safety.
 ```
 
+For market price freshness, "current" requires same-day market data:
+
+```text
+Current Price must include a regular-market timestamp on the same calendar date as the analysis timestamp.
+If the quote is delayed but same-day, disclose the exact timestamp.
+If the quote timestamp is missing or from a prior date, block current margin of safety, reverse DCF, and price-zone conclusions until a same-day quote is available.
+Generic WebSearch snippets, search-result cards, and webpage snapshots are not valid current-price sources unless they include an explicit same-day market timestamp.
+```
+
 If latest balance sheet is stale:
 
 ```text

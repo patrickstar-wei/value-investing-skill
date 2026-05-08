@@ -1,3 +1,8 @@
+---
+name: liquidation-value
+description: Use this skill to estimate conservative downside value from asset recoveries, liabilities, liquidation costs, and net cash. Trigger for distressed companies, asset-heavy businesses, permanent capital loss checks, or balance-sheet downside analysis.
+---
+
 # Liquidation Value Skill
 
 ## Purpose

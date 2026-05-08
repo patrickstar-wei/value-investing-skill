@@ -1,3 +1,8 @@
+---
+name: management-analysis
+description: Use this skill to evaluate management quality, incentives, communication, capital allocation record, and governance. Trigger when the investment thesis depends on leadership, culture, owner-operator behavior, guidance credibility, or execution quality.
+---
+
 # Management Analysis Skill
 
 ## Purpose

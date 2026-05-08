@@ -1,3 +1,8 @@
+---
+name: institutional-view-ingestion
+description: Use this skill to ingest user-authorized institutional views, consensus exports, target-price summaries, or licensed research notes into structured cross-checks. Trigger when the user provides broker research, FactSet/Bloomberg/Refinitiv/Wind exports, or local institutional-view files.
+---
+
 # Institutional View Ingestion Skill
 
 ## Purpose

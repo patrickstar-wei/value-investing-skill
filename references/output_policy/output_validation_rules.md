@@ -1,4 +1,4 @@
-# Output Validation Rules v20.1
+# Output Validation Rules 
 
 ## Purpose
 

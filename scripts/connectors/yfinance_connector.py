@@ -31,6 +31,11 @@ class MarketQuote:
     shares_outstanding: float | None
     previous_close: float | None
     regular_market_time: str
+    analysis_as_of: str
+    price_date_status: str
+    is_same_day: bool
+    staleness_minutes: float | None
+    market_session_note: str
     source_name: str
     source_url: str
     source_type: str
@@ -48,6 +53,45 @@ def _fetch_json(url: str) -> Dict[str, Any]:
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _parse_iso_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _price_freshness_fields(regular_market_time: str, analysis_as_of: str) -> Dict[str, Any]:
+    market_dt = _parse_iso_datetime(regular_market_time)
+    analysis_dt = _parse_iso_datetime(analysis_as_of) or datetime.now(timezone.utc)
+    if market_dt is None:
+        return {
+            "price_date_status": "missing_market_time",
+            "is_same_day": False,
+            "staleness_minutes": None,
+            "market_session_note": "Market time is missing; price cannot be treated as same-day current data.",
+        }
+
+    same_day = market_dt.date() == analysis_dt.date()
+    staleness_minutes = max(0.0, (analysis_dt - market_dt).total_seconds() / 60)
+    if same_day:
+        status = "same_day"
+        note = "Price market timestamp is on the analysis date; use as same-day market data and disclose the exact timestamp."
+    else:
+        status = "not_same_day"
+        note = "Price market timestamp is not on the analysis date; block current valuation or label price as stale."
+    return {
+        "price_date_status": status,
+        "is_same_day": same_day,
+        "staleness_minutes": round(staleness_minutes, 2),
+        "market_session_note": note,
+    }
 
 
 def _quote_from_yfinance_package(ticker: str) -> Dict[str, Any] | None:
@@ -131,13 +175,16 @@ def get_market_quote(
     ticker: str,
     prefer_package: bool = True,
     fetcher: JsonFetcher = _fetch_json,
+    analysis_as_of: str | None = None,
 ) -> Dict[str, Any]:
     """Return a standardized market quote data packet."""
 
     normalized = ticker.strip().upper()
+    analysis_time = analysis_as_of or _now_iso()
     raw = _quote_from_yfinance_package(normalized) if prefer_package else None
     if raw is None:
         raw = _quote_from_yahoo_endpoint(normalized, fetcher)
+    freshness = _price_freshness_fields(raw.get("regular_market_time", ""), analysis_time)
     quote = MarketQuote(
         ticker=normalized,
         price=raw.get("price"),
@@ -146,6 +193,11 @@ def get_market_quote(
         shares_outstanding=raw.get("shares_outstanding"),
         previous_close=raw.get("previous_close"),
         regular_market_time=raw.get("regular_market_time", ""),
+        analysis_as_of=analysis_time,
+        price_date_status=freshness["price_date_status"],
+        is_same_day=freshness["is_same_day"],
+        staleness_minutes=freshness["staleness_minutes"],
+        market_session_note=freshness["market_session_note"],
         source_name=raw.get("source_name", "Yahoo Finance"),
         source_url=raw.get("source_url", f"https://finance.yahoo.com/quote/{normalized}"),
         source_type="third_party_market_data",

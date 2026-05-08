@@ -1,3 +1,8 @@
+---
+name: sec-filing-analysis
+description: Use this skill to extract and interpret business, risk, MD&A, segment, footnote, and financial information from 10-K, 10-Q, 8-K, and SEC companyfacts data. Trigger when filings are needed as primary evidence.
+---
+
 # SEC Filing Analysis Skill
 
 ## Purpose

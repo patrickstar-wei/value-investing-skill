@@ -1,4 +1,4 @@
-# Modular Workflow Architecture v20.1
+# Modular Workflow Architecture 
 
 ## Purpose
 

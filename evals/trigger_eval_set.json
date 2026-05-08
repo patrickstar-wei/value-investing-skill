@@ -1,0 +1,34 @@
+[
+  {
+    "query": "Analyze UNH using a value investing workflow with valuation range and margin of safety.",
+    "should_trigger": true
+  },
+  {
+    "query": "Run a reverse DCF for NVDA and explain implied market expectations.",
+    "should_trigger": true
+  },
+  {
+    "query": "I own a small UNH position at 360. What price zones should I use for trimming or selling?",
+    "should_trigger": true
+  },
+  {
+    "query": "Audit my AAPL valuation note for data freshness, data provenance, and orphan numbers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a haiku about spring rain.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a React todo app with local storage.",
+    "should_trigger": false
+  },
+  {
+    "query": "Summarize this pasta recipe into five bullet points.",
+    "should_trigger": false
+  },
+  {
+    "query": "Explain the difference between TCP and UDP.",
+    "should_trigger": false
+  }
+]

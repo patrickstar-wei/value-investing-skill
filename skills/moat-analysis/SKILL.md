@@ -1,3 +1,8 @@
+---
+name: moat-analysis
+description: Use this skill to evaluate economic moat sources, durability, evidence, competitive advantages, switching costs, scale economies, network effects, brand, regulation, or cost advantages. Trigger when business quality and defensibility must be judged.
+---
+
 # Moat Analysis Skill
 
 ## Purpose

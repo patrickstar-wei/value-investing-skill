@@ -1,0 +1,79 @@
+{
+  "skill_name": "value-investing-research",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze UNH using the value investing workflow. Include managed care-specific risks, current data freshness, valuation range, reverse DCF, and price zones.",
+      "expected_output": "Routes UNH to Managed Care / Healthcare Services, checks MLR or MCR, Medicare/Medicaid exposure, Optum/service segment quality, regulatory risk, runs or blocks valuation and reverse DCF, and ends with price/action zones plus data provenance.",
+      "expectations": [
+        "The output routes UNH to Managed Care / Healthcare Services or an equivalent healthcare services / managed-care company type.",
+        "The output checks Medical Loss Ratio or Medical Care Ratio trends and explains why claims-cost inflation matters.",
+        "The output discusses Medicare, Medicaid, reimbursement, regulatory, litigation, or policy exposure as a material risk area.",
+        "The output distinguishes Optum or service-segment quality from the insurance / benefits segment when segment information is available.",
+        "The output includes a Bear / Base / Bull valuation range or explicitly blocks the range with missing-data reasons.",
+        "The output runs reverse DCF or explicitly says Reverse DCF is blocked and lists the missing or stale inputs.",
+        "The output includes price/action zones and data provenance or source/freshness notes.",
+        "The output does not use a WebSearch snippet, search-result card, or webpage snapshot price as the current price unless it includes an explicit same-day market timestamp."
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I own a small UNH position at 360. Using the Jin Jiancheng lens, what trim or sell levels should I pre-commit to?",
+      "expected_output": "Uses the investor-action and Jin Jiancheng overlays to provide conditional staged trim/sell levels, distinguishes valuation-based selling from thesis-loss triggers, and avoids absolute personalized financial advice.",
+      "expectations": [
+        "The output uses the user's cost basis of 360 and recognizes the position is small or partial.",
+        "The output gives staged trim or sell zones instead of a single all-or-nothing order.",
+        "The output distinguishes valuation-based trimming from thesis-break or fundamental-deterioration selling.",
+        "The output uses conditional language and does not present the result as absolute personalized financial advice.",
+        "The output preserves cash-reserve, position-size, or pre-commitment discipline consistent with the Jin Jiancheng lens.",
+        "The output lists business or risk triggers that would force a review even if the price target is not reached."
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run a reverse DCF for NVDA and tell me whether current market expectations look reasonable. Do not expose spreadsheet-style calculation traces.",
+      "expected_output": "Selects reverse DCF as an implied-expectation model, requires current market cap/share price/base FCF or revenue-to-FCF inputs, reports implied assumptions and reasonableness, and blocks missing or stale inputs explicitly.",
+      "expectations": [
+        "The output treats Reverse DCF as the implied-expectation model for NVDA.",
+        "The output uses or requests current market price, market cap or enterprise value, and base FCF or revenue-to-FCF inputs.",
+        "The output reports market-implied growth, margin, or cash-flow assumptions, or explicitly blocks those outputs with missing-input reasons.",
+        "The output comments on whether the implied expectations are reasonable relative to business quality, growth, margins, cyclicality, or AI/semiconductor risks.",
+        "The output includes source or data freshness notes for current market and financial inputs.",
+        "The output blocks or requests a better source if the current price comes only from an undated webpage snapshot or search-result snippet.",
+        "The output does not expose spreadsheet-style calculation traces or line-by-line formulas by default."
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Compare AAPL, GOOGL, and AMZN as quality compounders and give me only the final investment action framework.",
+      "expected_output": "Uses routing and valuation discipline before action guidance, avoids unsupported rankings, shows price-zone/action guidance only where valuation and current price are available, and flags blocked data instead of inventing numbers.",
+      "expectations": [
+        "The output treats AAPL, GOOGL, and AMZN as quality compounder or platform-style public-company comparisons, with routing differences where relevant.",
+        "The output provides final investment action guidance such as buy, add, hold, trim, sell, watchlist, or price zones.",
+        "The output does not invent valuation numbers when current price, intrinsic value, or required assumptions are missing.",
+        "The output flags blocked or low-confidence action guidance if valuation ranges or fresh market data are unavailable.",
+        "The output does not treat timestamp-free webpage or search-result prices as valid current prices for action guidance.",
+        "The output avoids unsupported absolute rankings and ties each action view to valuation, business quality, risk, or data confidence.",
+        "The output stays focused on the final action framework rather than a full long-form company report."
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Use my local institutional view folder data/institutional_views to cross-check MSFT consensus assumptions, but do not reproduce paid report text.",
+      "expected_output": "Invokes institutional-view ingestion rules, checks source/license metadata, parses only supported structured exports, summarizes assumptions without long paid excerpts, and treats institutional views as cross-checks rather than primary truth.",
+      "expectations": [
+        "The output applies institutional-view ingestion rules for the local folder data/institutional_views.",
+        "The output checks or asks for source, provider, date, ticker/company, and license or user-provided status metadata.",
+        "The output parses or instructs use of supported structured exports and treats unsupported PDFs, Office files, or notes as reference-only unless converted.",
+        "The output does not reproduce long paid-report excerpts or redistribute licensed research text.",
+        "The output treats institutional views as cross-checks, not as primary truth or intrinsic value by themselves.",
+        "The output compares consensus assumptions against the skill's own structured assumptions or flags missing fields that block comparison."
+      ],
+      "files": []
+    }
+  ]
+}
