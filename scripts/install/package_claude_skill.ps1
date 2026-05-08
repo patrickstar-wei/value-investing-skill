@@ -17,7 +17,7 @@ function Get-RepoRoot {
 function Test-SkippedPath {
     param([string]$RelativePath, [bool]$IncludeTestsFlag, [bool]$IncludeSourceMaterialsFlag)
     $parts = $RelativePath -split "[\\/]+"
-    $skipDirs = @(".git", ".codex-plugin", ".trae", "__pycache__", ".pytest_cache", ".venv", "env", "dist", "reports", "output", "outputs", "results", "data", "institutional_reports", "licensed_data", "secrets", "credentials")
+    $skipDirs = @(".git", ".codex-plugin", ".trae", "__pycache__", ".pytest_cache", ".venv", "env", "dist", "evals", "reports", "output", "outputs", "results", "data", "institutional_reports", "licensed_data", "secrets", "credentials")
     if (-not $IncludeTestsFlag) {
         $skipDirs += "tests"
     }
@@ -28,6 +28,9 @@ function Test-SkippedPath {
         if ($skipDirs -contains $part) {
             return $true
         }
+    }
+    if ($RelativePath -ieq "README.md") {
+        return $true
     }
     if ($RelativePath -like "*.pyc" -or $RelativePath -like "*.log" -or $RelativePath -like "*.tmp" -or $RelativePath -like "config\*.local.json" -or $RelativePath -like "config/*.local.json") {
         return $true

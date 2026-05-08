@@ -184,6 +184,12 @@ Allowed by default:
 - sensitivity summary
 - blocked/missing-data notes
 
+## Deterministic Calculation Rule
+
+Final numerical valuation outputs should come from executable Python valuation scripts, not prompt-only arithmetic. The report may summarize values, assumptions, and sensitivity, but the underlying calculation should be reproducible from the same inputs.
+
+If a valuation number was not produced by a script, label it as a rough manual estimate and do not let it drive the final rating, margin-of-safety judgment, or price/action zones.
+
 ## Public Data and Optional User Inputs
 
 For standard company analysis, the skill must proactively use public data that does not require user-provided credentials or files when material and available:

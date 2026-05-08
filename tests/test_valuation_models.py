@@ -6,6 +6,8 @@ from scripts.valuation.valuation_common import ValuationResult, StructuredAssump
 from scripts.valuation.valuation_comps import ComparableCompany, peer_multiple, equity_value_from_multiple
 from scripts.valuation.valuation_cyclical import commodity_scenario_ebitda, mid_cycle_metric
 from scripts.valuation.valuation_ddm import gordon_growth_value, two_stage_ddm
+from scripts.valuation.valuation_owner_earnings_dcf import owner_earnings_dcf_result
+from scripts.valuation.valuation_reverse_dcf import dcf_value_from_fcf_growth, reverse_dcf_result
 from scripts.valuation.valuation_executor import run_valuation, run_valuation_payload
 from scripts.valuation.valuation_fintech import normalized_earnings_value
 from scripts.valuation.valuation_input_packet import ValuationInputPacket
@@ -28,6 +30,53 @@ from scripts.routing.select_valuation_models import CompanyProfile, select_valua
 class ValuationModelTests(unittest.TestCase):
     def test_ddm_gordon_growth(self):
         self.assertAlmostEqual(gordon_growth_value(3.0, 0.08, 0.02), 50.0)
+
+    def test_python_valuation_outputs_are_deterministic_for_identical_inputs(self):
+        first = owner_earnings_dcf_result(
+            owner_earnings_forecast=[100.0, 105.0, 110.0],
+            discount_rate=0.08,
+            terminal_growth=0.02,
+            net_debt=10.0,
+            shares_outstanding=10.0,
+        ).to_payload()
+        second = owner_earnings_dcf_result(
+            owner_earnings_forecast=[100.0, 105.0, 110.0],
+            discount_rate=0.08,
+            terminal_growth=0.02,
+            net_debt=10.0,
+            shares_outstanding=10.0,
+        ).to_payload()
+        self.assertEqual(first, second)
+
+        reverse_first = reverse_dcf_result(
+            market_cap=1000.0,
+            net_debt=100.0,
+            base_fcf=50.0,
+            years=10,
+            discount_rate=0.09,
+            terminal_growth=0.025,
+        ).metadata["implied_fcf_growth"]
+        reverse_second = reverse_dcf_result(
+            market_cap=1000.0,
+            net_debt=100.0,
+            base_fcf=50.0,
+            years=10,
+            discount_rate=0.09,
+            terminal_growth=0.025,
+        ).metadata["implied_fcf_growth"]
+        self.assertEqual(reverse_first, reverse_second)
+
+    def test_reverse_dcf_formula_known_case(self):
+        self.assertAlmostEqual(
+            dcf_value_from_fcf_growth(
+                base_fcf=100.0,
+                growth_rate=0.0,
+                years=1,
+                discount_rate=0.10,
+                terminal_growth=0.0,
+            ),
+            1000.0,
+        )
 
     def test_two_stage_ddm_is_above_no_growth_for_positive_growth(self):
         no_growth = two_stage_ddm(2.0, 0.0, 0.02, 0.08, years=5)

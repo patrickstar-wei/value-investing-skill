@@ -8,9 +8,14 @@ third-party data and should be cross-checked for high-stakes valuation work.
 from __future__ import annotations
 
 import json
+import math
+import os
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from pathlib import Path
+from tempfile import gettempdir
 from typing import Any, Callable, Dict
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
@@ -20,6 +25,7 @@ from urllib.request import Request, urlopen
 YAHOO_QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
 YAHOO_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart"
 JsonFetcher = Callable[[str], Dict[str, Any]]
+PackageInstaller = Callable[[], bool]
 
 
 @dataclass
@@ -94,27 +100,131 @@ def _price_freshness_fields(regular_market_time: str, analysis_as_of: str) -> Di
     }
 
 
-def _quote_from_yfinance_package(ticker: str) -> Dict[str, Any] | None:
+def _install_yfinance_package() -> bool:
+    """Best-effort install for sandboxed runtimes.
+
+    This avoids replacing a market quote with WebSearch snippets when the
+    optional yfinance package is absent. The package is installed into a
+    sandbox target directory, not into system site-packages. Installation
+    failures are non-fatal; callers still fall back to Yahoo endpoints with
+    timestamp checks.
+    """
+
+    target_dir = _sandbox_package_dir()
+    target_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--upgrade",
+                "--target",
+                str(target_dir),
+                "yfinance>=0.2.0",
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=120,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return False
+    _ensure_sandbox_package_path()
+    return True
+
+
+def _sandbox_package_dir() -> Path:
+    configured = os.environ.get("VALUE_INVESTING_SKILL_PIP_TARGET")
+    if configured:
+        return Path(configured).expanduser()
+    return Path(gettempdir()) / "value-investing-skill-python-packages"
+
+
+def _ensure_sandbox_package_path() -> None:
+    target = str(_sandbox_package_dir())
+    if target not in sys.path:
+        sys.path.insert(0, target)
+
+
+def _coerce_utc_iso(value: Any) -> str:
+    if value in (None, ""):
+        return ""
+    if isinstance(value, (int, float)):
+        return datetime.fromtimestamp(int(value), tz=timezone.utc).isoformat()
+    if hasattr(value, "to_pydatetime"):
+        value = value.to_pydatetime()
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc).isoformat()
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc).isoformat()
+
+
+def _latest_intraday_yfinance_quote(ticker_obj: Any) -> tuple[float | None, str]:
+    """Return latest 1-minute close and timestamp from yfinance history."""
+
+    try:
+        history = ticker_obj.history(period="1d", interval="1m", prepost=False)
+    except Exception:
+        return None, ""
+    if getattr(history, "empty", True):
+        return None, ""
+
+    timestamp = _coerce_utc_iso(history.index[-1])
+    close = history.iloc[-1].get("Close")
+    try:
+        price = float(close)
+    except (TypeError, ValueError):
+        price = None
+    if price is not None and math.isnan(price):
+        price = None
+    return price, timestamp
+
+
+def _quote_from_yfinance_package(
+    ticker: str,
+    installer: PackageInstaller | None = _install_yfinance_package,
+) -> Dict[str, Any] | None:
+    installed_after_attempt = False
+    _ensure_sandbox_package_path()
     try:
         import yfinance as yf  # type: ignore
     except ImportError:
-        return None
-    info = yf.Ticker(ticker).fast_info
+        if installer is None or not installer():
+            return None
+        installed_after_attempt = True
+        try:
+            import yfinance as yf  # type: ignore
+        except ImportError:
+            return None
+    ticker_obj = yf.Ticker(ticker)
+    info = ticker_obj.fast_info
     market_cap = getattr(info, "market_cap", None)
     shares = getattr(info, "shares", None)
     price = getattr(info, "last_price", None)
     previous_close = getattr(info, "previous_close", None)
     currency = getattr(info, "currency", "")
+    history_price, market_time = _latest_intraday_yfinance_quote(ticker_obj)
+    if price is None:
+        price = history_price
     return {
         "price": price,
         "currency": currency or "",
         "market_cap": market_cap,
         "shares_outstanding": shares,
         "previous_close": previous_close,
-        "regular_market_time": "",
+        "regular_market_time": market_time,
         "source_name": "yfinance package / Yahoo Finance",
         "source_url": f"https://finance.yahoo.com/quote/{ticker}",
-        "notes": "Fetched through optional yfinance package.",
+        "notes": "Fetched through optional yfinance package." + (" Installed yfinance in sandbox before fetching." if installed_after_attempt else ""),
     }
 
 
@@ -176,14 +286,21 @@ def get_market_quote(
     prefer_package: bool = True,
     fetcher: JsonFetcher = _fetch_json,
     analysis_as_of: str | None = None,
+    package_installer: PackageInstaller | None = _install_yfinance_package,
 ) -> Dict[str, Any]:
     """Return a standardized market quote data packet."""
 
     normalized = ticker.strip().upper()
     analysis_time = analysis_as_of or _now_iso()
-    raw = _quote_from_yfinance_package(normalized) if prefer_package else None
+    raw = _quote_from_yfinance_package(normalized, installer=package_installer) if prefer_package else None
+    yfinance_missing_timestamp = bool(raw is not None and not raw.get("regular_market_time"))
+    if yfinance_missing_timestamp:
+        raw = None
     if raw is None:
         raw = _quote_from_yahoo_endpoint(normalized, fetcher)
+        raw["notes"] = raw.get("notes", "") + (
+            " yfinance package unavailable, install failed, or lacked a market timestamp; did not use WebSearch price."
+        )
     freshness = _price_freshness_fields(raw.get("regular_market_time", ""), analysis_time)
     quote = MarketQuote(
         ticker=normalized,

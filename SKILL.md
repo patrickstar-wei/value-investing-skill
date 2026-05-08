@@ -99,6 +99,8 @@ Proactively use or check:
 
 Use public-data connectors when possible: `scripts/connectors/public_data_packet_builder.py`, `sec_edgar_connector.py`, `yfinance_connector.py`, `ir_release_parser.py`, and `openbb_provider_config.py`.
 
+If `yfinance` is missing in the sandbox/runtime, attempt a local sandbox-target install before using Yahoo endpoint fallbacks. Do not replace this with WebSearch prices.
+
 Reflect `sources_used`, `missing_data`, and `errors` in data provenance and optional-data suggestions.
 
 For current valuation, current price must have a same-day market timestamp. If the quote timestamp is missing or from a prior date, block current margin of safety, reverse DCF, and price-zone conclusions until same-day market data is available.
@@ -152,6 +154,14 @@ The final report must preserve valuation range, current price, margin of safety,
 If valuation or market data is missing, keep the affected sections, mark them `Blocked`, explain missing inputs, and provide non-price-based next steps.
 
 Do not show formulas, spreadsheet-style steps, internal scorecards, detailed DCF schedules, or debug traces unless explicitly requested.
+
+## Deterministic Valuation Rule
+
+Assumptions may differ across analysts or model runs, but Python valuation calculations must be deterministic: identical inputs to the same valuation script must produce identical outputs.
+
+Numerical valuation outputs must come from executable Python valuation scripts. If a routed model cannot be executed through scripts, mark it `Blocked` or `Low-confidence`, or clearly label any number as a rough manual estimate that must not drive the final conclusion.
+
+Valuation algorithms must be documented by formula/policy and covered by unit or golden tests. If a formula is not implemented, tested, and suitable for the company type, do not present it as a reliable valuation result.
 
 ## Execution Gates
 

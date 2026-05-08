@@ -12,6 +12,7 @@
         "The output distinguishes Optum or service-segment quality from the insurance / benefits segment when segment information is available.",
         "The output includes a Bear / Base / Bull valuation range or explicitly blocks the range with missing-data reasons.",
         "The output runs reverse DCF or explicitly says Reverse DCF is blocked and lists the missing or stale inputs.",
+        "Numerical valuation outputs are produced by executable Python valuation scripts or are explicitly labeled as rough manual estimates that do not drive the conclusion.",
         "The output includes price/action zones and data provenance or source/freshness notes.",
         "The output does not use a WebSearch snippet, search-result card, or webpage snapshot price as the current price unless it includes an explicit same-day market timestamp."
       ],
@@ -40,6 +41,7 @@
         "The output uses or requests current market price, market cap or enterprise value, and base FCF or revenue-to-FCF inputs.",
         "The output reports market-implied growth, margin, or cash-flow assumptions, or explicitly blocks those outputs with missing-input reasons.",
         "The output comments on whether the implied expectations are reasonable relative to business quality, growth, margins, cyclicality, or AI/semiconductor risks.",
+        "The reverse DCF numerical result is produced by the Python reverse DCF script or explicitly blocked if required inputs are unavailable.",
         "The output includes source or data freshness notes for current market and financial inputs.",
         "The output blocks or requests a better source if the current price comes only from an undated webpage snapshot or search-result snippet.",
         "The output does not expose spreadsheet-style calculation traces or line-by-line formulas by default."

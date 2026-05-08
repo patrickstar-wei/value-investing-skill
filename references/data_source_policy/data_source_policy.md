@@ -43,6 +43,10 @@ For normal L1/L2 company analysis, use public sources proactively before asking 
 
 For current price, "verifiable public web source" means a source with an explicit same-day market timestamp. Undated webpage prices are blocked.
 
+If `yfinance` is not installed in a sandbox/runtime, attempt a local sandbox-target package install before falling back to Yahoo public endpoints. The default target is `/tmp/value-investing-skill-python-packages`; set `VALUE_INVESTING_SKILL_PIP_TARGET` to override it. The connector should install with `pip --target`, add only that target to the current process `sys.path`, and avoid system `site-packages` unless the runtime explicitly points the sandbox target there.
+
+Do not use WebSearch snippets, search-result cards, or webpage snapshots as a substitute for market quote connectors.
+
 Only ask for or list user-provided inputs when they are optional quality enhancers or the analysis is blocked without them.
 
 ## Implemented Public Connectors

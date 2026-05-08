@@ -45,6 +45,7 @@ or:
 | Source Quality Gate | Financial data used | Source tier / confidence table |
 | Assumption Audit Gate | DCF / scenario / rNPV used | Assumption warnings or pass |
 | Formula Audit Gate | Any valuation model used | Formula suitability check |
+| Deterministic Calculation Gate | Any numerical valuation output | Executed Python result or blocked / low-confidence |
 | Sensitivity Gate | DCF / rNPV / scenario used | Sensitivity table or blocked |
 | Dilution Gate | Per-share valuation used | Share count / SBC / dilution check |
 | Capital Structure Gate | EV / equity bridge used | Net debt bridge or blocked |
@@ -99,6 +100,41 @@ Structured Assumption Gate Blocked
 - Data or evidence needed:
 - Impact on valuation:
 ```
+
+---
+
+## Deterministic Calculation Gate
+
+Assumption generation is judgment-based and may vary across analysts or models. Formula execution must not vary.
+
+For every numerical valuation output, the report or internal execution record must be able to show one of:
+
+```text
+Python Valuation Result
+- Script:
+- Function / model:
+- Input packet or assumptions:
+- Output:
+- Test / formula coverage:
+```
+
+or:
+
+```text
+Python Valuation Blocked / Low-confidence
+- Missing executable script:
+- Missing required input:
+- Formula not covered by tests:
+- Suitability concern:
+- Impact on valuation:
+```
+
+Rules:
+
+1. Identical inputs to the same valuation script must produce identical outputs.
+2. Do not let LLM mental math, spreadsheet-style prompt calculations, or unstated formulas drive final valuation numbers.
+3. A valuation algorithm is reliable only when its formula is documented, implemented in `scripts/valuation/`, and covered by unit or golden tests.
+4. If formula suitability is uncertain for the company type, block or downgrade the model rather than presenting a precise value.
 
 ---
 

@@ -73,6 +73,7 @@ For current valuation or buy/add/hold/trim/sell guidance, the current price must
 - If `regular_market_time` is missing or not same-day: mark current price as missing/stale and block current margin of safety, reverse DCF, and price-zone conclusions until a same-day quote is available.
 - During non-trading hours, use the latest regular-market timestamp only if it is still on the analysis date; otherwise label it as prior-session data and block current-price-dependent conclusions.
 - Do not use generic WebSearch snippets, search-result cards, or webpage snapshots as current-price sources unless they include an explicit same-day market timestamp. If the page shows a price but no market timestamp, classify current price as `Missing` / `Blocked`.
+- If `yfinance` is unavailable in the runtime, try installing it into a local sandbox package target before falling back to Yahoo public endpoints. Do not use WebSearch price snippets as the fallback.
 
 ## Script Mapping
 

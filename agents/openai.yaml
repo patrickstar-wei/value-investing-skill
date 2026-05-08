@@ -1,0 +1,4 @@
+interface:
+  display_name: "Value Investing Research"
+  short_description: "Public-stock valuation and action research"
+  default_prompt: "Use $value-investing-research to analyze a public stock with current data, valuation, risks, and conditional action zones."

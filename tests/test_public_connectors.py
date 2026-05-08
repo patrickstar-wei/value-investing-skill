@@ -2,9 +2,11 @@ from scripts.connectors.ir_release_parser import parse_release_text
 from scripts.connectors.openbb_provider_config import load_openbb_provider_config, openbb_runtime_status
 from scripts.connectors.public_data_packet_builder import build_public_data_packet
 from scripts.connectors.sec_edgar_connector import latest_us_gaap_fact, recent_filings, ticker_to_cik
+from scripts.connectors import yfinance_connector
 from scripts.connectors.yfinance_connector import get_market_quote
 from urllib.error import HTTPError
 from datetime import datetime, timezone
+import sys
 
 
 def test_sec_ticker_to_cik_with_mocked_fetcher():
@@ -138,6 +140,146 @@ def test_yfinance_connector_marks_non_same_day_price_stale():
     )
     assert quote["price_date_status"] == "not_same_day"
     assert quote["is_same_day"] is False
+
+
+def test_yfinance_installer_uses_sandbox_target(tmp_path, monkeypatch):
+    target = tmp_path / "packages"
+    calls = {}
+
+    def fake_run(cmd, **kwargs):
+        calls["cmd"] = cmd
+        calls["kwargs"] = kwargs
+
+    monkeypatch.setenv("VALUE_INVESTING_SKILL_PIP_TARGET", str(target))
+    monkeypatch.setattr(yfinance_connector.subprocess, "run", fake_run)
+    if str(target) in sys.path:
+        sys.path.remove(str(target))
+
+    assert yfinance_connector._install_yfinance_package() is True
+    assert "--target" in calls["cmd"]
+    assert str(target) in calls["cmd"]
+    assert "yfinance>=0.2.0" in calls["cmd"]
+    assert calls["kwargs"]["check"] is True
+    assert str(target) == sys.path[0]
+
+
+def test_yfinance_connector_attempts_install_before_yahoo_fallback(monkeypatch):
+    calls = {"install": 0}
+    market_time = 1_700_000_000
+
+    def fake_import_quote(ticker, installer=None):
+        if installer is not None:
+            calls["install"] += 1
+            installer()
+        return None
+
+    def fake_installer():
+        return False
+
+    def fetcher(url):
+        return {
+            "quoteResponse": {
+                "result": [
+                    {
+                        "regularMarketPrice": 200.0,
+                        "currency": "USD",
+                        "marketCap": 5_000_000_000_000,
+                        "sharesOutstanding": 25_000_000_000,
+                        "regularMarketPreviousClose": 198.0,
+                        "regularMarketTime": market_time,
+                    }
+                ]
+            }
+        }
+
+    monkeypatch.setattr(yfinance_connector, "_quote_from_yfinance_package", fake_import_quote)
+    quote = get_market_quote(
+        "NVDA",
+        prefer_package=True,
+        fetcher=fetcher,
+        analysis_as_of=datetime.fromtimestamp(market_time, tz=timezone.utc).isoformat(),
+        package_installer=fake_installer,
+    )
+    assert calls["install"] == 1
+    assert quote["price"] == 200.0
+    assert "did not use WebSearch price" in quote["notes"]
+
+
+def test_yfinance_connector_uses_package_when_install_succeeds(monkeypatch):
+    market_time = 1_700_000_000
+    market_time_iso = datetime.fromtimestamp(market_time, tz=timezone.utc).isoformat()
+
+    def fake_import_quote(ticker, installer=None):
+        assert installer is not None
+        assert installer() is True
+        return {
+            "price": 210.0,
+            "currency": "USD",
+            "market_cap": 5_200_000_000_000,
+            "shares_outstanding": 25_000_000_000,
+            "previous_close": 208.0,
+            "regular_market_time": market_time_iso,
+            "source_name": "yfinance package / Yahoo Finance",
+            "source_url": f"https://finance.yahoo.com/quote/{ticker}",
+            "notes": "Fetched through optional yfinance package. Installed yfinance in sandbox before fetching.",
+        }
+
+    monkeypatch.setattr(yfinance_connector, "_quote_from_yfinance_package", fake_import_quote)
+    quote = get_market_quote(
+        "NVDA",
+        prefer_package=True,
+        fetcher=lambda url: (_ for _ in ()).throw(AssertionError("Yahoo fallback should not be used")),
+        analysis_as_of=market_time_iso,
+        package_installer=lambda: True,
+    )
+    assert quote["price"] == 210.0
+    assert quote["market_cap"] == 5_200_000_000_000
+    assert "Installed yfinance in sandbox" in quote["notes"]
+
+
+def test_yfinance_connector_rejects_package_quote_without_timestamp(monkeypatch):
+    market_time = 1_700_000_000
+
+    def fake_import_quote(ticker, installer=None):
+        return {
+            "price": 210.0,
+            "currency": "USD",
+            "market_cap": 5_200_000_000_000,
+            "shares_outstanding": 25_000_000_000,
+            "previous_close": 208.0,
+            "regular_market_time": "",
+            "source_name": "yfinance package / Yahoo Finance",
+            "source_url": f"https://finance.yahoo.com/quote/{ticker}",
+            "notes": "Fetched through optional yfinance package.",
+        }
+
+    def fetcher(url):
+        return {
+            "quoteResponse": {
+                "result": [
+                    {
+                        "regularMarketPrice": 200.0,
+                        "currency": "USD",
+                        "marketCap": 5_000_000_000_000,
+                        "sharesOutstanding": 25_000_000_000,
+                        "regularMarketPreviousClose": 198.0,
+                        "regularMarketTime": market_time,
+                    }
+                ]
+            }
+        }
+
+    monkeypatch.setattr(yfinance_connector, "_quote_from_yfinance_package", fake_import_quote)
+    quote = get_market_quote(
+        "NVDA",
+        prefer_package=True,
+        fetcher=fetcher,
+        analysis_as_of=datetime.fromtimestamp(market_time, tz=timezone.utc).isoformat(),
+    )
+    assert quote["price"] == 200.0
+    assert quote["source_name"] == "Yahoo Finance quote endpoint"
+    assert "lacked a market timestamp" in quote["notes"]
+    assert "did not use WebSearch price" in quote["notes"]
 
 
 def test_ir_release_parser_extracts_metrics_and_guidance():
