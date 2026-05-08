@@ -1,0 +1,428 @@
+{
+  "registry_version": "1.0",
+  "purpose": "Map executable valuation Python modules to formula families, authoritative sources, modeling limits, and tests. This registry is a control surface: if a valuation script is not covered here, it should not be treated as a high-confidence executable valuation algorithm.",
+  "status_definitions": {
+    "standard_formula": "Formula is a widely accepted finance/accounting formula with direct source support. Inputs can still be uncertain.",
+    "standard_with_modeling_judgment": "Formula family is standard, but peer selection, normalization, probabilities, recovery rates, or scenario weights materially affect correctness.",
+    "heuristic_helper": "Useful deterministic helper or simplified economics bridge. It must not be presented as a complete valuation model without additional source-backed assumptions.",
+    "infrastructure": "No valuation formula. The module packages, routes, validates, or transports inputs/results."
+  },
+  "sources": {
+    "openstax_dcf": {
+      "title": "OpenStax Principles of Finance: Discounted Cash Flow Model",
+      "url": "https://openstax.org/books/principles-finance/pages/11-3-discounted-cash-flow-dcf-model",
+      "type": "open_textbook"
+    },
+    "openstax_npv": {
+      "title": "OpenStax Principles of Finance: Net Present Value Method",
+      "url": "https://openstax.org/books/principles-finance/pages/16-2-net-present-value-npv-method",
+      "type": "open_textbook"
+    },
+    "openstax_ddm": {
+      "title": "OpenStax Principles of Finance: Dividend Discount Models",
+      "url": "https://openstax.org/books/principles-finance/pages/11-2-dividend-discount-models-ddms",
+      "type": "open_textbook"
+    },
+    "openstax_comps": {
+      "title": "OpenStax Principles of Finance: Multiple Approaches to Stock Valuation",
+      "url": "https://openstax.org/books/principles-finance/pages/11-1-multiple-approaches-to-stock-valuation",
+      "type": "open_textbook"
+    },
+    "damodaran_terminal_value": {
+      "title": "Aswath Damodaran: Estimating Terminal Value",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/valquestions/termvalapproaches.htm",
+      "type": "academic_practitioner"
+    },
+    "damodaran_valuation_entry": {
+      "title": "Aswath Damodaran NYU valuation materials and spreadsheets",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/valuation/val.htm",
+      "type": "academic_practitioner"
+    },
+    "damodaran_valuation_spreadsheets": {
+      "title": "Aswath Damodaran valuation spreadsheets",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/eqspread.htm",
+      "type": "academic_practitioner"
+    },
+    "berkshire_1986_owner_earnings": {
+      "title": "Berkshire Hathaway 1986 shareholder letter, owner earnings discussion",
+      "url": "https://www.berkshirehathaway.com/letters/1986.html",
+      "type": "primary_company_source"
+    },
+    "nareit_ffo": {
+      "title": "Nareit Funds From Operations definition",
+      "url": "https://www.reit.com/glossary/funds-operation-ffo",
+      "type": "industry_standard_setter"
+    },
+    "investor_gov_nav": {
+      "title": "Investor.gov Net Asset Value definition",
+      "url": "https://www.investor.gov/additional-resources/general-resources/glossary/net-asset-value",
+      "type": "regulator_investor_education"
+    },
+    "wipo_rnpv": {
+      "title": "WIPO Intellectual Property Valuation in Biotechnology and Pharmaceuticals: income approach and rNPV",
+      "url": "https://www.wipo.int/web-publications/intellectual-property-valuation-in-biotechnology-and-pharmaceuticals/en/3-the-income-approach.html",
+      "type": "intergovernmental_technical_reference"
+    },
+    "cfo_forum_embedded_value": {
+      "title": "European Insurance CFO Forum embedded value principles",
+      "url": "https://www.cfoforum.eu/publications/embedded-value",
+      "type": "industry_principles"
+    },
+    "irmi_combined_ratio": {
+      "title": "IRMI insurance definition: combined ratio",
+      "url": "https://www.irmi.com/term/insurance-definitions/combined-ratio",
+      "type": "insurance_industry_reference"
+    },
+    "internal_structured_assumption_policy": {
+      "title": "Structured assumption policy",
+      "url": "references/valuation_rules/structured_assumption_policy.md",
+      "type": "internal_policy"
+    },
+    "internal_router_policy": {
+      "title": "Valuation model router",
+      "url": "references/valuation_rules/valuation_model_router.md",
+      "type": "internal_policy"
+    },
+    "internal_reverse_dcf_policy": {
+      "title": "Reverse DCF execution policy",
+      "url": "references/valuation_rules/reverse_dcf_execution_policy.md",
+      "type": "internal_policy"
+    }
+  },
+  "implementations": [
+    {
+      "script": "scripts/valuation/valuation_common.py",
+      "status": "infrastructure",
+      "formulas": [
+        {
+          "functions": ["per_share"],
+          "formula": "per_share_value = value / shares_outstanding",
+          "source_ids": ["investor_gov_nav"],
+          "notes": "General per-share conversion arithmetic."
+        },
+        {
+          "functions": ["equity_value_from_enterprise_value"],
+          "formula": "equity_value = enterprise_value - net_debt - minority_interest + non_operating_assets",
+          "source_ids": ["openstax_dcf", "damodaran_valuation_entry"],
+          "notes": "Enterprise-to-equity bridge; input definitions must be consistent."
+        }
+      ],
+      "limitations": ["Infrastructure helpers do not validate whether enterprise value inputs are correctly sourced."],
+      "tests": ["tests/test_valuation_models.py::test_common_payload_shape"]
+    },
+    {
+      "script": "scripts/valuation/valuation_input_packet.py",
+      "status": "infrastructure",
+      "formulas": [],
+      "limitations": ["Schema container only; no valuation mathematics."],
+      "tests": ["tests/test_valuation_models.py::test_unified_executor_runs_owner_earnings_dcf"]
+    },
+    {
+      "script": "scripts/valuation/valuation_executor.py",
+      "status": "infrastructure",
+      "formulas": [],
+      "limitations": ["Execution orchestration only; correctness depends on routed model inputs and called model modules."],
+      "tests": ["tests/test_valuation_models.py::test_unified_executor_runs_owner_earnings_dcf"]
+    },
+    {
+      "script": "scripts/valuation/valuation_owner_earnings_dcf.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["owner_earnings"],
+          "formula": "owner_earnings = net_income + depreciation_amortization - maintenance_capex - required_working_capital_increase",
+          "source_ids": ["berkshire_1986_owner_earnings"],
+          "notes": "Simplified owner-earnings implementation; other non-cash charges must be included in inputs if material."
+        },
+        {
+          "functions": ["present_value", "intrinsic_equity_value"],
+          "formula": "PV = sum(CF_t / (1 + r)^t); equity_value = PV_forecast + PV_terminal - net_debt",
+          "source_ids": ["openstax_dcf", "openstax_npv", "damodaran_valuation_entry"],
+          "notes": "Standard DCF present value mechanics."
+        },
+        {
+          "functions": ["terminal_value_gordon"],
+          "formula": "terminal_value = final_cash_flow * (1 + g) / (r - g)",
+          "source_ids": ["damodaran_terminal_value", "openstax_ddm"],
+          "notes": "Requires r > g and a sustainable stable-growth assumption."
+        }
+      ],
+      "limitations": ["Maintenance capex and working capital needs are judgmental assumptions.", "Terminal growth must be sustainable and below discount rate."],
+      "tests": ["tests/test_valuation_models.py::test_python_valuation_outputs_are_deterministic_for_identical_inputs", "tests/test_valuation_models.py::test_unified_executor_runs_owner_earnings_dcf"]
+    },
+    {
+      "script": "scripts/valuation/valuation_reverse_dcf.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["market_implied_ev"],
+          "formula": "market_implied_ev = market_cap + net_debt",
+          "source_ids": ["openstax_dcf", "damodaran_valuation_entry"],
+          "notes": "Market-implied enterprise value bridge."
+        },
+        {
+          "functions": ["dcf_value_from_fcf_growth", "solve_implied_fcf_growth"],
+          "formula": "Solve g where target_EV = sum(FCF_0 * (1 + g)^t / (1 + r)^t) + TV / (1 + r)^n",
+          "source_ids": ["internal_reverse_dcf_policy", "openstax_dcf", "damodaran_terminal_value"],
+          "notes": "Bisection solver is deterministic; economic interpretation depends on base FCF quality."
+        },
+        {
+          "functions": ["dcf_value_from_revenue_to_fcf", "solve_implied_revenue_growth"],
+          "formula": "Revenue_t = Revenue_0 * (1 + growth)^t; FCF_t = Revenue_t * target_FCF_margin",
+          "source_ids": ["internal_reverse_dcf_policy", "openstax_dcf"],
+          "notes": "Simplified revenue-to-FCF bridge for implied-expectation checks."
+        }
+      ],
+      "limitations": ["Does not model taxes, reinvestment, dilution, or explicit margin ramps unless encoded in inputs.", "Same-day market price is required for current-price reverse DCF."],
+      "tests": ["tests/test_valuation_models.py::test_reverse_dcf_formula_known_case", "tests/test_valuation_models.py::test_python_valuation_outputs_are_deterministic_for_identical_inputs"]
+    },
+    {
+      "script": "scripts/valuation/valuation_epv.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["epv_enterprise_value"],
+          "formula": "EPV_enterprise_value = normalized_EBIT * (1 - tax_rate) / WACC",
+          "source_ids": ["damodaran_terminal_value", "internal_router_policy"],
+          "notes": "No-growth perpetuity using normalized after-tax operating earnings."
+        },
+        {
+          "functions": ["epv_equity_value", "franchise_value"],
+          "formula": "EPV_equity_value = EPV_enterprise_value - net_debt; franchise_value = DCF_value - EPV_value",
+          "source_ids": ["damodaran_valuation_entry", "internal_router_policy"],
+          "notes": "Used as a no-growth / franchise-value cross-check."
+        }
+      ],
+      "limitations": ["Normalized EBIT and maintenance economics are judgmental.", "Not suitable when current earnings are structurally unrepresentative."],
+      "tests": ["tests/test_valuation_models.py::test_valuation_router_exposes_algorithm_files"]
+    },
+    {
+      "script": "scripts/valuation/valuation_residual_income.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["residual_income"],
+          "formula": "residual_income = net_income - cost_of_equity * beginning_book_value",
+          "source_ids": ["damodaran_valuation_spreadsheets", "internal_router_policy"],
+          "notes": "Residual income / EVA-style equity valuation logic."
+        },
+        {
+          "functions": ["equity_value_from_residual_income"],
+          "formula": "equity_value = current_book_value + sum(RI_t / (1 + cost_of_equity)^t)",
+          "source_ids": ["damodaran_valuation_spreadsheets", "openstax_npv"],
+          "notes": "Appropriate when book value and ROE economics are meaningful."
+        },
+        {
+          "functions": ["theoretical_pb"],
+          "formula": "P/B = (ROE - g) / (cost_of_equity - g)",
+          "source_ids": ["damodaran_valuation_entry"],
+          "notes": "Fundamental P/B support formula; requires sustainable ROE, growth, and cost of equity."
+        }
+      ],
+      "limitations": ["Book value must be economically meaningful.", "Cost of equity and residual income forecasts must be source-backed assumptions."],
+      "tests": ["tests/test_valuation_models.py::test_valuation_router_exposes_algorithm_files"]
+    },
+    {
+      "script": "scripts/valuation/valuation_ddm.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["gordon_growth_value", "implied_dividend_growth"],
+          "formula": "value = D1 / (r - g); implied_g = r - D1 / price",
+          "source_ids": ["openstax_ddm", "damodaran_terminal_value"],
+          "notes": "Stable-growth dividend discount model."
+        },
+        {
+          "functions": ["two_stage_ddm", "dividend_forecast"],
+          "formula": "value = PV(explicit dividends) + PV(terminal dividend value)",
+          "source_ids": ["openstax_ddm", "damodaran_valuation_entry"],
+          "notes": "Two-stage DDM for temporary high growth followed by stable growth."
+        },
+        {
+          "functions": ["dividend_yield", "payout_ratio", "dividend_coverage", "dividend_yield_band_value"],
+          "formula": "yield = dividend / price; payout = dividend / earnings; coverage = FCFE / dividends; yield_band_value = dividend / target_yield",
+          "source_ids": ["openstax_ddm", "internal_structured_assumption_policy"],
+          "notes": "Dividend safety and yield-band helpers."
+        }
+      ],
+      "limitations": ["Use as valuation anchor only when dividends approximate sustainable distributable cash flow.", "Requires r > g."],
+      "tests": ["tests/test_valuation_models.py::test_ddm_gordon_growth", "tests/test_valuation_models.py::test_two_stage_ddm_is_above_no_growth_for_positive_growth"]
+    },
+    {
+      "script": "scripts/valuation/valuation_nav.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["nav", "nav_per_share", "discount_to_nav"],
+          "formula": "NAV = fair_value_assets - fair_value_liabilities; NAV_per_share = NAV / shares; discount_to_NAV = (NAV_per_share - price) / NAV_per_share",
+          "source_ids": ["investor_gov_nav"],
+          "notes": "Asset-minus-liabilities framework; fair value inputs must be independently sourced."
+        }
+      ],
+      "limitations": ["Asset and liability fair values are the hard part; stale appraisals or book values reduce confidence."],
+      "tests": ["tests/test_valuation_models.py::test_valuation_router_exposes_algorithm_files"]
+    },
+    {
+      "script": "scripts/valuation/valuation_sotp.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["segment_value", "enterprise_value_from_segments", "sotp_equity_value"],
+          "formula": "segment_value = metric * multiple or explicit_value; SOTP_EV = sum(segment_values) - corporate_cost_value; equity_value = EV - net_debt - minority_interest + non_operating_assets",
+          "source_ids": ["openstax_comps", "damodaran_valuation_entry"],
+          "notes": "SOTP is a standard decomposition framework; segment multiples and explicit values require separate support."
+        }
+      ],
+      "limitations": ["Segment metrics, ownership, and multiple selection dominate output reliability.", "Holding-company discounts are assumptions, not formula facts."],
+      "tests": ["tests/test_valuation_models.py::test_sotp_equity_value"]
+    },
+    {
+      "script": "scripts/valuation/valuation_comps.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["trimmed_median", "peer_multiple", "quality_adjusted_multiple", "enterprise_value_from_multiple", "equity_value_from_multiple"],
+          "formula": "peer_multiple = median or trimmed median of comparable multiples; EV = metric * multiple; equity_value = EV - net_debt - minority_interest + non_operating_assets",
+          "source_ids": ["openstax_comps", "damodaran_valuation_entry"],
+          "notes": "Comparable valuation is a market-based cross-check, not standalone intrinsic value."
+        }
+      ],
+      "limitations": ["Peer selection, multiple normalization, and quality adjustments are judgmental and must be source-backed.", "Do not let a single multiple drive final conclusion."],
+      "tests": ["tests/test_valuation_models.py::test_comps_trimmed_peer_multiple"]
+    },
+    {
+      "script": "scripts/valuation/valuation_liquidation.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["recoverable_asset_value", "settled_liability_value", "liquidation_equity_value"],
+          "formula": "recoverable_assets = carrying_value * recovery_rate; settled_claims = claim_value * settlement_rate; liquidation_equity = recoveries - claims - liquidation_costs",
+          "source_ids": ["investor_gov_nav", "internal_structured_assumption_policy"],
+          "notes": "Balance-sheet recovery arithmetic; recovery rates are scenario assumptions."
+        }
+      ],
+      "limitations": ["Recovery and settlement rates require hard evidence or conservative assumptions.", "Legal priority, off-balance-sheet claims, and liquidation costs can dominate results."],
+      "tests": ["tests/test_valuation_models.py::test_liquidation_value"]
+    },
+    {
+      "script": "scripts/valuation/valuation_rnpv.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["present_value", "rnpv_asset_value", "portfolio_rnpv"],
+          "formula": "rNPV_asset = PV(success_cash_flows) * probability_of_success - PV(development_costs); portfolio_rNPV = sum(asset_rNPV) + net_cash - corporate_overhead_PV",
+          "source_ids": ["wipo_rnpv", "openstax_npv"],
+          "notes": "Probability-adjusted NPV for biotech/pharma assets."
+        },
+        {
+          "functions": ["build_peak_sales_cash_flows"],
+          "formula": "product_FCF = peak_sales * FCF_margin with ramp, plateau, and decline schedule",
+          "source_ids": ["wipo_rnpv", "internal_structured_assumption_policy"],
+          "notes": "Deterministic helper for a simplified product cash-flow curve."
+        }
+      ],
+      "limitations": ["Probability of success, launch timing, peak sales, patent life, and development costs are high-sensitivity assumptions.", "Pipeline costs may need stage-specific probability treatment beyond this simplified helper."],
+      "tests": ["tests/test_valuation_models.py::test_rnpv_portfolio_value"]
+    },
+    {
+      "script": "scripts/valuation/valuation_reit.py",
+      "status": "standard_with_modeling_judgment",
+      "formulas": [
+        {
+          "functions": ["noi_capitalized_value", "reit_equity_value_from_noi"],
+          "formula": "property_value = NOI / cap_rate; equity_value = EV - net_debt - minority_interest + non_operating_assets",
+          "source_ids": ["nareit_ffo", "investor_gov_nav"],
+          "notes": "NOI capitalization is a standard real estate valuation shorthand; cap rate source matters."
+        },
+        {
+          "functions": ["affo_multiple_value", "affo_yield", "distribution_coverage"],
+          "formula": "value = AFFO * multiple; AFFO_yield = AFFO / equity_market_cap; distribution_coverage = AFFO / distributions",
+          "source_ids": ["nareit_ffo"],
+          "notes": "Nareit defines FFO; AFFO is company/analyst adjusted and must be reconciled."
+        }
+      ],
+      "limitations": ["AFFO is not uniformly defined across companies.", "Cap rates, NOI adjustments, and leverage require market/current property evidence."],
+      "tests": ["tests/test_valuation_models.py::test_reit_helpers"]
+    },
+    {
+      "script": "scripts/valuation/valuation_cyclical.py",
+      "status": "heuristic_helper",
+      "formulas": [
+        {
+          "functions": ["mid_cycle_metric", "mid_cycle_enterprise_value", "cyclical_equity_value"],
+          "formula": "mid_cycle_metric = average(cycle_values); EV = normalized_metric * mid_cycle_multiple; equity_value = EV bridge",
+          "source_ids": ["openstax_comps", "internal_router_policy"],
+          "notes": "Mid-cycle normalization is a conventional cyclical valuation technique, but cycle selection is judgmental."
+        },
+        {
+          "functions": ["commodity_scenario_ebitda", "cycle_stress_drawdown"],
+          "formula": "EBITDA = volume * (commodity_price - cash_cost_per_unit) - fixed_costs; drawdown = (normalized_value - stressed_value) / normalized_value",
+          "source_ids": ["internal_structured_assumption_policy"],
+          "notes": "Commodity scenario arithmetic helper, not a complete reserve/resource valuation."
+        }
+      ],
+      "limitations": ["Cycle window, normalized multiple, commodity price, cash cost, and fixed-cost assumptions must be externally supported.", "Do not present helper output as full intrinsic value without reserves, depletion, capex, and balance sheet checks."],
+      "tests": ["tests/test_valuation_models.py::test_cyclical_helpers"]
+    },
+    {
+      "script": "scripts/valuation/valuation_insurance.py",
+      "status": "heuristic_helper",
+      "formulas": [
+        {
+          "functions": ["insurance_equity_value"],
+          "formula": "equity_value = (adjusted_book_value + value_of_new_business + underwriting_value + investment_portfolio_adjustment) * (1 - holding_company_discount)",
+          "source_ids": ["cfo_forum_embedded_value", "internal_router_policy"],
+          "notes": "Simplified embedded-value-style bridge; not a full MCEV/EEV actuarial model."
+        },
+        {
+          "functions": ["combined_ratio", "float_cost", "implied_roe_valuation"],
+          "formula": "combined_ratio = (incurred_losses + expenses) / earned_premiums; float_cost = -underwriting_profit / average_float; value = book_value * target_P/B",
+          "source_ids": ["irmi_combined_ratio", "cfo_forum_embedded_value"],
+          "notes": "Insurance operating-quality helpers and book-value valuation support."
+        }
+      ],
+      "limitations": ["Full insurance valuation needs reserve adequacy, regulatory capital, asset duration, loss development, and line-of-business mix.", "Embedded value inputs must come from company disclosures or actuarial source data."],
+      "tests": ["tests/test_valuation_models.py::test_insurance_helpers"]
+    },
+    {
+      "script": "scripts/valuation/valuation_fintech.py",
+      "status": "heuristic_helper",
+      "formulas": [
+        {
+          "functions": ["brokerage_revenue_build", "revenue_stream_forecast", "net_interest_income_sensitivity"],
+          "formula": "revenue = funded_customers * ARPU + net_interest_income + crypto_revenue + other_revenue; stream_revenue_t = stream_revenue_{t-1} * (1 + growth) * stress_factor",
+          "source_ids": ["internal_structured_assumption_policy", "internal_router_policy"],
+          "notes": "Business-driver bridge for fintech/brokerage economics, not an authoritative valuation formula by itself."
+        },
+        {
+          "functions": ["normalized_earnings_value"],
+          "formula": "equity_value = revenue * normalized_margin * earnings_multiple - net_debt",
+          "source_ids": ["openstax_comps", "internal_structured_assumption_policy"],
+          "notes": "Normalized earnings multiple helper."
+        }
+      ],
+      "limitations": ["ARPU, funded customers, rate sensitivity, crypto activity, normalized margin, and multiple must be independently sourced.", "Use as support for a routed model, not as complete intrinsic value."],
+      "tests": ["tests/test_valuation_models.py::test_fintech_normalized_earnings_value", "tests/test_valuation_models.py::test_fintech_brokerage_route_for_hood_like_company"]
+    },
+    {
+      "script": "scripts/valuation/valuation_scenario.py",
+      "status": "standard_formula",
+      "formulas": [
+        {
+          "functions": ["probability_weighted_value", "scenario_weighted_dcf"],
+          "formula": "expected_value = sum(value_i * probability_i), with probabilities summing to 1",
+          "source_ids": ["openstax_npv", "internal_structured_assumption_policy"],
+          "notes": "Expected-value scenario weighting."
+        },
+        {
+          "functions": ["dcf_from_cash_flows"],
+          "formula": "DCF = sum(CF_t / (1 + r)^t) plus optional Gordon terminal value",
+          "source_ids": ["openstax_dcf", "damodaran_terminal_value"],
+          "notes": "Generic deterministic DCF helper."
+        }
+      ],
+      "limitations": ["Scenario probabilities and values must have evidence; probabilities must sum to 1."],
+      "tests": ["tests/test_valuation_models.py::test_scenario_probabilities"]
+    }
+  ]
+}

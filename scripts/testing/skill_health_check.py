@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import ast
 from pathlib import Path
 
 import yaml
@@ -102,6 +103,123 @@ def _validate_evals() -> list[str]:
     return errors
 
 
+def _validate_formula_source_registry() -> list[str]:
+    path = ROOT / "references" / "valuation_rules" / "formula_source_registry.json"
+    if not path.exists():
+        return ["references/valuation_rules/formula_source_registry.json is missing"]
+
+    errors: list[str] = []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [f"formula_source_registry.json invalid JSON: {exc}"]
+
+    allowed_statuses = {
+        "standard_formula",
+        "standard_with_modeling_judgment",
+        "heuristic_helper",
+        "infrastructure",
+    }
+    sources = payload.get("sources")
+    if not isinstance(sources, dict) or not sources:
+        errors.append("formula_source_registry.json must define non-empty sources")
+        sources = {}
+
+    for source_id, source in sources.items():
+        if not isinstance(source, dict):
+            errors.append(f"formula_source_registry sources[{source_id}] must be an object")
+            continue
+        if not source.get("title") or not source.get("url") or not source.get("type"):
+            errors.append(f"formula_source_registry sources[{source_id}] must include title, url, and type")
+
+    implementations = payload.get("implementations")
+    if not isinstance(implementations, list) or not implementations:
+        errors.append("formula_source_registry.json must define non-empty implementations")
+        return errors
+
+    by_script: dict[str, dict] = {}
+    for index, implementation in enumerate(implementations):
+        if not isinstance(implementation, dict):
+            errors.append(f"formula_source_registry implementations[{index}] must be an object")
+            continue
+
+        script = implementation.get("script")
+        if not isinstance(script, str) or not script.strip():
+            errors.append(f"formula_source_registry implementations[{index}] missing script")
+            continue
+        if script in by_script:
+            errors.append(f"formula_source_registry duplicate implementation for {script}")
+        by_script[script] = implementation
+
+        script_path = ROOT / script
+        script_functions: set[str] = set()
+        if not script_path.exists():
+            errors.append(f"formula_source_registry references missing script: {script}")
+        else:
+            try:
+                parsed_script = ast.parse(script_path.read_text(encoding="utf-8"))
+            except SyntaxError as exc:
+                errors.append(f"formula_source_registry could not parse {script}: {exc}")
+            else:
+                script_functions = {
+                    node.name
+                    for node in ast.walk(parsed_script)
+                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                }
+
+        status = implementation.get("status")
+        if status not in allowed_statuses:
+            errors.append(f"formula_source_registry {script} has invalid status: {status}")
+
+        formulas = implementation.get("formulas")
+        if not isinstance(formulas, list):
+            errors.append(f"formula_source_registry {script} formulas must be a list")
+            continue
+        if status != "infrastructure" and not formulas:
+            errors.append(f"formula_source_registry {script} must include formulas")
+
+        for formula_index, formula in enumerate(formulas):
+            if not isinstance(formula, dict):
+                errors.append(f"formula_source_registry {script} formulas[{formula_index}] must be an object")
+                continue
+            functions = formula.get("functions")
+            if not isinstance(functions, list) or not all(isinstance(item, str) and item for item in functions):
+                errors.append(f"formula_source_registry {script} formulas[{formula_index}] functions must be non-empty strings")
+            else:
+                missing_functions = [function for function in functions if function not in script_functions]
+                if missing_functions:
+                    errors.append(
+                        f"formula_source_registry {script} formulas[{formula_index}] references missing functions: "
+                        + ", ".join(missing_functions)
+                    )
+            if not isinstance(formula.get("formula"), str) or not formula["formula"].strip():
+                errors.append(f"formula_source_registry {script} formulas[{formula_index}] missing formula")
+            source_ids = formula.get("source_ids")
+            if not isinstance(source_ids, list) or not source_ids:
+                errors.append(f"formula_source_registry {script} formulas[{formula_index}] missing source_ids")
+            else:
+                for source_id in source_ids:
+                    if source_id not in sources:
+                        errors.append(f"formula_source_registry {script} formulas[{formula_index}] unknown source_id: {source_id}")
+
+        tests = implementation.get("tests")
+        if not isinstance(tests, list) or not tests:
+            errors.append(f"formula_source_registry {script} must include tests")
+        limitations = implementation.get("limitations")
+        if not isinstance(limitations, list) or not limitations:
+            errors.append(f"formula_source_registry {script} must include limitations")
+
+    valuation_scripts = sorted(
+        str(path.relative_to(ROOT))
+        for path in (ROOT / "scripts" / "valuation").glob("valuation_*.py")
+    )
+    missing = [script for script in valuation_scripts if script not in by_script]
+    if missing:
+        errors.append("formula_source_registry missing valuation scripts: " + ", ".join(missing))
+
+    return errors
+
+
 def main() -> int:
     skill_files = [ROOT / "SKILL.md", *sorted((ROOT / "skills").glob("*/SKILL.md"))]
     errors: list[str] = []
@@ -109,6 +227,7 @@ def main() -> int:
     for path in skill_files:
         errors.extend(_validate_skill_file(path))
     errors.extend(_validate_evals())
+    errors.extend(_validate_formula_source_registry())
 
     if errors:
         print("Skill health check failed:")
@@ -116,7 +235,7 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print(f"Skill health check passed: {len(skill_files)} skill files and evals/evals.json")
+    print(f"Skill health check passed: {len(skill_files)} skill files, evals/evals.json, and formula registry")
     return 0
 
 

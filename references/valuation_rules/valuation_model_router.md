@@ -143,3 +143,5 @@ The router may select valuation methods conceptually, but executable calculation
 | Fintech / brokerage platform economics | `scripts/valuation/valuation_fintech.py` |
 
 Python modules handle deterministic calculation, validation, per-share conversion, and blocked/low-confidence output packaging. They do not invent unsupported inputs. Forecast growth, discount rates, normalized earnings, peer selection, segment multiples, success probabilities, liquidation discounts, and scenario weights must come from `references/valuation_rules/structured_assumption_policy.md`.
+
+Formula provenance and confidence status are tracked in `references/valuation_rules/formula_source_registry.json`. Modules marked `heuristic_helper` are deterministic support calculations and must not be presented as complete standalone valuation models without additional source-backed assumptions and a stronger model wrapper.

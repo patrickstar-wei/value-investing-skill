@@ -163,6 +163,8 @@ Numerical valuation outputs must come from executable Python valuation scripts. 
 
 Valuation algorithms must be documented by formula/policy and covered by unit or golden tests. If a formula is not implemented, tested, and suitable for the company type, do not present it as a reliable valuation result.
 
+For formula provenance and confidence status, use `references/valuation_rules/formula_source_registry.json`. Treat `heuristic_helper` entries as supporting calculations only, not standalone high-confidence valuation models.
+
 ## Execution Gates
 
 Important modules must be executed or explicitly blocked. If a selected valuation model, reverse DCF, data audit, risk check, or report module cannot run, state:
