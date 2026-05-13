@@ -59,7 +59,7 @@ For short checks, sell-zone questions, reverse DCF requests, data-source audits,
 
 ## Non-Overridable Investment Principles
 
-Every stock/company analysis must obey: business quality before valuation; cash-flow reality over accounting appearance; model-company fit; required margin of safety; evidence-backed conclusions; explicit bear case; internal calculation traces by default; data confidence gating action; separate judgment of good business and good price; missing/stale data flagged or blocked.
+Every stock/company analysis must obey: business quality before valuation; cash-flow reality over accounting appearance; model-company fit; required margin of safety; evidence-backed conclusions; explicit bear case; internal calculation traces by default; data confidence gating action; separate judgment of good business and good price; missing/stale data flagged or blocked; relative valuation considered for public, peer-comparable competitive industries; evidence-based moat assessment for L1+ stock analysis where data is available.
 
 Load for the core philosophy and quality gate:
 
@@ -150,6 +150,8 @@ Every standard stock/company report must obey:
 - `references/output_policy/output_validation_rules.md`
 
 The final report must preserve valuation range, current price, margin of safety, selected models, key assumptions, sensitivity, risks, data provenance, execution gates, and investor action zones when relevant and available.
+
+Preserve moat assessment where material and peer comparison / relative valuation verdict where peer-comparable.
 
 If valuation or market data is missing, keep the affected sections, mark them `Blocked`, explain missing inputs, and provide non-price-based next steps.
 

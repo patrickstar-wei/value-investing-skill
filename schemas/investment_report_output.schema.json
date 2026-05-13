@@ -372,6 +372,143 @@
     "risk_analysis": {
       "type": "object"
     },
+    "moat_assessment": {
+      "type": "object",
+      "description": "Compact user-facing moat assessment. Use blocked, low_confidence, or not_applicable when data or comparability is insufficient.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "usable",
+            "blocked",
+            "low_confidence",
+            "not_applicable"
+          ]
+        },
+        "roic": {},
+        "wacc": {},
+        "roic_spread": {},
+        "inferred_moat_rating": {
+          "type": "string",
+          "enum": [
+            "wide",
+            "narrow",
+            "weak_or_none",
+            "blocked"
+          ]
+        },
+        "rating_label": {
+          "type": "string"
+        },
+        "moat_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "moat_trend": {
+          "type": "string",
+          "enum": [
+            "widening",
+            "stable",
+            "narrowing",
+            "blocked"
+          ]
+        },
+        "five_forces_resilience_score": {},
+        "required_margin_of_safety": {},
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "evidence_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocked_or_low_confidence_items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "peer_comparison": {
+      "type": "object",
+      "description": "Compact peer and relative valuation assessment. Use blocked, low_confidence, or not_applicable when no credible peer set exists.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "usable",
+            "blocked",
+            "low_confidence",
+            "not_applicable"
+          ]
+        },
+        "benchmark_company": {
+          "type": "string"
+        },
+        "peer_selection_logic": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "moat_gap_vs_benchmark": {},
+        "relative_valuation_verdict": {
+          "type": "string",
+          "enum": [
+            "cheap",
+            "reasonable",
+            "expensive",
+            "blocked",
+            "low_confidence"
+          ]
+        },
+        "valuation_premium_discount": {},
+        "is_discount_premium_justified": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no",
+            "mixed",
+            "blocked"
+          ]
+        },
+        "comparison_metric_used": {
+          "type": "string"
+        },
+        "summary_rows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "blocked"
+          ]
+        },
+        "blocked_or_low_confidence_items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "investor_action_framework": {
       "type": "object",
       "required": [

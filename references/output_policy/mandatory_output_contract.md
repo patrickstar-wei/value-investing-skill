@@ -79,6 +79,8 @@ The `## 🧮 Valuation Summary` section must include the following fields when d
 - Current price
 - Margin of safety
 - Valuation status: undervalued / fair / expensive / blocked / low-confidence
+- Moat-adjusted required margin of safety where material
+- Relative valuation verdict where a credible peer set exists
 - Key assumptions
 - Sensitivity summary
 - Price zone assumption basis: explain which valuation anchors and safety-margin rules produced the price/action zones.
@@ -179,6 +181,8 @@ Allowed by default:
 - key assumptions
 - intrinsic value range
 - margin-of-safety judgment
+- compact moat assessment
+- compact peer comparison verdict
 - price zones
 - position-aware action framework
 - sensitivity summary

@@ -38,6 +38,8 @@ The renderer must follow `output_language` from the payload. If `output_language
 | Company Classification | {{company_classification}} | {{classification_signal}} |
 | Valuation | {{valuation_judgment}} | {{valuation_signal}} |
 | Margin of Safety | {{margin_of_safety}} | {{mos_signal}} |
+| Moat Quality | {{moat_quality}} | {{moat_signal}} |
+| Peer Relative Value | {{peer_relative_value}} | {{peer_signal}} |
 | Risk Level | {{risk_level}} | {{risk_signal}} |
 | Data Confidence | {{data_confidence}} | {{data_signal}} |
 | Action | {{action}} | ➡️ |
@@ -77,6 +79,38 @@ For each evidence item:
 - 📊 Fact: {{fact}}
 - 💡 Interpretation: {{interpretation}}
 - ➡️ Investment Implication: {{investment_implication}}
+
+### Moat Assessment
+
+| Item | Result | Interpretation |
+|---|---:|---|
+| Status | {{moat_assessment_status}} | {{moat_status_interpretation}} |
+| ROIC spread / AFOS | {{roic_spread}} | {{roic_spread_interpretation}} |
+| Inferred moat rating | {{inferred_moat_rating}} | {{moat_rating_interpretation}} |
+| Moat sources | {{moat_sources}} | {{moat_sources_interpretation}} |
+| Moat trend | {{moat_trend}} | {{moat_trend_interpretation}} |
+| Five Forces resilience | {{five_forces_resilience_score}} | {{five_forces_interpretation}} |
+| Required margin of safety | {{required_margin_of_safety}} | {{required_mos_interpretation}} |
+
+**Moat confidence / blocked items:**
+{{moat_blocked_or_low_confidence_items}}
+
+### Peer Comparison
+
+| Item | Result | Interpretation |
+|---|---:|---|
+| Status | {{peer_comparison_status}} | {{peer_status_interpretation}} |
+| Benchmark company | {{benchmark_company}} | {{benchmark_interpretation}} |
+| Comparison metric | {{comparison_metric_used}} | {{comparison_metric_interpretation}} |
+| Moat gap vs benchmark | {{moat_gap_vs_benchmark}} | {{moat_gap_interpretation}} |
+| Relative valuation verdict | {{relative_valuation_verdict}} | {{relative_valuation_interpretation}} |
+| Premium / discount | {{valuation_premium_discount}} | {{premium_discount_interpretation}} |
+
+**Peer selection logic:**
+{{peer_selection_logic}}
+
+**Peer confidence / blocked items:**
+{{peer_blocked_or_low_confidence_items}}
 
 ## 🧮 Valuation Summary
 

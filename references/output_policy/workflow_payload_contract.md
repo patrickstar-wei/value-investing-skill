@@ -47,6 +47,43 @@ Ensure all workflows return consistent structured fields to the fixed report ren
   "key_evidence": [
     {"fact": "string", "interpretation": "string", "investment_implication": "string"}
   ],
+  "moat_assessment": {
+    "status": "usable / blocked / low_confidence / not_applicable",
+    "roic": "number/string/blocked",
+    "wacc": "number/string/blocked",
+    "roic_spread": "number/string/blocked",
+    "inferred_moat_rating": "wide / narrow / weak_or_none / blocked",
+    "rating_label": "official Morningstar / Morningstar-style inferred / internal inferred / blocked",
+    "moat_sources": ["string"],
+    "moat_trend": "widening / stable / narrowing / blocked",
+    "five_forces_resilience_score": "number/string/blocked",
+    "required_margin_of_safety": "number/string/blocked",
+    "confidence": "high / medium / low / blocked",
+    "evidence_notes": ["string"],
+    "blocked_or_low_confidence_items": ["string"]
+  },
+  "peer_comparison": {
+    "status": "usable / blocked / low_confidence / not_applicable",
+    "benchmark_company": "string",
+    "peer_selection_logic": ["string"],
+    "moat_gap_vs_benchmark": "number/string/blocked",
+    "relative_valuation_verdict": "cheap / reasonable / expensive / blocked / low_confidence",
+    "valuation_premium_discount": "number/string/blocked",
+    "is_discount_premium_justified": "yes / no / mixed / blocked",
+    "comparison_metric_used": "PE / EV-EBITDA / P-B / P-FFO / P-FCF / EV-Revenue / other",
+    "summary_rows": [
+      {
+        "company": "string",
+        "relationship": "benchmark / direct peer / substitute / reference",
+        "roic": "number/string/blocked",
+        "moat_rating": "string",
+        "valuation_metric": "string",
+        "moat_trend": "string"
+      }
+    ],
+    "confidence": "high / medium / low / blocked",
+    "blocked_or_low_confidence_items": ["string"]
+  },
   "valuation_summary": {
     "selected_models": ["string"],
     "bear_value": "number/string/blocked",
