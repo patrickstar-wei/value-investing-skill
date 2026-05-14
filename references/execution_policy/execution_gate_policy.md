@@ -36,6 +36,7 @@ or:
 
 | Gate | Trigger | Required Output |
 |---|---|---|
+| Market Adapter Gate | Any listed-company analysis | Correct market adapter or blocked |
 | Data Freshness Gate | Any current valuation or rating | Freshness table or blocked |
 | Valuation Model Gate | Any selected valuation model | Model result or blocked |
 | Reverse DCF Gate | Market expectations matter | Reverse DCF result or blocked |
@@ -53,6 +54,7 @@ or:
 | Financials Gate | Bank / insurance / broker | Financial-sector-specific model or blocked |
 | Currency Gate | Cross-market valuation | Reporting currency and FX date |
 | Restatement Gate | Latest filings used | Restatement / accounting change check |
+| PE Validation Gate | P/E, normalized P/E, or relative valuation using earnings | Source-linked TTM earnings calculation + validation or blocked |
 | Catalyst Gate | Special situation thesis | Catalyst probability / timing or blocked |
 | Thesis Review Gate | Repeat analysis | What changed since last analysis |
 

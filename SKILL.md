@@ -99,6 +99,8 @@ Proactively use or check:
 
 Use public-data connectors when possible: `scripts/connectors/public_data_packet_builder.py`, `sec_edgar_connector.py`, `yfinance_connector.py`, `ir_release_parser.py`, and `openbb_provider_config.py`.
 
+Before retrieving financial statements, route the ticker through `scripts/markets/registry.py`. US tickers may use SEC EDGAR companyfacts. A-share tickers such as `000858.SZ` or `600519.SH` must use the CN_A adapter path; if CN_A filing data is unavailable, block current valuation instead of substituting SEC companyfacts or generic WebSearch snippets.
+
 If `yfinance` is missing in the sandbox/runtime, attempt a local sandbox-target install before using Yahoo endpoint fallbacks. Do not replace this with WebSearch prices.
 
 Reflect `sources_used`, `missing_data`, and `errors` in data provenance and optional-data suggestions.

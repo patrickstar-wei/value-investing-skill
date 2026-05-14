@@ -26,6 +26,8 @@ from scripts.connectors.sec_edgar_connector import (
 from scripts.connectors.yfinance_connector import JsonFetcher as MarketJsonFetcher
 from scripts.connectors.yfinance_connector import _fetch_json as market_fetch_json
 from scripts.connectors.yfinance_connector import get_market_quote
+from scripts.markets.cn_a.adapter import CNFinancialFetcher, build_cn_a_public_data_packet
+from scripts.markets.registry import MARKET_CN_A, detect_market
 from scripts.routing.select_valuation_models import CompanyProfile
 from scripts.routing.tech_cycle_applicability import select_tech_cycle_applicability
 
@@ -71,6 +73,7 @@ def build_public_data_packet(
     market_fetcher: MarketJsonFetcher = market_fetch_json,
     prefer_yfinance_package: bool = True,
     openbb_config_path: str | None = None,
+    cn_a_financial_fetcher: CNFinancialFetcher | None = None,
 ) -> Dict[str, Any]:
     """Build a unified public data packet from available connectors.
 
@@ -80,12 +83,22 @@ def build_public_data_packet(
     """
 
     normalized = ticker.strip().upper()
+    market = detect_market(normalized)
+    if market == MARKET_CN_A:
+        return build_cn_a_public_data_packet(
+            normalized,
+            market_fetcher=market_fetcher,
+            prefer_yfinance_package=prefer_yfinance_package,
+            financial_fetcher=cn_a_financial_fetcher,
+        )
+
     errors: List[Dict[str, str]] = []
     missing_data: List[str] = []
     sources_used: List[Dict[str, Any]] = []
 
     packet: Dict[str, Any] = {
         "ticker": normalized,
+        "market": market,
         "created_at": _now_iso(),
         "sources_used": sources_used,
         "market_quote": None,

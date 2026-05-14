@@ -32,6 +32,8 @@ Do not treat web summaries as primary financial statement data when official fil
 
 Do not treat generic WebSearch snippets, search-result cards, or webpage snapshots as valid current-price sources unless they include an explicit same-day market timestamp. A visible price without a market timestamp is not current market data and must not drive margin of safety, reverse DCF, or price/action zones.
 
+Route every ticker through the correct market adapter before retrieving financial statements. A-share tickers such as `000858.SZ` or `600519.SH` must not use SEC EDGAR companyfacts as a primary financial source. If the required market adapter cannot provide financial history, mark current valuation as blocked instead of filling the gap with generic web snippets.
+
 ## Default Public Data Retrieval Rule
 
 For normal L1/L2 company analysis, use public sources proactively before asking the user for more data:
@@ -53,9 +55,11 @@ Only ask for or list user-provided inputs when they are optional quality enhance
 
 | Priority | Connector | File | Data | Cost / Access |
 |---|---|---|---|---|
-| Orchestrator | Public data packet builder | `scripts/connectors/public_data_packet_builder.py` | SEC filings/facts, market quote, public IR release snippets, OpenBB readiness in one packet | Uses only the enabled public/local connectors below |
-| P0 | SEC EDGAR | `scripts/connectors/sec_edgar_connector.py` | Official submissions, latest 10-K / 10-Q / 8-K, XBRL companyfacts | Free public SEC API; set `SEC_USER_AGENT` for production use |
-| P0 | Financial history builder | `scripts/connectors/financial_history_builder.py` | SEC companyfacts annual and quarterly history with conservative coverage status | Uses official SEC companyfacts; marks limited/blocked instead of filling missing series |
+| Orchestrator | Public data packet builder | `scripts/connectors/public_data_packet_builder.py` | Market-routed public data packet with adapter-specific financial history, market quote, public IR release snippets, OpenBB readiness | Uses only the enabled public/local connectors below |
+| P0 | Market registry | `scripts/markets/registry.py` | Ticker-to-market routing for US, CN_A, HK, unknown | Blocks wrong-market financial sources |
+| P0 | SEC EDGAR | `scripts/connectors/sec_edgar_connector.py` | US official submissions, latest 10-K / 10-Q / 8-K, XBRL companyfacts | Free public SEC API; set `SEC_USER_AGENT` for production use |
+| P0 | Financial history builder | `scripts/connectors/financial_history_builder.py` | US SEC companyfacts annual and quarterly history with conservative coverage status | Uses official SEC companyfacts; marks limited/blocked instead of filling missing series |
+| P0 | A-share adapter | `scripts/markets/cn_a/adapter.py` | CN_A market quote packet boundary and explicit financial-history block until CN_A filings are parsed | Prevents A-share tickers from falling through SEC companyfacts |
 | P1 | yfinance / Yahoo Finance | `scripts/connectors/yfinance_connector.py` | Price, market cap, shares, currency, previous close | Free third-party data; optional `yfinance` package, Yahoo fallback |
 | P2 | Public IR release parser | `scripts/connectors/ir_release_parser.py` | Earnings release metrics, guidance snippets, risk/event sentences | Free public web/file parser; reconcile numbers to filings |
 | P3 | OpenBB provider config | `scripts/connectors/openbb_provider_config.py` | Optional provider availability and API-key readiness | OpenBB is optional; many providers need user API keys or subscriptions |
