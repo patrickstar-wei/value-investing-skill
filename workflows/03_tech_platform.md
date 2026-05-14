@@ -19,6 +19,10 @@ Use for digital advertising, cloud, app store, marketplace, software ecosystem, 
 - AI disruption or enhancement
 - Regulatory risk
 - CapEx and FCF impact
+- Financial History Gate for all L1+ technology-platform analysis.
+- Compute Capacity Gate when cloud, AI infrastructure, or data-center CapEx is a material valuation driver.
+- Subscription Budget Cycle Gate for SaaS / subscription software: use deferred revenue, RPO / billings disclosures, retention, sales efficiency, and operating cash flow where available.
+- Advertising Demand Cycle Gate for ad-supported platforms: use revenue growth, ARPU / engagement where disclosed, cost structure, and operating leverage; inventory-cycle evidence is not required.
 
 ## Philosophy lenses
 

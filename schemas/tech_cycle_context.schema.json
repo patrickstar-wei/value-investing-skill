@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TechCycleApplicability",
+  "type": "object",
+  "required": [
+    "cycle_profile",
+    "applicability",
+    "required_context_packets",
+    "valuation_implications",
+    "required_gates",
+    "rationale"
+  ],
+  "properties": {
+    "cycle_profile": {
+      "type": "string",
+      "enum": [
+        "physical_inventory",
+        "compute_capacity",
+        "subscription_budget",
+        "advertising_demand",
+        "emerging_technology_optional",
+        "not_material"
+      ]
+    },
+    "applicability": {
+      "type": "string",
+      "enum": ["high", "medium_high", "medium", "low_medium", "low", "not_applicable"]
+    },
+    "required_context_packets": {"type": "array", "items": {"type": "string"}},
+    "valuation_implications": {"type": "array", "items": {"type": "string"}},
+    "required_gates": {"type": "array", "items": {"type": "string"}},
+    "rationale": {"type": "string"}
+  }
+}

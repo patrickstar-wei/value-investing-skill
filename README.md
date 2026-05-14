@@ -239,10 +239,11 @@ python -c "import tests.test_valuation_router as t; [getattr(t, name)() for name
 - `scripts/data/check_data_freshness.py`: data freshness checks.
 - `scripts/audit/data_provenance_audit.py`: source / lineage checks.
 - `scripts/connectors/sec_edgar_connector.py`: free official SEC EDGAR submissions and companyfacts connector.
+- `scripts/connectors/financial_history_builder.py`: conservative SEC companyfacts history builder for annual / quarterly financial trends and technology-cycle gates.
 - `scripts/connectors/yfinance_connector.py`: yfinance / Yahoo Finance market quote connector with Yahoo chart fallback.
 - `scripts/connectors/ir_release_parser.py`: public IR / earnings-release parser for metrics, guidance, and risk snippets.
 - `scripts/connectors/openbb_provider_config.py`: optional OpenBB provider template and runtime readiness checker.
-- `scripts/connectors/public_data_packet_builder.py`: orchestrates SEC, market quote, public IR release, and OpenBB readiness into one analysis packet.
+- `scripts/connectors/public_data_packet_builder.py`: orchestrates SEC, financial history, market quote, public IR release, technology-cycle gates, and OpenBB readiness into one analysis packet.
 - `scripts/connectors/institutional_view_parser.py`: safe parser for user-provided institutional view exports.
 - `skills/institutional-view-ingestion/SKILL.md`: institutional view ingestion workflow.
 - `references/data_source_policy/institutional_view_policy.md`: safety and copyright policy for institutional research.

@@ -79,6 +79,8 @@ def test_nvidia_like_company_uses_ai_semiconductor_route():
     models = select_valuation_models(company)
     assert models["base_type"] == "AI / Semiconductor Hypergrowth Platform"
     assert "Scenario-weighted DCF" in models["primary"]
+    assert models["tech_cycle_applicability"]["cycle_profile"] == "physical_inventory"
+    assert "Inventory Cycle Gate" in models["tech_cycle_applicability"]["required_gates"]
     assert models["token_control"]["show_calculation_trace_by_default"] is False
 
 
@@ -135,6 +137,25 @@ def test_amazon_like_company_uses_digital_platform_and_cloud_overlay():
     assert models["base_type"] == "Digital Platform Compounder"
     assert "Cloud / AI Infrastructure Overlay" in models["overlays"]
     assert "cloud_models" in models["overlay_models"]
+    assert models["tech_cycle_applicability"]["cycle_profile"] == "compute_capacity"
+
+
+def test_saas_routes_to_subscription_budget_cycle_not_inventory():
+    company = CompanyProfile(industry="enterprise software saas cybersecurity", is_saas=True)
+    models = select_valuation_models(company)
+    tech_cycle = models["tech_cycle_applicability"]
+    assert tech_cycle["cycle_profile"] == "subscription_budget"
+    assert "Subscription Budget Cycle Gate" in tech_cycle["required_gates"]
+    assert "Inventory Cycle Gate" not in tech_cycle["required_gates"]
+
+
+def test_ad_platform_routes_to_advertising_demand_cycle_not_inventory():
+    company = CompanyProfile(industry="social advertising internet platform", is_digital_platform=True)
+    models = select_valuation_models(company)
+    tech_cycle = models["tech_cycle_applicability"]
+    assert tech_cycle["cycle_profile"] == "advertising_demand"
+    assert "Advertising Demand Cycle Gate" in tech_cycle["required_gates"]
+    assert "Inventory Cycle Gate" not in tech_cycle["required_gates"]
 
 
 def test_token_efficiency_caps_l1_overlays():

@@ -19,6 +19,9 @@ Use for AI accelerators, semiconductor designers, equipment companies, foundries
 - Supply chain / foundry dependence
 - Export control and geopolitical constraints
 - Cyclicality and margin normalization
+- Financial History Gate: use company filing history to anchor revenue, gross margin, FCF, inventory, CapEx, PP&E, and share-count trends.
+- Inventory Cycle Gate: require inventory / revenue or related filing evidence where available; if missing, mark cycle analysis `Limited` and do not treat peak margins as permanent.
+- Capacity Cycle Gate: require CapEx, PP&E, depreciation, or external capacity evidence where available; if missing, stress AI-capex monetization assumptions.
 
 ## Philosophy lenses
 

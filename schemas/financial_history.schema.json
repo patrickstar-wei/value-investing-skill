@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FinancialHistoryPacket",
+  "type": "object",
+  "required": ["ticker", "created_at", "source", "coverage", "metrics", "missing_metrics", "errors"],
+  "properties": {
+    "ticker": {"type": "string"},
+    "created_at": {"type": "string"},
+    "source": {"type": "string"},
+    "source_tier": {"type": "integer"},
+    "confidence": {"type": "string"},
+    "latest_financial_period": {"type": "string"},
+    "coverage": {
+      "type": "object",
+      "required": ["status", "annual_target_years", "quarter_target_count"],
+      "properties": {
+        "status": {"type": "string", "enum": ["passed", "limited", "blocked"]},
+        "annual_target_years": {"type": "integer"},
+        "quarter_target_count": {"type": "integer"},
+        "core_annual_periods_min": {"type": "integer"},
+        "core_quarterly_periods_min": {"type": "integer"},
+        "core_annual_counts": {"type": "object"},
+        "core_quarterly_counts": {"type": "object"}
+      }
+    },
+    "metrics": {"type": "object"},
+    "missing_metrics": {"type": "array", "items": {"type": "string"}},
+    "errors": {"type": "array", "items": {"type": "object"}}
+  }
+}

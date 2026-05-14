@@ -1,9 +1,11 @@
 from scripts.connectors.ir_release_parser import parse_release_text
 from scripts.connectors.openbb_provider_config import load_openbb_provider_config, openbb_runtime_status
+from scripts.connectors.financial_history_builder import build_financial_history
 from scripts.connectors.public_data_packet_builder import build_public_data_packet
 from scripts.connectors.sec_edgar_connector import latest_us_gaap_fact, recent_filings, ticker_to_cik
 from scripts.connectors import yfinance_connector
 from scripts.connectors.yfinance_connector import get_market_quote
+from scripts.routing.select_valuation_models import CompanyProfile
 from urllib.error import HTTPError
 from datetime import datetime, timezone
 import sys
@@ -396,4 +398,130 @@ def test_public_data_packet_builder_orchestrates_mocked_sources():
     assert packet["market_quote"]["price"] == 198.45
     assert packet["sec"]["filing_snapshot"]["latest_filings"][0]["form"] == "10-K"
     assert packet["sec"]["facts"]["Revenues"]["val"] == 130497000000
+    assert packet["financial_history"]["coverage"]["status"] == "blocked"
+    assert any(gate["gate"] == "Financial History Gate" for gate in packet["execution_gate_checklist"])
     assert packet["errors"] == []
+
+
+def _history_payload():
+    def annual(value, year, tag_form="10-K"):
+        return {
+            "val": value,
+            "start": f"{year}-01-01",
+            "end": f"{year}-12-31",
+            "filed": f"{year + 1}-02-15",
+            "form": tag_form,
+            "frame": f"CY{year}",
+            "fy": year,
+            "fp": "FY",
+        }
+
+    def quarter(value, year, quarter_number):
+        month_end = {1: "03-31", 2: "06-30", 3: "09-30", 4: "12-31"}[quarter_number]
+        month_start = {1: "01-01", 2: "04-01", 3: "07-01", 4: "10-01"}[quarter_number]
+        filed_month = min(quarter_number * 3 + 1, 12)
+        form = "10-K" if quarter_number == 4 else "10-Q"
+        return {
+            "val": value,
+            "start": f"{year}-{month_start}",
+            "end": f"{year}-{month_end}",
+            "filed": f"{year}-{str(filed_month).zfill(2)}-15",
+            "form": form,
+            "frame": f"CY{year}Q{quarter_number}",
+            "fy": year,
+            "fp": f"Q{quarter_number}",
+        }
+
+    def instant(value, year, quarter_number=None):
+        if quarter_number is None:
+            return {
+                "val": value,
+                "end": f"{year}-12-31",
+                "filed": f"{year + 1}-02-15",
+                "form": "10-K",
+                "fy": year,
+                "fp": "FY",
+            }
+        month_end = {1: "03-31", 2: "06-30", 3: "09-30", 4: "12-31"}[quarter_number]
+        filed_month = min(quarter_number * 3 + 1, 12)
+        return {
+            "val": value,
+            "end": f"{year}-{month_end}",
+            "filed": f"{year}-{str(filed_month).zfill(2)}-15",
+            "form": "10-Q",
+            "fy": year,
+            "fp": f"Q{quarter_number}",
+        }
+
+    return {
+        "cik": 1045810,
+        "facts": {
+            "us-gaap": {
+                "Revenues": {"units": {"USD": [annual(100 + y, y) for y in range(2020, 2026)] + [quarter(20 + q, 2025, q) for q in range(1, 5)] + [quarter(30 + q, 2026, q) for q in range(1, 5)]}},
+                "NetIncomeLoss": {"units": {"USD": [annual(10 + y, y) for y in range(2020, 2026)] + [quarter(2 + q, 2025, q) for q in range(1, 5)] + [quarter(3 + q, 2026, q) for q in range(1, 5)]}},
+                "NetCashProvidedByUsedInOperatingActivities": {"units": {"USD": [annual(20 + y, y) for y in range(2020, 2026)] + [quarter(5 + q, 2025, q) for q in range(1, 5)] + [quarter(6 + q, 2026, q) for q in range(1, 5)]}},
+                "PaymentsToAcquirePropertyPlantAndEquipment": {"units": {"USD": [annual(5 + y, y) for y in range(2020, 2026)] + [quarter(1 + q, 2025, q) for q in range(1, 5)] + [quarter(2 + q, 2026, q) for q in range(1, 5)]}},
+                "GrossProfit": {"units": {"USD": [annual(60 + y, y) for y in range(2020, 2026)] + [quarter(12 + q, 2025, q) for q in range(1, 5)] + [quarter(16 + q, 2026, q) for q in range(1, 5)]}},
+                "InventoryNet": {"units": {"USD": [instant(8 + y, y) for y in range(2020, 2026)] + [instant(10 + q, 2026, q) for q in range(1, 5)]}},
+                "PropertyPlantAndEquipmentNet": {"units": {"USD": [instant(30 + y, y) for y in range(2020, 2026)] + [instant(40 + q, 2026, q) for q in range(1, 5)]}},
+                "ContractWithCustomerLiabilityCurrent": {"units": {"USD": [instant(4 + y, y) for y in range(2020, 2026)] + [instant(6 + q, 2026, q) for q in range(1, 5)]}},
+            }
+        },
+    }
+
+
+def test_financial_history_builder_extracts_annual_quarterly_and_derived_metrics():
+    history = build_financial_history("NVDA", facts_payload=_history_payload(), annual_years=5, quarter_count=8)
+
+    assert history["coverage"]["status"] == "passed"
+    assert history["latest_financial_period"] == "FY2026-Q4"
+    assert len(history["metrics"]["revenue"]["annual"]) == 5
+    assert len(history["metrics"]["revenue"]["quarterly"]) == 8
+    assert history["metrics"]["free_cash_flow"]["annual"]
+    assert history["metrics"]["gross_margin"]["quarterly"]
+
+
+def test_public_data_packet_includes_tech_cycle_gates_when_profile_is_supplied():
+    def sec_fetcher(url):
+        if "company_tickers" in url:
+            return {"0": {"cik_str": 1045810, "ticker": "NVDA", "title": "NVIDIA Corp"}}
+        if "submissions" in url:
+            return {
+                "cik": "1045810",
+                "name": "NVIDIA Corp",
+                "filings": {"recent": {"accessionNumber": [], "form": [], "filingDate": [], "reportDate": [], "primaryDocument": []}},
+            }
+        if "companyfacts" in url:
+            return _history_payload()
+        raise AssertionError(f"unexpected SEC URL: {url}")
+
+    def market_fetcher(url):
+        market_time = 1_774_445_400
+        return {
+            "quoteResponse": {
+                "result": [
+                    {
+                        "regularMarketPrice": 198.45,
+                        "currency": "USD",
+                        "marketCap": 4_900_000_000_000,
+                        "sharesOutstanding": 24_700_000_000,
+                        "regularMarketPreviousClose": 197.0,
+                        "regularMarketTime": market_time,
+                    }
+                ]
+            }
+        }
+
+    packet = build_public_data_packet(
+        "NVDA",
+        sec_fetcher=sec_fetcher,
+        market_fetcher=market_fetcher,
+        prefer_yfinance_package=False,
+        company_profile=CompanyProfile(industry="ai semiconductor", is_ai_semiconductor_platform=True),
+    )
+
+    gate_names = {gate["gate"]: gate["status"] for gate in packet["execution_gate_checklist"]}
+    assert packet["tech_cycle_applicability"]["cycle_profile"] == "physical_inventory"
+    assert gate_names["Financial History Gate"] == "Passed"
+    assert gate_names["Inventory Cycle Gate"] == "Passed"
+    assert gate_names["Capacity Cycle Gate"] == "Passed"

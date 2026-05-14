@@ -22,6 +22,8 @@ Typical companies: NVIDIA, AMD, Broadcom, ASML, TSMC.
 - Supply chain and foundry dependency
 - Export control / geopolitical risk
 - Capex cycle and cloud customer demand
+- Tech cycle profile: `physical_inventory`
+- Required gates: Financial History Gate, Inventory Cycle Gate, Capacity Cycle Gate
 
 ### Model stack
 
@@ -49,6 +51,8 @@ Typical companies: Alphabet, Amazon, Meta, Microsoft, Apple.
 - AI capex and monetization
 - Cloud or advertising cyclicality
 - Regulatory / antitrust risk
+- Tech cycle profile: `compute_capacity` when cloud / AI infrastructure dominates; `advertising_demand` when ad demand dominates
+- Required gates: Financial History Gate plus Compute Capacity Gate or Advertising Demand Cycle Gate when material
 
 ### Model stack
 
@@ -76,6 +80,8 @@ Typical companies or segments: AWS, Azure, Google Cloud.
 - Capex intensity
 - AI infrastructure demand
 - Customer concentration and enterprise retention
+- Tech cycle profile: `compute_capacity`
+- Required gates: Financial History Gate and Compute Capacity Gate
 
 ### Model stack
 
@@ -158,6 +164,8 @@ Use for software firms where recurring revenue and retention drive value.
 - Rule of 40
 - Sales efficiency
 - SBC and true FCF margin
+- Tech cycle profile: `subscription_budget`
+- Required gates: Financial History Gate and Subscription Budget Cycle Gate
 
 ### Model stack
 

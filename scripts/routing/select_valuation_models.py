@@ -10,6 +10,8 @@ It does not expose scorecards or valuation calculation traces unless requested.
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
+from scripts.routing.tech_cycle_applicability import select_tech_cycle_applicability
+
 
 @dataclass
 class CompanyProfile:
@@ -652,6 +654,7 @@ def select_valuation_models(company: CompanyProfile) -> Dict[str, object]:
         "confidence": _confidence(company, base_type),
         "active_route_files": _active_route_files(base_type),
         "valuation_algorithm_files": _valuation_algorithm_files(base_type, overlays),
+        "tech_cycle_applicability": select_tech_cycle_applicability(company).to_dict(),
         "deferred_routes": _deferred_routes(base_type, overlays),
         "token_mode": "lazy_loaded_modular_workflow",
         "token_control": {
